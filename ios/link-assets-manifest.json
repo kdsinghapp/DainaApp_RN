@@ -1,0 +1,97 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/Monolith Regular.otf",
+      "sha1": "0f9109237f187e2dcde77f72ef2c11c6eb8519e6"
+    },
+    {
+      "path": "assets/fonts/Panton-Trial-SemiBold.ttf",
+      "sha1": "245d6eb4ce3b130fbf18725a288f872b9d8182a4"
+    },
+    {
+      "path": "assets/fonts/TT Neoris Trial Black Italic.ttf",
+      "sha1": "06a34d72b35141c2b9ef704dbd2a4e4903e4430e"
+    },
+    {
+      "path": "assets/fonts/TT Neoris Trial Black.ttf",
+      "sha1": "a8b0bacbf4c71975bb578406d77d9c3cf3b4a226"
+    },
+    {
+      "path": "assets/fonts/TT Neoris Trial Bold Italic.ttf",
+      "sha1": "d4fc77cd482fe07ffcd6adff54682556a79faffa"
+    },
+    {
+      "path": "assets/fonts/TT Neoris Trial Bold.ttf",
+      "sha1": "861ba097adcd627b1b79c65bd7fd7772488780c5"
+    },
+    {
+      "path": "assets/fonts/TT Neoris Trial DemiBold Italic.ttf",
+      "sha1": "4fa0b4ae1c2667c7dda3f35ccb270cbc6adc27ce"
+    },
+    {
+      "path": "assets/fonts/TT Neoris Trial DemiBold.ttf",
+      "sha1": "5fb6d70b00e6c91242898615cb9c1be61f03dd8a"
+    },
+    {
+      "path": "assets/fonts/TT Neoris Trial ExtraBold Italic.ttf",
+      "sha1": "582d03a4e2db9ca64312e2499b5f5c460bcab2a3"
+    },
+    {
+      "path": "assets/fonts/TT Neoris Trial ExtraBold.ttf",
+      "sha1": "65c6b947f8a3e57f6dbe8a8ce1a96f8a2653e1c6"
+    },
+    {
+      "path": "assets/fonts/TT Neoris Trial ExtraLight Italic.ttf",
+      "sha1": "19c2e0021a68b1e5d31ee632e7d3c8b64ffb3ee9"
+    },
+    {
+      "path": "assets/fonts/TT Neoris Trial ExtraLight.ttf",
+      "sha1": "1f8fab756871f8edea47363f55335be81ff71ec6"
+    },
+    {
+      "path": "assets/fonts/TT Neoris Trial Hairline Italic.ttf",
+      "sha1": "f77133d81497a535f60bacea91b4da845af7c14b"
+    },
+    {
+      "path": "assets/fonts/TT Neoris Trial Hairline.ttf",
+      "sha1": "221f8f2dfbe9a503c29eb5b487e3f76e971fc6b3"
+    },
+    {
+      "path": "assets/fonts/TT Neoris Trial Italic.ttf",
+      "sha1": "4aaee552ea47fe9615b1060986f28f777d594fc9"
+    },
+    {
+      "path": "assets/fonts/TT Neoris Trial Light Italic.ttf",
+      "sha1": "61355da97b398c8556f31efba02dad893b2513d7"
+    },
+    {
+      "path": "assets/fonts/TT Neoris Trial Light.ttf",
+      "sha1": "733bfd719974e2a1f33e0ef8ada58d59095b9b91"
+    },
+    {
+      "path": "assets/fonts/TT Neoris Trial Medium Italic.ttf",
+      "sha1": "0ccb29508b5084282c286f08bcb5a167a9598498"
+    },
+    {
+      "path": "assets/fonts/TT Neoris Trial Medium.ttf",
+      "sha1": "e1677789b98b6ce0bf87be13d603be3de19be3b8"
+    },
+    {
+      "path": "assets/fonts/TT Neoris Trial Regular.ttf",
+      "sha1": "d1a700dd7ecf15dde0eb33cbeb10c1d36b7e1185"
+    },
+    {
+      "path": "assets/fonts/TT Neoris Trial Thin Italic.ttf",
+      "sha1": "e6b1f590c60e15e46e913c7816215b08d58c042c"
+    },
+    {
+      "path": "assets/fonts/TT Neoris Trial Thin.ttf",
+      "sha1": "fce417123138ccf75232e29a96456ed2c0636416"
+    },
+    {
+      "path": "assets/fonts/TT Neoris Trial Variable.ttf",
+      "sha1": "281479aee308280dfd8c6eddc9ccc39fa73542ce"
+    }
+  ]
+}

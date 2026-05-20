@@ -1,0 +1,954 @@
+[
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_hide.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_hide.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_mess.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_mess.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_search1.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_search1.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_f6.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_f6.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_next.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_next.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_group2.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_group2.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_cycle.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_cycle.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_greenbag.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_greenbag.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_eye.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_eye.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_editpen.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_editpen.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_node_modules_reactnativeelementdropdown_src_assets_down.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/node_modules_reactnativeelementdropdown_src_assets_down.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_f5.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_f5.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_falt.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_falt.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_video2.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_video2.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-xxxhdpi_node_modules_reactnavigation_elements_lib_module_assets_backicon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-xxxhdpi/node_modules_reactnavigation_elements_lib_module_assets_backicon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_arrowright.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_arrowright.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_water.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_water.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_rectangle.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_rectangle.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_sp2.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_sp2.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_mobile.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_mobile.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-xxxhdpi_node_modules_reactnavigation_elements_lib_module_assets_searchicon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-xxxhdpi/node_modules_reactnavigation_elements_lib_module_assets_searchicon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_activity.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_activity.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_successgrey.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_successgrey.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_redbutton.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_redbutton.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_node_modules_reactnativeelementdropdown_src_assets_close.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/node_modules_reactnativeelementdropdown_src_assets_close.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_map.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_map.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_fb.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_fb.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_blood.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_blood.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_deliver.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_deliver.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_line.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_line.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_help.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_help.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-xxhdpi_node_modules_reactnavigation_elements_lib_module_assets_closeicon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-xxhdpi/node_modules_reactnavigation_elements_lib_module_assets_closeicon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_iconred.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_iconred.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-xxxhdpi_node_modules_reactnavigation_elements_lib_module_assets_closeicon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-xxxhdpi/node_modules_reactnavigation_elements_lib_module_assets_closeicon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_check.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_check.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_call.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_call.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_send.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_send.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_emoji.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_emoji.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/mipmap-mdpi_ic_launcher_adaptive_back.png.flat",
+        "source": "com.DainaApp.app-main-66:/mipmap-mdpi/ic_launcher_adaptive_back.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_patti.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_patti.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_fram.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_fram.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_dots.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_dots.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_apay.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_apay.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_voies.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_voies.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_closesqr.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_closesqr.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_group1.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_group1.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_palm2.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_palm2.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_visa.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_visa.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_mohronfag.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_mohronfag.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_f7.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_f7.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_calendar.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_calendar.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_running.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_running.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_helpprva.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_helpprva.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_pin.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_pin.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_sp1.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_sp1.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_chopstick.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_chopstick.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_orderplaced.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_orderplaced.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_location1.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_location1.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_health.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_health.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_f4.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_f4.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_messagesend.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_messagesend.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_group32.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_group32.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_phone1.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_phone1.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/mipmap-xxhdpi_ic_launcher.png.flat",
+        "source": "com.DainaApp.app-main-66:/mipmap-xxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_slider.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_slider.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_dpuser.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_dpuser.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_girl2.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_girl2.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/mipmap-mdpi_ic_launcher.png.flat",
+        "source": "com.DainaApp.app-main-66:/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/mipmap-xxxhdpi_ic_launcher_adaptive_back.png.flat",
+        "source": "com.DainaApp.app-main-66:/mipmap-xxxhdpi/ic_launcher_adaptive_back.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_filter.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_filter.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/mipmap-xxxhdpi_ic_launcher_adaptive_fore.png.flat",
+        "source": "com.DainaApp.app-main-66:/mipmap-xxxhdpi/ic_launcher_adaptive_fore.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_bacg.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_bacg.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_edit1.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_edit1.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/mipmap-hdpi_ic_launcher_adaptive_fore.png.flat",
+        "source": "com.DainaApp.app-main-66:/mipmap-hdpi/ic_launcher_adaptive_fore.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_juice.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_juice.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_injectionred.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_injectionred.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_locationpin.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_locationpin.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_bloodred.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_bloodred.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_addressicone.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_addressicone.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_endom.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_endom.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_incrmernt.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_incrmernt.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_imageadd.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_imageadd.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_support.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_support.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_engliesfalg.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_engliesfalg.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_drink.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_drink.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable_rn_edit_text_material.xml.flat",
+        "source": "com.DainaApp.app-main-66:/drawable/rn_edit_text_material.xml"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_bg.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_bg.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_swim.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_swim.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_calblack.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_calblack.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_girl.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_girl.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_more_vert.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_more_vert.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_history.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_history.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_messtrcker.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_messtrcker.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_ordepracle.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_ordepracle.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/mipmap-anydpi-v26_ic_launcher.xml.flat",
+        "source": "com.DainaApp.app-main-66:/mipmap-anydpi-v26/ic_launcher.xml"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_vector.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_vector.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_cycling.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_cycling.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_left.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_left.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_stripe.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_stripe.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_fruit.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_fruit.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/mipmap-xxhdpi_ic_launcher_adaptive_back.png.flat",
+        "source": "com.DainaApp.app-main-66:/mipmap-xxhdpi/ic_launcher_adaptive_back.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_good.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_good.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_light.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_light.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/raw_ringtone_notification.mp3.flat",
+        "source": "com.DainaApp.app-main-66:/raw/ringtone_notification.mp3"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-xxhdpi_node_modules_reactnavigation_elements_lib_module_assets_clearicon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-xxhdpi/node_modules_reactnavigation_elements_lib_module_assets_clearicon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_apple.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_apple.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_fruiuts.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_fruiuts.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_icons1.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_icons1.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_group33.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_group33.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_location.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_location.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_lock.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_lock.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_eoditphots.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_eoditphots.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_juice2.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_juice2.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-xhdpi_node_modules_reactnavigation_elements_lib_module_assets_backicon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-xhdpi/node_modules_reactnavigation_elements_lib_module_assets_backicon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_icon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_icon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_node_modules_reactnavigation_elements_lib_module_assets_clearicon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/node_modules_reactnavigation_elements_lib_module_assets_clearicon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-xxxhdpi_node_modules_reactnavigation_drawer_lib_module_views_assets_toggledrawericon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-xxxhdpi/node_modules_reactnavigation_drawer_lib_module_views_assets_toggledrawericon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_closed.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_closed.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_hand.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_hand.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_back.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_back.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_bg2.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_bg2.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_dounarroww.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_dounarroww.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_timer.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_timer.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_edit.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_edit.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_home.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_home.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_food.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_food.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_group35.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_group35.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_node_modules_reactnavigation_elements_lib_module_assets_searchicon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/node_modules_reactnavigation_elements_lib_module_assets_searchicon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_caricon.jpg.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_caricon.jpg"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_injection.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_injection.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_wine.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_wine.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_men.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_men.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_icons.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_icons.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_vegetables.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_vegetables.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_shake.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_shake.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-xxhdpi_node_modules_reactnavigation_elements_lib_module_assets_searchicon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-xxhdpi/node_modules_reactnavigation_elements_lib_module_assets_searchicon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_messageblack.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_messageblack.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_syboll.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_syboll.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_pills.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_pills.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/mipmap-xhdpi_ic_launcher_adaptive_back.png.flat",
+        "source": "com.DainaApp.app-main-66:/mipmap-xhdpi/ic_launcher_adaptive_back.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_workout.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_workout.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_profiel.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_profiel.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_success1.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_success1.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_pushup.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_pushup.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_black.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_black.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_staryellow.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_staryellow.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_browser.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_browser.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/mipmap-xxxhdpi_ic_launcher.png.flat",
+        "source": "com.DainaApp.app-main-66:/mipmap-xxxhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_close.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_close.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_phonlogoapp.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_phonlogoapp.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_group34.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_group34.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_prfile.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_prfile.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_notification.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_notification.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_enough.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_enough.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_carb.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_carb.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_cars.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_cars.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-xxhdpi_node_modules_reactnavigation_drawer_lib_module_views_assets_toggledrawericon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-xxhdpi/node_modules_reactnavigation_drawer_lib_module_views_assets_toggledrawericon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_lazy.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_lazy.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-xhdpi_node_modules_reactnavigation_elements_lib_module_assets_clearicon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-xhdpi/node_modules_reactnavigation_elements_lib_module_assets_clearicon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_cameraplac.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_cameraplac.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_node_modules_reactnavigation_elements_lib_module_assets_closeicon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/node_modules_reactnavigation_elements_lib_module_assets_closeicon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_group.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_group.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-xhdpi_node_modules_reactnavigation_drawer_lib_module_views_assets_toggledrawericon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-xhdpi/node_modules_reactnavigation_drawer_lib_module_views_assets_toggledrawericon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_google.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_google.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_mesonmorpah.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_mesonmorpah.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-xhdpi_node_modules_reactnavigation_elements_lib_module_assets_closeicon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-xhdpi/node_modules_reactnavigation_elements_lib_module_assets_closeicon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_iconreceiv.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_iconreceiv.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_thumb.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_thumb.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/mipmap-xxhdpi_ic_launcher_adaptive_fore.png.flat",
+        "source": "com.DainaApp.app-main-66:/mipmap-xxhdpi/ic_launcher_adaptive_fore.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_menu.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_menu.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/mipmap-mdpi_ic_launcher_adaptive_fore.png.flat",
+        "source": "com.DainaApp.app-main-66:/mipmap-mdpi/ic_launcher_adaptive_fore.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_f1.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_f1.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_node_modules_reactnavigation_drawer_lib_module_views_assets_toggledrawericon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/node_modules_reactnavigation_drawer_lib_module_views_assets_toggledrawericon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-xxxhdpi_node_modules_reactnavigation_elements_lib_module_assets_clearicon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-xxxhdpi/node_modules_reactnavigation_elements_lib_module_assets_clearicon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_add.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_add.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_refresh.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_refresh.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_bag.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_bag.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_editsqr.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_editsqr.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_success.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_success.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_fasting.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_fasting.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_camera.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_camera.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_english.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_english.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_backcircle.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_backcircle.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/mipmap-hdpi_ic_launcher_adaptive_back.png.flat",
+        "source": "com.DainaApp.app-main-66:/mipmap-hdpi/ic_launcher_adaptive_back.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_trck.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_trck.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_bubleyeelow.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_bubleyeelow.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_f2.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_f2.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_logout.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_logout.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "com.DainaApp.app-main-66:/mipmap-xhdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_arrowdown.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_arrowdown.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-xhdpi_node_modules_reactnavigation_elements_lib_module_assets_searchicon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-xhdpi/node_modules_reactnavigation_elements_lib_module_assets_searchicon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_palm.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_palm.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_f3.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_f3.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_search.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_search.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_arrowqdown.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_arrowqdown.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_logo.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_logo.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_tip.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_tip.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_fist.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_fist.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_homefill.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_homefill.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_body.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_body.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_beer.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_beer.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_video.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_video.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_videouser.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_videouser.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_backleft.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_backleft.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_fat.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_fat.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_group31.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_group31.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_forntimg.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_forntimg.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_task.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_task.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_go.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_go.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_node_modules_reactnavigation_elements_lib_module_assets_backiconmask.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/node_modules_reactnavigation_elements_lib_module_assets_backiconmask.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_tips.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_tips.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_aboutus.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_aboutus.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_earing.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_earing.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_meter.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_meter.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_fiest.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_fiest.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_sp3.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_sp3.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_spoon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_spoon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_desert.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_desert.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_f8.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_f8.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_tracking.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_tracking.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_cardio.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_cardio.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_email.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_email.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_meal.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_meal.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_star.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_star.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-xxhdpi_node_modules_reactnavigation_elements_lib_module_assets_backicon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-xxhdpi/node_modules_reactnavigation_elements_lib_module_assets_backicon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_contain.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_contain.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_rightaarrow.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_rightaarrow.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/mipmap-hdpi_ic_launcher.png.flat",
+        "source": "com.DainaApp.app-main-66:/mipmap-hdpi/ic_launcher.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_fork.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_fork.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_calls.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_calls.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_phand.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_phand.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/mipmap-xhdpi_ic_launcher_adaptive_fore.png.flat",
+        "source": "com.DainaApp.app-main-66:/mipmap-xhdpi/ic_launcher_adaptive_fore.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_document.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_document.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_hands.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_hands.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_milk.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_milk.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_userlogo.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_userlogo.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_node_modules_reactnavigation_elements_lib_module_assets_backicon.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/node_modules_reactnavigation_elements_lib_module_assets_backicon.png"
+    },
+    {
+        "merged": "com.DainaApp.app-debug-64:/drawable-mdpi_src_assets_images_group36.png.flat",
+        "source": "com.DainaApp.app-main-66:/drawable-mdpi/src_assets_images_group36.png"
+    }
+]

@@ -1,0 +1,82 @@
+import { WebSocket_Url } from '../Api';
+
+class SocketService {
+  private socket: WebSocket | null = null;
+  private onMessageCallback: ((data: any) => void) | null = null;
+  private reconnectInterval: any = null;
+  private url: string = '';
+
+  connect(type: 'driver' | 'user', token: string) {
+    if (this.socket) {
+      this.socket.close();
+    }
+
+    this.url = `${WebSocket_Url}/${type}-live?token=${token}`;
+    console.log('Connecting to socket:', this.url);
+
+    this.socket = new WebSocket(this.url);
+
+    this.socket.onopen = () => {
+      console.log(`${type} socket connected`);
+      if (this.reconnectInterval) {
+        clearInterval(this.reconnectInterval);
+        this.reconnectInterval = null;
+      }
+    };
+
+    this.socket.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        console.log('Socket message received:', data);
+        if (this.onMessageCallback) {
+          this.onMessageCallback(data);
+        }
+      } catch (error) {
+        console.error('Error parsing socket message:', error);
+      }
+    };
+
+    this.socket.onerror = (error) => {
+      console.error('Socket error:', error);
+    };
+
+    this.socket.onclose = (event) => {
+      console.log(`${type} socket closed:`, event.reason);
+      this.startReconnecting(type, token);
+    };
+  }
+
+  private startReconnecting(type: 'driver' | 'user', token: string) {
+    if (this.reconnectInterval) return;
+    
+    this.reconnectInterval = setInterval(() => {
+      console.log(`Attempting to reconnect ${type} socket...`);
+      this.connect(type, token);
+    }, 5000);
+  }
+
+  sendMessage(message: any) {
+    if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+      this.socket.send(JSON.stringify(message));
+    } else {
+      console.warn('Socket not connected, cannot send message');
+    }
+  }
+
+  onMessage(callback: (data: any) => void) {
+    this.onMessageCallback = callback;
+  }
+
+  disconnect() {
+    if (this.reconnectInterval) {
+      clearInterval(this.reconnectInterval);
+      this.reconnectInterval = null;
+    }
+    if (this.socket) {
+      this.socket.close();
+      this.socket = null;
+    }
+  }
+}
+
+export default new SocketService();

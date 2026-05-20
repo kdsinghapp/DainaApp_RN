@@ -1,0 +1,834 @@
+diff --git a/node_modules/react-native-sound/android/.classpath b/node_modules/react-native-sound/android/.classpath
+new file mode 100644
+index 0000000..bbe97e5
+--- /dev/null
++++ b/node_modules/react-native-sound/android/.classpath
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<classpath>
++	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17/"/>
++	<classpathentry kind="con" path="org.eclipse.buildship.core.gradleclasspathcontainer"/>
++	<classpathentry kind="output" path="bin/default"/>
++</classpath>
+diff --git a/node_modules/react-native-sound/android/.project b/node_modules/react-native-sound/android/.project
+new file mode 100644
+index 0000000..f6201b0
+--- /dev/null
++++ b/node_modules/react-native-sound/android/.project
+@@ -0,0 +1,34 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<projectDescription>
++	<name>react-native-sound</name>
++	<comment>Project react-native-sound created by Buildship.</comment>
++	<projects>
++	</projects>
++	<buildSpec>
++		<buildCommand>
++			<name>org.eclipse.jdt.core.javabuilder</name>
++			<arguments>
++			</arguments>
++		</buildCommand>
++		<buildCommand>
++			<name>org.eclipse.buildship.core.gradleprojectbuilder</name>
++			<arguments>
++			</arguments>
++		</buildCommand>
++	</buildSpec>
++	<natures>
++		<nature>org.eclipse.jdt.core.javanature</nature>
++		<nature>org.eclipse.buildship.core.gradleprojectnature</nature>
++	</natures>
++	<filteredResources>
++		<filter>
++			<id>1778149075238</id>
++			<name></name>
++			<type>30</type>
++			<matcher>
++				<id>org.eclipse.core.resources.regexFilterMatcher</id>
++				<arguments>node_modules|\.git|__CREATED_BY_JAVA_LANGUAGE_SERVER__</arguments>
++			</matcher>
++		</filter>
++	</filteredResources>
++</projectDescription>
+diff --git a/node_modules/react-native-sound/android/.settings/org.eclipse.buildship.core.prefs b/node_modules/react-native-sound/android/.settings/org.eclipse.buildship.core.prefs
+new file mode 100644
+index 0000000..1675490
+--- /dev/null
++++ b/node_modules/react-native-sound/android/.settings/org.eclipse.buildship.core.prefs
+@@ -0,0 +1,2 @@
++connection.project.dir=../../../android
++eclipse.preferences.version=1
+diff --git a/node_modules/react-native-sound/android/build/.transforms/31ee01c94f64c11b4a493abfececc367/results.bin b/node_modules/react-native-sound/android/build/.transforms/31ee01c94f64c11b4a493abfececc367/results.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/react-native-sound/android/build/.transforms/31ee01c94f64c11b4a493abfececc367/results.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/react-native-sound/android/build/.transforms/31ee01c94f64c11b4a493abfececc367/transformed/classes/classes_dex/classes.dex b/node_modules/react-native-sound/android/build/.transforms/31ee01c94f64c11b4a493abfececc367/transformed/classes/classes_dex/classes.dex
+new file mode 100644
+index 0000000..a897809
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/.transforms/31ee01c94f64c11b4a493abfececc367/transformed/classes/classes_dex/classes.dex differ
+diff --git a/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/results.bin b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/results.bin
+new file mode 100644
+index 0000000..7ed749e
+--- /dev/null
++++ b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/results.bin
+@@ -0,0 +1 @@
++o/bundleLibRuntimeToDirDebug
+diff --git a/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/BuildConfig.dex b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/BuildConfig.dex
+new file mode 100644
+index 0000000..96daaaa
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/BuildConfig.dex differ
+diff --git a/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/Sound$play$1.dex b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/Sound$play$1.dex
+new file mode 100644
+index 0000000..375cf4c
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/Sound$play$1.dex differ
+diff --git a/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/Sound$play$2.dex b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/Sound$play$2.dex
+new file mode 100644
+index 0000000..79ced7b
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/Sound$play$2.dex differ
+diff --git a/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/Sound$prepare$1.dex b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/Sound$prepare$1.dex
+new file mode 100644
+index 0000000..c78707e
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/Sound$prepare$1.dex differ
+diff --git a/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/Sound$prepare$2.dex b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/Sound$prepare$2.dex
+new file mode 100644
+index 0000000..88eff96
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/Sound$prepare$2.dex differ
+diff --git a/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/Sound.dex b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/Sound.dex
+new file mode 100644
+index 0000000..3e5e217
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/Sound.dex differ
+diff --git a/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/SoundModule$Companion.dex b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/SoundModule$Companion.dex
+new file mode 100644
+index 0000000..dfeceb0
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/SoundModule$Companion.dex differ
+diff --git a/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/SoundModule.dex b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/SoundModule.dex
+new file mode 100644
+index 0000000..f73c830
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/SoundModule.dex differ
+diff --git a/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/SoundPackage.dex b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/SoundPackage.dex
+new file mode 100644
+index 0000000..9ee5900
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/SoundPackage.dex differ
+diff --git a/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/SoundSpec.dex b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/SoundSpec.dex
+new file mode 100644
+index 0000000..1723ba5
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/bundleLibRuntimeToDirDebug_dex/com/zmxv/RNSound/SoundSpec.dex differ
+diff --git a/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/desugar_graph.bin b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/desugar_graph.bin
+new file mode 100644
+index 0000000..601f245
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/.transforms/98c328c862a1fabb2618980f341285a0/transformed/bundleLibRuntimeToDirDebug/desugar_graph.bin differ
+diff --git a/node_modules/react-native-sound/android/build/generated/source/buildConfig/debug/com/zmxv/RNSound/BuildConfig.java b/node_modules/react-native-sound/android/build/generated/source/buildConfig/debug/com/zmxv/RNSound/BuildConfig.java
+new file mode 100644
+index 0000000..2be3e42
+--- /dev/null
++++ b/node_modules/react-native-sound/android/build/generated/source/buildConfig/debug/com/zmxv/RNSound/BuildConfig.java
+@@ -0,0 +1,12 @@
++/**
++ * Automatically generated file. DO NOT MODIFY
++ */
++package com.zmxv.RNSound;
++
++public final class BuildConfig {
++  public static final boolean DEBUG = Boolean.parseBoolean("true");
++  public static final String LIBRARY_PACKAGE_NAME = "com.zmxv.RNSound";
++  public static final String BUILD_TYPE = "debug";
++  // Field from default config.
++  public static final boolean IS_NEW_ARCHITECTURE_ENABLED = false;
++}
+diff --git a/node_modules/react-native-sound/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/AndroidManifest.xml b/node_modules/react-native-sound/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/AndroidManifest.xml
+new file mode 100644
+index 0000000..62e9437
+--- /dev/null
++++ b/node_modules/react-native-sound/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/AndroidManifest.xml
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="com.zmxv.RNSound" >
++
++    <uses-sdk android:minSdkVersion="24" />
++
++</manifest>
+\ No newline at end of file
+diff --git a/node_modules/react-native-sound/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/output-metadata.json b/node_modules/react-native-sound/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/output-metadata.json
+new file mode 100644
+index 0000000..8a5dc26
+--- /dev/null
++++ b/node_modules/react-native-sound/android/build/intermediates/aapt_friendly_merged_manifests/debug/processDebugManifest/aapt/output-metadata.json
+@@ -0,0 +1,18 @@
++{
++  "version": 3,
++  "artifactType": {
++    "type": "AAPT_FRIENDLY_MERGED_MANIFESTS",
++    "kind": "Directory"
++  },
++  "applicationId": "com.zmxv.RNSound",
++  "variantName": "debug",
++  "elements": [
++    {
++      "type": "SINGLE",
++      "filters": [],
++      "attributes": [],
++      "outputFile": "AndroidManifest.xml"
++    }
++  ],
++  "elementType": "File"
++}
+\ No newline at end of file
+diff --git a/node_modules/react-native-sound/android/build/intermediates/aar_main_jar/debug/syncDebugLibJars/classes.jar b/node_modules/react-native-sound/android/build/intermediates/aar_main_jar/debug/syncDebugLibJars/classes.jar
+new file mode 100644
+index 0000000..da50452
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/intermediates/aar_main_jar/debug/syncDebugLibJars/classes.jar differ
+diff --git a/node_modules/react-native-sound/android/build/intermediates/aar_metadata/debug/writeDebugAarMetadata/aar-metadata.properties b/node_modules/react-native-sound/android/build/intermediates/aar_metadata/debug/writeDebugAarMetadata/aar-metadata.properties
+new file mode 100644
+index 0000000..1211b1e
+--- /dev/null
++++ b/node_modules/react-native-sound/android/build/intermediates/aar_metadata/debug/writeDebugAarMetadata/aar-metadata.properties
+@@ -0,0 +1,6 @@
++aarFormatVersion=1.0
++aarMetadataVersion=1.0
++minCompileSdk=1
++minCompileSdkExtension=0
++minAndroidGradlePluginVersion=1.0.0
++coreLibraryDesugaringEnabled=false
+diff --git a/node_modules/react-native-sound/android/build/intermediates/annotation_processor_list/debug/javaPreCompileDebug/annotationProcessors.json b/node_modules/react-native-sound/android/build/intermediates/annotation_processor_list/debug/javaPreCompileDebug/annotationProcessors.json
+new file mode 100644
+index 0000000..9e26dfe
+--- /dev/null
++++ b/node_modules/react-native-sound/android/build/intermediates/annotation_processor_list/debug/javaPreCompileDebug/annotationProcessors.json
+@@ -0,0 +1 @@
++{}
+\ No newline at end of file
+diff --git a/node_modules/react-native-sound/android/build/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt b/node_modules/react-native-sound/android/build/intermediates/annotations_typedef_file/debug/extractDebugAnnotations/typedefs.txt
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-sound/android/build/intermediates/compile_library_classes_jar/debug/bundleLibCompileToJarDebug/classes.jar b/node_modules/react-native-sound/android/build/intermediates/compile_library_classes_jar/debug/bundleLibCompileToJarDebug/classes.jar
+new file mode 100644
+index 0000000..a2f7b26
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/intermediates/compile_library_classes_jar/debug/bundleLibCompileToJarDebug/classes.jar differ
+diff --git a/node_modules/react-native-sound/android/build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar b/node_modules/react-native-sound/android/build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar
+new file mode 100644
+index 0000000..e5f441f
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/intermediates/compile_r_class_jar/debug/generateDebugRFile/R.jar differ
+diff --git a/node_modules/react-native-sound/android/build/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt b/node_modules/react-native-sound/android/build/intermediates/compile_symbol_list/debug/generateDebugRFile/R.txt
+new file mode 100644
+index 0000000..e69de29
+diff --git a/node_modules/react-native-sound/android/build/intermediates/incremental/debug-mergeJavaRes/merge-state b/node_modules/react-native-sound/android/build/intermediates/incremental/debug-mergeJavaRes/merge-state
+new file mode 100644
+index 0000000..ae99cfd
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/intermediates/incremental/debug-mergeJavaRes/merge-state differ
+diff --git a/node_modules/react-native-sound/android/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties b/node_modules/react-native-sound/android/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties
+new file mode 100644
+index 0000000..217b4f3
+--- /dev/null
++++ b/node_modules/react-native-sound/android/build/intermediates/incremental/debug/packageDebugResources/compile-file-map.properties
+@@ -0,0 +1 @@
++#Thu May 07 11:56:43 IST 2026
+diff --git a/node_modules/react-native-sound/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml b/node_modules/react-native-sound/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml
+new file mode 100644
+index 0000000..416e67e
+--- /dev/null
++++ b/node_modules/react-native-sound/android/build/intermediates/incremental/debug/packageDebugResources/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/src/main/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main" generated-set="main$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/src/main/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/src/debug/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="debug" generated-set="debug$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/src/debug/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/build/generated/res/resValues/debug"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="generated" generated-set="generated$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/build/generated/res/resValues/debug"/></dataSet><mergedItems/></merger>
+\ No newline at end of file
+diff --git a/node_modules/react-native-sound/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml b/node_modules/react-native-sound/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml
+new file mode 100644
+index 0000000..25f3ebf
+--- /dev/null
++++ b/node_modules/react-native-sound/android/build/intermediates/incremental/mergeDebugJniLibFolders/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/src/main/jniLibs"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/src/debug/jniLibs"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/react-native-sound/android/build/intermediates/incremental/mergeDebugShaders/merger.xml b/node_modules/react-native-sound/android/build/intermediates/incremental/mergeDebugShaders/merger.xml
+new file mode 100644
+index 0000000..adb3f63
+--- /dev/null
++++ b/node_modules/react-native-sound/android/build/intermediates/incremental/mergeDebugShaders/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/src/main/shaders"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/src/debug/shaders"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/react-native-sound/android/build/intermediates/incremental/packageDebugAssets/merger.xml b/node_modules/react-native-sound/android/build/intermediates/incremental/packageDebugAssets/merger.xml
+new file mode 100644
+index 0000000..96a33f0
+--- /dev/null
++++ b/node_modules/react-native-sound/android/build/intermediates/incremental/packageDebugAssets/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/src/main/assets"/></dataSet><dataSet config="debug" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/src/debug/assets"/></dataSet><dataSet config="generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/build/intermediates/shader_assets/debug/compileDebugShaders/out"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/react-native-sound/android/build/intermediates/java_res/debug/processDebugJavaRes/out/META-INF/react-native-sound_debug.kotlin_module b/node_modules/react-native-sound/android/build/intermediates/java_res/debug/processDebugJavaRes/out/META-INF/react-native-sound_debug.kotlin_module
+new file mode 100644
+index 0000000..c998a4c
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/intermediates/java_res/debug/processDebugJavaRes/out/META-INF/react-native-sound_debug.kotlin_module differ
+diff --git a/node_modules/react-native-sound/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/zmxv/RNSound/BuildConfig.class b/node_modules/react-native-sound/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/zmxv/RNSound/BuildConfig.class
+new file mode 100644
+index 0000000..3c7ed9c
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/intermediates/javac/debug/compileDebugJavaWithJavac/classes/com/zmxv/RNSound/BuildConfig.class differ
+diff --git a/node_modules/react-native-sound/android/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt b/node_modules/react-native-sound/android/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt
+new file mode 100644
+index 0000000..78ac5b8
+--- /dev/null
++++ b/node_modules/react-native-sound/android/build/intermediates/local_only_symbol_list/debug/parseDebugLocalResources/R-def.txt
+@@ -0,0 +1,2 @@
++R_DEF: Internal format may change without notice
++local
+diff --git a/node_modules/react-native-sound/android/build/intermediates/manifest_merge_blame_file/debug/processDebugManifest/manifest-merger-blame-debug-report.txt b/node_modules/react-native-sound/android/build/intermediates/manifest_merge_blame_file/debug/processDebugManifest/manifest-merger-blame-debug-report.txt
+new file mode 100644
+index 0000000..eac23fc
+--- /dev/null
++++ b/node_modules/react-native-sound/android/build/intermediates/manifest_merge_blame_file/debug/processDebugManifest/manifest-merger-blame-debug-report.txt
+@@ -0,0 +1,7 @@
++1<?xml version="1.0" encoding="utf-8"?>
++2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++3    package="com.zmxv.RNSound" >
++4
++5    <uses-sdk android:minSdkVersion="24" />
++6
++7</manifest>
+diff --git a/node_modules/react-native-sound/android/build/intermediates/merged_java_res/debug/mergeDebugJavaResource/feature-react-native-sound.jar b/node_modules/react-native-sound/android/build/intermediates/merged_java_res/debug/mergeDebugJavaResource/feature-react-native-sound.jar
+new file mode 100644
+index 0000000..6266ee5
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/intermediates/merged_java_res/debug/mergeDebugJavaResource/feature-react-native-sound.jar differ
+diff --git a/node_modules/react-native-sound/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml b/node_modules/react-native-sound/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml
+new file mode 100644
+index 0000000..62e9437
+--- /dev/null
++++ b/node_modules/react-native-sound/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml
+@@ -0,0 +1,7 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="com.zmxv.RNSound" >
++
++    <uses-sdk android:minSdkVersion="24" />
++
++</manifest>
+\ No newline at end of file
+diff --git a/node_modules/react-native-sound/android/build/intermediates/navigation_json/debug/extractDeepLinksDebug/navigation.json b/node_modules/react-native-sound/android/build/intermediates/navigation_json/debug/extractDeepLinksDebug/navigation.json
+new file mode 100644
+index 0000000..0637a08
+--- /dev/null
++++ b/node_modules/react-native-sound/android/build/intermediates/navigation_json/debug/extractDeepLinksDebug/navigation.json
+@@ -0,0 +1 @@
++[]
+\ No newline at end of file
+diff --git a/node_modules/react-native-sound/android/build/intermediates/nested_resources_validation_report/debug/generateDebugResources/nestedResourcesValidationReport.txt b/node_modules/react-native-sound/android/build/intermediates/nested_resources_validation_report/debug/generateDebugResources/nestedResourcesValidationReport.txt
+new file mode 100644
+index 0000000..08f4ebe
+--- /dev/null
++++ b/node_modules/react-native-sound/android/build/intermediates/nested_resources_validation_report/debug/generateDebugResources/nestedResourcesValidationReport.txt
+@@ -0,0 +1 @@
++0 Warning/Error
+\ No newline at end of file
+diff --git a/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/META-INF/react-native-sound_debug.kotlin_module b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/META-INF/react-native-sound_debug.kotlin_module
+new file mode 100644
+index 0000000..c998a4c
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/META-INF/react-native-sound_debug.kotlin_module differ
+diff --git a/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/BuildConfig.class b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/BuildConfig.class
+new file mode 100644
+index 0000000..3c7ed9c
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/BuildConfig.class differ
+diff --git a/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/Sound$play$1.class b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/Sound$play$1.class
+new file mode 100644
+index 0000000..1e0d970
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/Sound$play$1.class differ
+diff --git a/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/Sound$play$2.class b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/Sound$play$2.class
+new file mode 100644
+index 0000000..32daf26
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/Sound$play$2.class differ
+diff --git a/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/Sound$prepare$1.class b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/Sound$prepare$1.class
+new file mode 100644
+index 0000000..7847cae
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/Sound$prepare$1.class differ
+diff --git a/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/Sound$prepare$2.class b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/Sound$prepare$2.class
+new file mode 100644
+index 0000000..d99d1fd
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/Sound$prepare$2.class differ
+diff --git a/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/Sound.class b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/Sound.class
+new file mode 100644
+index 0000000..6c55738
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/Sound.class differ
+diff --git a/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/SoundModule$Companion.class b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/SoundModule$Companion.class
+new file mode 100644
+index 0000000..2d5f9d7
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/SoundModule$Companion.class differ
+diff --git a/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/SoundModule.class b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/SoundModule.class
+new file mode 100644
+index 0000000..465b5f9
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/SoundModule.class differ
+diff --git a/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/SoundPackage.class b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/SoundPackage.class
+new file mode 100644
+index 0000000..71caee3
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/SoundPackage.class differ
+diff --git a/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/SoundSpec.class b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/SoundSpec.class
+new file mode 100644
+index 0000000..18d52d7
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_dir/debug/bundleLibRuntimeToDirDebug/com/zmxv/RNSound/SoundSpec.class differ
+diff --git a/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_jar/debug/bundleLibRuntimeToJarDebug/classes.jar b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_jar/debug/bundleLibRuntimeToJarDebug/classes.jar
+new file mode 100644
+index 0000000..dcaddaf
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/intermediates/runtime_library_classes_jar/debug/bundleLibRuntimeToJarDebug/classes.jar differ
+diff --git a/node_modules/react-native-sound/android/build/intermediates/symbol_list_with_package_name/debug/generateDebugRFile/package-aware-r.txt b/node_modules/react-native-sound/android/build/intermediates/symbol_list_with_package_name/debug/generateDebugRFile/package-aware-r.txt
+new file mode 100644
+index 0000000..9397f71
+--- /dev/null
++++ b/node_modules/react-native-sound/android/build/intermediates/symbol_list_with_package_name/debug/generateDebugRFile/package-aware-r.txt
+@@ -0,0 +1 @@
++com.zmxv.RNSound
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab
+new file mode 100644
+index 0000000..472e609
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.keystream b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.keystream
+new file mode 100644
+index 0000000..81a7461
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.keystream differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.keystream.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.keystream.len
+new file mode 100644
+index 0000000..d0c248c
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.keystream.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.len
+new file mode 100644
+index 0000000..93a595b
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.values.at b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.values.at
+new file mode 100644
+index 0000000..3e0d9ce
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab.values.at differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab_i b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab_i
+new file mode 100644
+index 0000000..61c227a
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab_i differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab_i.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/inputs/source-to-output.tab_i.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab
+new file mode 100644
+index 0000000..e57077a
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.keystream b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.keystream
+new file mode 100644
+index 0000000..02bd561
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.keystream differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.keystream.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.keystream.len
+new file mode 100644
+index 0000000..1b7aee7
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.keystream.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.len
+new file mode 100644
+index 0000000..ec8f944
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.values.at b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.values.at
+new file mode 100644
+index 0000000..3737e13
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab.values.at differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab_i b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab_i
+new file mode 100644
+index 0000000..e15d5b5
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab_i differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab_i.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-attributes.tab_i.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab
+new file mode 100644
+index 0000000..b3b4dc5
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream
+new file mode 100644
+index 0000000..02bd561
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream.len
+new file mode 100644
+index 0000000..1b7aee7
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.keystream.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.len
+new file mode 100644
+index 0000000..ec8f944
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.values.at b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.values.at
+new file mode 100644
+index 0000000..c3f712e
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab.values.at differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i
+new file mode 100644
+index 0000000..e15d5b5
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/class-fq-name-to-source.tab_i.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/constants.tab b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/constants.tab
+new file mode 100644
+index 0000000..bdf584a
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/constants.tab differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/constants.tab.keystream b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/constants.tab.keystream
+new file mode 100644
+index 0000000..4563ef2
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/constants.tab.keystream differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/constants.tab.keystream.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/constants.tab.keystream.len
+new file mode 100644
+index 0000000..851b0a9
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/constants.tab.keystream.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/constants.tab.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/constants.tab.len
+new file mode 100644
+index 0000000..2a17e6e
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/constants.tab.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/constants.tab.values.at b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/constants.tab.values.at
+new file mode 100644
+index 0000000..72c5146
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/constants.tab.values.at differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/constants.tab_i b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/constants.tab_i
+new file mode 100644
+index 0000000..f453bab
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/constants.tab_i differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/constants.tab_i.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/constants.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/constants.tab_i.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab
+new file mode 100644
+index 0000000..1045638
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream
+new file mode 100644
+index 0000000..fccd214
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream.len
+new file mode 100644
+index 0000000..856c838
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.keystream.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.len
+new file mode 100644
+index 0000000..eb0b8a0
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.values.at b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.values.at
+new file mode 100644
+index 0000000..0d00bbc
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab.values.at differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab_i b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab_i
+new file mode 100644
+index 0000000..f4c4981
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab_i differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab_i.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/internal-name-to-source.tab_i.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab
+new file mode 100644
+index 0000000..5f6e08d
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.keystream b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.keystream
+new file mode 100644
+index 0000000..77baaf8
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.keystream differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.keystream.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.keystream.len
+new file mode 100644
+index 0000000..689ec48
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.keystream.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.len
+new file mode 100644
+index 0000000..9e27f73
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.values.at b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.values.at
+new file mode 100644
+index 0000000..d9903d1
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab.values.at differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab_i b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab_i
+new file mode 100644
+index 0000000..f1ae4db
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab_i differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab_i.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/proto.tab_i.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab
+new file mode 100644
+index 0000000..0424f00
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.keystream b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.keystream
+new file mode 100644
+index 0000000..81a7461
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.keystream differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.keystream.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.keystream.len
+new file mode 100644
+index 0000000..d0c248c
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.keystream.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.len
+new file mode 100644
+index 0000000..93a595b
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.values.at b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.values.at
+new file mode 100644
+index 0000000..038b5f1
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab.values.at differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab_i b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab_i
+new file mode 100644
+index 0000000..61c227a
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab_i differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab_i.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/source-to-classes.tab_i.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab
+new file mode 100644
+index 0000000..5d1da53
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.keystream b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.keystream
+new file mode 100644
+index 0000000..50c3b4b
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.keystream differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.keystream.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.keystream.len
+new file mode 100644
+index 0000000..899be2e
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.keystream.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.len
+new file mode 100644
+index 0000000..93a595b
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.values.at b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.values.at
+new file mode 100644
+index 0000000..a1c3449
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab.values.at differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab_i b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab_i
+new file mode 100644
+index 0000000..43c1788
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab_i differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab_i.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/subtypes.tab_i.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab
+new file mode 100644
+index 0000000..aafddf8
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.keystream b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.keystream
+new file mode 100644
+index 0000000..7181e09
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.keystream differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.keystream.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.keystream.len
+new file mode 100644
+index 0000000..c922c0c
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.keystream.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.len
+new file mode 100644
+index 0000000..93a595b
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.values.at b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.values.at
+new file mode 100644
+index 0000000..290fc58
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab.values.at differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab_i b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab_i
+new file mode 100644
+index 0000000..1c3140e
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab_i differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab_i.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/jvm/kotlin/supertypes.tab_i.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/counters.tab b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/counters.tab
+new file mode 100644
+index 0000000..26d3b09
+--- /dev/null
++++ b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/counters.tab
+@@ -0,0 +1,2 @@
++4
++0
+\ No newline at end of file
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab
+new file mode 100644
+index 0000000..622c6c6
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.keystream b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.keystream
+new file mode 100644
+index 0000000..81a7461
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.keystream differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.keystream.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.keystream.len
+new file mode 100644
+index 0000000..d0c248c
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.keystream.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.len
+new file mode 100644
+index 0000000..93a595b
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.values.at b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.values.at
+new file mode 100644
+index 0000000..3e23c2a
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab.values.at differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab_i b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab_i
+new file mode 100644
+index 0000000..61c227a
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab_i differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab_i.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/file-to-id.tab_i.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab
+new file mode 100644
+index 0000000..11ebc0d
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.keystream b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.keystream
+new file mode 100644
+index 0000000..6e7a926
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.keystream differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.keystream.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.keystream.len
+new file mode 100644
+index 0000000..eb52963
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.keystream.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.len
+new file mode 100644
+index 0000000..93a595b
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.values.at b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.values.at
+new file mode 100644
+index 0000000..cd6165b
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab.values.at differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab_i b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab_i
+new file mode 100644
+index 0000000..6936967
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab_i differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab_i.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/id-to-file.tab_i.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab
+new file mode 100644
+index 0000000..0915dfa
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.keystream b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.keystream
+new file mode 100644
+index 0000000..a04ae33
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.keystream differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.keystream.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.keystream.len
+new file mode 100644
+index 0000000..cb57c2e
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.keystream.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.len
+new file mode 100644
+index 0000000..bd7f13f
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.values.at b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.values.at
+new file mode 100644
+index 0000000..8f6dbca
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab.values.at differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab_i b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab_i
+new file mode 100644
+index 0000000..fbd0c12
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab_i differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab_i.len b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab_i.len
+new file mode 100644
+index 0000000..131e265
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/caches-jvm/lookups/lookups.tab_i.len differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/last-build.bin b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/last-build.bin
+new file mode 100644
+index 0000000..71198c1
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/cacheable/last-build.bin differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/classpath-snapshot/shrunk-classpath-snapshot.bin b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/classpath-snapshot/shrunk-classpath-snapshot.bin
+new file mode 100644
+index 0000000..21ca75b
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/classpath-snapshot/shrunk-classpath-snapshot.bin differ
+diff --git a/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/local-state/build-history.bin b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/local-state/build-history.bin
+new file mode 100644
+index 0000000..61b4179
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/kotlin/compileDebugKotlin/local-state/build-history.bin differ
+diff --git a/node_modules/react-native-sound/android/build/outputs/aar/react-native-sound-debug.aar b/node_modules/react-native-sound/android/build/outputs/aar/react-native-sound-debug.aar
+new file mode 100644
+index 0000000..806fb56
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/outputs/aar/react-native-sound-debug.aar differ
+diff --git a/node_modules/react-native-sound/android/build/outputs/logs/manifest-merger-debug-report.txt b/node_modules/react-native-sound/android/build/outputs/logs/manifest-merger-debug-report.txt
+new file mode 100644
+index 0000000..d71d03c
+--- /dev/null
++++ b/node_modules/react-native-sound/android/build/outputs/logs/manifest-merger-debug-report.txt
+@@ -0,0 +1,16 @@
++-- Merging decision tree log ---
++manifest
++ADDED from /Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/src/main/AndroidManifestNew.xml:1:1-2:12
++INJECTED from /Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/src/main/AndroidManifestNew.xml:1:1-2:12
++	package
++		INJECTED from /Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/src/main/AndroidManifestNew.xml
++	xmlns:android
++		ADDED from /Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/src/main/AndroidManifestNew.xml:1:11-69
++uses-sdk
++INJECTED from /Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/src/main/AndroidManifestNew.xml reason: use-sdk injection requested
++INJECTED from /Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/src/main/AndroidManifestNew.xml
++INJECTED from /Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/src/main/AndroidManifestNew.xml
++	android:targetSdkVersion
++		INJECTED from /Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/src/main/AndroidManifestNew.xml
++	android:minSdkVersion
++		INJECTED from /Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-sound/android/src/main/AndroidManifestNew.xml
+diff --git a/node_modules/react-native-sound/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin b/node_modules/react-native-sound/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin
+new file mode 100644
+index 0000000..9b030fd
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/tmp/compileDebugJavaWithJavac/previous-compilation-data.bin differ
+diff --git a/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/META-INF/react-native-sound_debug.kotlin_module b/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/META-INF/react-native-sound_debug.kotlin_module
+new file mode 100644
+index 0000000..c998a4c
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/META-INF/react-native-sound_debug.kotlin_module differ
+diff --git a/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/Sound$play$1.class b/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/Sound$play$1.class
+new file mode 100644
+index 0000000..1e0d970
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/Sound$play$1.class differ
+diff --git a/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/Sound$play$2.class b/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/Sound$play$2.class
+new file mode 100644
+index 0000000..32daf26
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/Sound$play$2.class differ
+diff --git a/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/Sound$prepare$1.class b/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/Sound$prepare$1.class
+new file mode 100644
+index 0000000..7847cae
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/Sound$prepare$1.class differ
+diff --git a/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/Sound$prepare$2.class b/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/Sound$prepare$2.class
+new file mode 100644
+index 0000000..d99d1fd
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/Sound$prepare$2.class differ
+diff --git a/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/Sound.class b/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/Sound.class
+new file mode 100644
+index 0000000..6c55738
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/Sound.class differ
+diff --git a/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/SoundModule$Companion.class b/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/SoundModule$Companion.class
+new file mode 100644
+index 0000000..2d5f9d7
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/SoundModule$Companion.class differ
+diff --git a/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/SoundModule.class b/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/SoundModule.class
+new file mode 100644
+index 0000000..465b5f9
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/SoundModule.class differ
+diff --git a/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/SoundPackage.class b/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/SoundPackage.class
+new file mode 100644
+index 0000000..71caee3
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/SoundPackage.class differ
+diff --git a/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/SoundSpec.class b/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/SoundSpec.class
+new file mode 100644
+index 0000000..18d52d7
+Binary files /dev/null and b/node_modules/react-native-sound/android/build/tmp/kotlin-classes/debug/com/zmxv/RNSound/SoundSpec.class differ
+diff --git a/node_modules/react-native-sound/ios/RNSound.mm b/node_modules/react-native-sound/ios/RNSound.mm
+index 94b2335..618abfd 100644
+--- a/node_modules/react-native-sound/ios/RNSound.mm
++++ b/node_modules/react-native-sound/ios/RNSound.mm
+@@ -177,7 +177,11 @@ - (NSString *)categoryForName:(NSString *)categoryName {
+ 
+ #pragma mark - Audio Control Methods
+ 
++#ifdef RCT_NEW_ARCH_ENABLED
+ RCT_EXPORT_METHOD(prepare:(NSString *)fileName key:(double)key options:(JS::NativeSoundIOS::SoundOptionTypes &)options callback:(RCTResponseSenderBlock)callback ) {
++#else
++RCT_EXPORT_METHOD(prepare:(NSString *)fileName key:(double)key options:(NSDictionary *)options callback:(RCTResponseSenderBlock)callback ) {
++#endif
+     NSError *error;
+     NSURL *fileNameUrl;
+     AVAudioPlayer *player;
+@@ -342,7 +346,7 @@ - (void)setSpeed:(double)key speed:(double)speed {
+ 
+ #pragma mark - Event Handling
+ 
+-- (NSDictionary *)getDirectories {
++RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(getDirectories) {
+     return [self constantsToExport];
+ }
+ 
