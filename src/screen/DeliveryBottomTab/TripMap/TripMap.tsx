@@ -219,7 +219,7 @@ const TripMap = () => {
   const getButtonConfig = () => {
     const currentStatus = item?.deliveryStatus;
     switch (currentStatus) {
-      
+
       case STATUS.ASSIGNED:
         return {
           title: strings.StartPickup,
@@ -641,8 +641,8 @@ const TripMap = () => {
         </View>
       </View>
       <TouchableWithoutFeedback onPress={dismissKeyboard} accessible={false}>
-         <View style={[styles.driverCard, { bottom: keyboardHeight }]}>
-      
+        <View style={[styles.driverCard, { bottom: keyboardHeight }]}>
+
 
           <View style={styles.driverRow}>
             {item?.user?.image ? (
@@ -714,7 +714,7 @@ const TripMap = () => {
               <Image source={imageIndex.MessageBlack} style={styles.iconBtn} />
             </TouchableOpacity>
           </View>
-        
+
           {item?.deliveryStatus === STATUS?.GOING_TO_PICKUP && (
             <OtpSection
               label={strings.EnterPickupOTPShared}
@@ -743,17 +743,17 @@ const TripMap = () => {
             }}
             // txtcolor={'white'}
             leftIcon={
-               <Ionicons
-                 name={buttonConfig.icon}
-                 size={20}
-                 color="#fff"
-                 style={{ marginRight: 8 }}
-               />
+              <Ionicons
+                name={buttonConfig.icon}
+                size={25}
+                color="#fff"
+                style={{ marginRight: 8 }}
+              />
             }
           />
         </View>
       </TouchableWithoutFeedback>
-     
+
     </View>
   );
 };
