@@ -167,7 +167,7 @@ class NotificationService {
           pressAction: { id: 'default' },
         },
         ios: {
-          sound: isNearbyParcel ? 'ringtone_notification.mp3' : 'default',
+          sound: isNearbyParcel ? 'ringtone-.mp3' : 'default',
         },
       });
 
@@ -178,7 +178,6 @@ class NotificationService {
 
       if (isNearbyParcel && isUserOnline) {
         playNotificationSound();
-        // Stop after 10 seconds to match the socket behavior in DeliveryHome
         setTimeout(() => {
           stopNotificationSound();
         }, 10000);
@@ -266,7 +265,7 @@ class NotificationService {
             pressAction: { id: 'default' },
           },
           ios: {
-            sound: isNearbyParcel ? 'ringtone_notification.mp3' : 'default',
+            sound: isNearbyParcel ? 'ringtone-.mp3' : 'default',
           },
         });
       }
