@@ -206,9 +206,7 @@ export default function InboxDeliver() {
           ) : (
             <Image source={imageIndex.prfile} style={styles.avatar} />
           )}
-          {item.deliveryStatus?.toLowerCase() === "assigned" && (
-            <View style={styles.onlineDot} />
-          )}
+
         </View>
 
         {/* Right Side: Info Column */}

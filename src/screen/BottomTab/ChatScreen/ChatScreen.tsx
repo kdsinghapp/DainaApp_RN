@@ -123,6 +123,7 @@ const ChatScreen = () => {
   const parcelId = item?.parcelId || item?.id;
   const [counterModalVisible, setCounterModalVisible] = useState(false);
   const [offerModalVisible, setOfferModalVisible] = useState(false);
+  const [isOfferAvailable, setIsOfferAvailable] = useState(true);
 
   const userData: any = useSelector((state: any) => state?.auth?.userData);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -156,6 +157,7 @@ const ChatScreen = () => {
         (navigation as any).navigate(ScreenNameEnum.TabNavigator);
       } else {
         errorToast(result?.message || strings.OfferAcceptFailed);
+        setIsOfferAvailable(false);
       }
     } catch (error) {
       console.error("Error accepting offer:", error);
@@ -443,6 +445,19 @@ const ChatScreen = () => {
           isMe ? styles.bubbleWrapperMe : styles.bubbleWrapperOther,
         ]}
       >
+        {!isMe && (
+          <View style={styles.chatAvatarContainer}>
+            {agentImage ? (
+              <Image source={{ uri: agentImage }} style={styles.chatAvatar} />
+            ) : (
+              <View style={styles.chatAvatarFallback}>
+                <Text style={styles.chatAvatarInitial}>
+                  {agentName.charAt(0).toUpperCase()}
+                </Text>
+              </View>
+            )}
+          </View>
+        )}
         <View
           style={[
             styles.messageBubble,
@@ -466,6 +481,7 @@ const ChatScreen = () => {
       </View>
     );
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
@@ -496,7 +512,7 @@ const ChatScreen = () => {
         </View>
 
         {/* Offer button — only show for non-delivery users */}
-        {item?.offerAmount && userData?.type !== "Delivery" && (
+        {item?.offerAmount && userData?.type !== "Delivery" && isOfferAvailable && (
 
           <>
 
@@ -1006,6 +1022,30 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     borderBottomWidth: 1,
     borderBottomColor: "#F0E6D2",
+  },
+  chatAvatarContainer: {
+    marginRight: 8,
+    justifyContent: "flex-end",
+    marginBottom: 0,
+  },
+  chatAvatar: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "#F0F0F0",
+  },
+  chatAvatarFallback: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "#FFCC00",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  chatAvatarInitial: {
+    fontSize: 12,
+    fontFamily: font.MonolithRegular,
+    color: "#000",
   },
 });
 
