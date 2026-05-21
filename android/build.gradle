@@ -6,7 +6,9 @@ buildscript {
         targetSdkVersion = 35
         ndkVersion = "27.1.12297006"
         kotlinVersion = "2.0.21"
-
+        // Provide the react-native directory explicitly so react-native-gesture-handler
+        // doesn't need to spawn a `node` process to find it (nvm node isn't on Gradle's PATH).
+        REACT_NATIVE_NODE_MODULES_DIR = file("../node_modules/react-native")
     }
     repositories {
         google()
