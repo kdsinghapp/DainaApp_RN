@@ -317,7 +317,7 @@ export default function ChatInboxScreen() {
         </View>
       ) : (
         <FlatList
-          data={[...filteredChats].reverse()}
+          data={filteredChats}
           keyExtractor={(item) => String(item.parcelId)}
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}

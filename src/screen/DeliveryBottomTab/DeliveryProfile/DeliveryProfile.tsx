@@ -156,7 +156,6 @@ const DeliveryProfile: React.FC<Props> = ({
             ) : (
               <Image source={{ uri: user.avatarUrl }} style={styles.avatar} />
             )}
-            <View style={styles.statusBadge} />
           </View>
 
           <View style={{ flex: 1 }}>
