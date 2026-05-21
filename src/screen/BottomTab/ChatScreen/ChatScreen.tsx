@@ -680,10 +680,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
 
 
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
+
   },
   backBtn: {
     marginRight: 12,
@@ -833,6 +830,7 @@ const styles = StyleSheet.create({
   },
   bubbleWrapperOther: {
     justifyContent: "flex-start",
+    marginBottom: 10
   },
   messageBubble: {
     maxWidth: "80%",
@@ -888,7 +886,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     paddingHorizontal: 12,
     paddingVertical: 12,
-    paddingBottom: Platform.OS === "ios" ? 34 : 16,
+    paddingBottom: Platform.OS === "ios" ? 15 : 16,
     borderTopWidth: 1,
     borderTopColor: "#F2F2F2",
   },
@@ -925,10 +923,7 @@ const styles = StyleSheet.create({
     backgroundColor: YELLOW,
     justifyContent: "center",
     alignItems: "center",
-    shadowColor: YELLOW,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
+
   },
   sendIcon: {
     height: 22,
