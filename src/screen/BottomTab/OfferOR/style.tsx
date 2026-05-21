@@ -41,7 +41,7 @@ export const styles = StyleSheet.create({
 
     marginHorizontal: 2,
     marginTop: 5,
-    borderColor: "#9DB2BF",
+    borderColor: "#FFCC00",
     borderWidth: 0.2,
   },
   carrierText: {

@@ -71,6 +71,9 @@ const ShippingScreen = () => {
         marginTop: 11, marginBottom: 5
       }}>
         <CustomButton title={strings.CreateParcel}
+          textStyle={{
+            color: "white"
+          }}
           onPress={() => navigation.navigate(ScreenNameEnum.CreateParcelFrom)}
         />
       </View>
