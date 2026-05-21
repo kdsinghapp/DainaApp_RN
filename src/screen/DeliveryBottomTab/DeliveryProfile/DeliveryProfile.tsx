@@ -154,7 +154,7 @@ const DeliveryProfile: React.FC<Props> = ({
             {isLogin?.image ? (
               <Image source={{ uri: isLogin?.image }} style={styles.avatar} />
             ) : (
-              <Image source={{ uri: user.avatarUrl }} style={styles.avatar} />
+              <Image source={imageIndex.prfile} style={styles.avatar} />
             )}
           </View>
 

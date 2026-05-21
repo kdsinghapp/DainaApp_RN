@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, SectionList, ActivityIndicator, TouchableOpacity, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, SectionList, ActivityIndicator, TouchableOpacity, RefreshControl, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import CustomHeader from '../../compoent/CustomHeader';
 import { useNavigation } from '@react-navigation/native';
@@ -12,17 +12,18 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const NotificationItem = ({ item }: any) => {
     const getIconDetails = (type: string) => {
+        // Strict App Theme (Yellow & Black)
         switch (type?.toLowerCase()) {
             case 'chat':
-                return { name: 'chat-processing-outline', bgColor: '#E0F2FE', iconColor: '#0284C7' };
+                return { name: 'chat-processing-outline', bgColor: color.primaryLight || '#FFF9E6', iconColor: color.secondary || '#0F172A' };
             case 'order':
-                return { name: 'package-variant-closed', bgColor: '#DCFCE7', iconColor: '#16A34A' };
+                return { name: 'package-variant-closed', bgColor: color.primaryLight || '#FFF9E6', iconColor: color.secondary || '#0F172A' };
             case 'offer':
-                return { name: 'tag-outline', bgColor: '#FEF3C7', iconColor: '#D97706' };
+                return { name: 'tag-outline', bgColor: color.primaryLight || '#FFF9E6', iconColor: color.secondary || '#0F172A' };
             case 'system':
-                return { name: 'cog-outline', bgColor: '#F1F5F9', iconColor: '#475569' };
+                return { name: 'cog-outline', bgColor: color.borderLight || '#F1F5F9', iconColor: color.textMuted || '#64748B' };
             default:
-                return { name: 'bell-outline', bgColor: '#F1F5F9', iconColor: '#6366F1' };
+                return { name: 'bell-outline', bgColor: color.primaryLight || '#FFF9E6', iconColor: color.secondary || '#0F172A' };
         }
     };
 
@@ -45,20 +46,25 @@ const NotificationItem = ({ item }: any) => {
             activeOpacity={0.7}
             style={[
                 styles.itemContainer,
-                isUnread && styles.unreadBackground
             ]}
         >
-
+            <View style={[styles.iconWrapper,]}>
+                <Icon name={iconDetails.name} size={26} color={iconDetails.iconColor} />
+            </View>
 
             <View style={styles.textContainer}>
                 <View style={styles.headerRow}>
                     <Text numberOfLines={1} style={[styles.title, isUnread && styles.unreadTitle]}>
                         {item.title}
                     </Text>
+                    {item.createdAt && (
+                        <Text style={[styles.date, isUnread && styles.unreadDate]}>
+                            {formatDate(item.createdAt)}
+                        </Text>
+                    )}
                 </View>
                 <Text numberOfLines={2} style={styles.body}>{item.body}</Text>
             </View>
-
 
         </TouchableOpacity>
     );
@@ -133,7 +139,7 @@ const NotificationsScreen = () => {
                     renderItem={({ item }) => <NotificationItem item={item} />}
                     renderSectionHeader={({ section: { title } }) => (
                         <View style={styles.sectionHeaderContainer}>
-                            {/* <Text style={styles.sectionHeader}>{title}</Text> */}
+                            <Text style={styles.sectionHeader}>{title}</Text>
                         </View>
                     )}
                     ListEmptyComponent={
@@ -208,19 +214,36 @@ const styles = StyleSheet.create({
         letterSpacing: 1,
     },
     itemContainer: {
-        flexDirection: 'row',
+        flexDirection: "row",
         padding: 16,
-        borderRadius: 12,
+        borderRadius: 14,
         marginBottom: 14,
-        // Premium subtle shadow
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.04,
-        shadowRadius: 12,
+        backgroundColor: "#fff",
 
+        ...Platform.select({
+            android: {
+                borderWidth: 1,
+                borderColor: "#E5E7EB",
+            },
+
+            ios: {
+                shadowColor: "#000",
+                shadowOffset: {
+                    width: 0,
+                    height: 2,
+                },
+                shadowOpacity: 0.08,
+                shadowRadius: 4,
+
+
+            },
+        }),
+    },
+    readBackground: {
+        backgroundColor: '#FFFFFF',
     },
     unreadBackground: {
-        backgroundColor: '#FFFFFF',
+        borderWidth: 1,
     },
     iconWrapper: {
         width: 52,
@@ -263,6 +286,11 @@ const styles = StyleSheet.create({
         color: color.textMuted || '#94A3B8',
         fontFamily: font.MonolithRegular,
         marginTop: 2,
+        marginLeft: 8,
+    },
+    unreadDate: {
+        color: color.secondary || '#0F172A',
+        fontFamily: font.MonolithRegular,
     },
     unreadDot: {
         width: 10,
