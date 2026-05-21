@@ -182,11 +182,11 @@ export default function InboxDeliver() {
   // ── Render Item ─────────────────────────────────────────────────────────────
 
   const renderItem = ({ item }: { item: ChatItem }) => {
-    const avatarUri = item.parcelOwner?.image;
-    const displayName = item.parcelOwner?.name ?? strings.Unknown;
-    const lastMsgText = item.lastMessage?.text ?? strings.NoMessagesYet;
-    const msgTime = formatTime(item.lastMessage?.time);
-    const hasUnread = (item.unreadCount ?? 0) > 0;
+    const avatarUri = item?.parcelOwner?.image;
+    const displayName = item?.parcelOwner?.name ?? strings?.Unknown;
+    const lastMsgText = item?.lastMessage?.text ?? strings?.NoMessagesYet;
+    const msgTime = formatTime(item?.lastMessage?.time);
+    const hasUnread = (item?.unreadCount ?? 0) > 0;
 
     return (
       <TouchableOpacity
@@ -272,8 +272,6 @@ export default function InboxDeliver() {
           <Text style={styles.errorText}>{error}</Text>
         </View>
       )}
-
-      {/* Main List */}
       {loading && !refreshing ? (
         <View style={styles.loaderWrap}>
           <ActivityIndicator size="large" color="#FFCC00" />
@@ -281,7 +279,6 @@ export default function InboxDeliver() {
       ) : (
         <FlatList
           data={[...filteredChats].reverse()}
-
           keyExtractor={(item) => String(item.parcelId)}
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}

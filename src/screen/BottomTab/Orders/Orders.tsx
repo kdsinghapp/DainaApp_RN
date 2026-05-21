@@ -148,7 +148,7 @@ export default function OrdersScreen() {
                   <Text style={styles.routeDateText}>{formatDate(order.pickupDate)}</Text>
                 ) : null}
               </View>
-              <Text style={styles.addressText} numberOfLines={2}>{order?.pickupLocation || "—"}</Text>
+              <Text style={styles.addressText}  >{order?.pickupLocation || "—"}</Text>
             </View>
 
             <View style={{ height: 16 }} />
@@ -160,7 +160,7 @@ export default function OrdersScreen() {
                   <Text style={styles.routeDateText}>{order.pickupTime}</Text>
                 ) : null}
               </View>
-              <Text style={styles.addressText} numberOfLines={2}>{order?.dropLocation || "—"}</Text>
+              <Text style={styles.addressText} >{order?.dropLocation || "—"}</Text>
             </View>
           </View>
         </View>

@@ -22,10 +22,7 @@ import LoadingModal from "../../../utils/Loader";
 import { FlatList } from "react-native-gesture-handler";
 import OrderCard from "../../../compoent/OrderCard";
 import strings from "../../../localization/Localization";
-
 const ShippingScreen = () => {
-
-
   const {
     navigation,
     isLoading,
@@ -52,13 +49,10 @@ const ShippingScreen = () => {
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
       <LoadingModal visible={isLoading} />
-
       <CurrentLocation ref={locationRef} />
-
       <HomeHeaderBar
         location={currentlocation || address}
         onNotificationPress={() => navigation.navigate(ScreenNameEnum.NotificationsScreen)}
-
         hasNotification={false}
       />
 
@@ -73,17 +67,13 @@ const ShippingScreen = () => {
       }}
       />
        </TouchableOpacity> */}
-
       <View style={{
         marginTop: 11, marginBottom: 5
       }}>
         <CustomButton title={strings.CreateParcel}
           onPress={() => navigation.navigate(ScreenNameEnum.CreateParcelFrom)}
-
         />
       </View>
-      {/* Shipping History */}
-
       <View style={{
         flexDirection: "row",
         justifyContent: "space-between",
@@ -92,9 +82,7 @@ const ShippingScreen = () => {
         marginBottom: 10
       }}>
         <Text style={styles.sectionTitle}>{strings.ShippingHistory}</Text>
-
       </View>
-
       <FlatList
         contentContainerStyle={{ paddingBottom: 120 }}
         data={orderData}
@@ -107,7 +95,6 @@ const ShippingScreen = () => {
                   item: item
                 })
               } else {
-                // navigation.navigate(ScreenNameEnum.NearbyDriversMap)
                 navigation.navigate(ScreenNameEnum.ViewDetails, {
                   item: item
                 })
@@ -263,6 +250,7 @@ const styles = StyleSheet.create({
     fontFamily: font.MonolithRegular,
     marginBottom: 10,
     textAlign: 'center',
+
   },
   emptySubtitle: {
     fontSize: 15,

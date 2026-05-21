@@ -38,27 +38,29 @@ const OrderCard = ({ order, onPress }: { order: any; onPress: () => void }) => {
     >
       {/* Top Header Section */}
       <View style={styles.cardTop}>
-        <View style={styles.iconBox}>
-          <Image
-            source={imageIndex.icons} // This is the parcel/box icon
-            style={styles.headerIcon}
-          />
-        </View>
+
         <View style={styles.headerText}>
-          <Text style={styles.cardId}>#{order?.trackingId || order?.id} <Text style={{ color: MUTED, fontFamily: font.MonolithRegular }}> •</Text></Text>
-          <Text style={styles.cardDate}> {formatDateTime(order?.createdAt)}</Text>
+          <View >
+            <Text style={styles.trackingLabel}>{strings.TrackingID}</Text>
+
+            <Text style={styles.cardId}>#{order?.trackingId || order?.id}</Text>
+            <Text style={styles.cardDate}> {formatDateTime(order?.createdAt)}</Text>
+
+          </View>
         </View>
+        <Text style={[styles.statusValue, { color: statusColor }]}>
+          {statusLabel}
+        </Text>
       </View>
 
       {/* Location Section with Vertical Vector */}
       <View style={styles.locationSection}>
         {/* Vertical Line Image */}
-        <Image
-          source={imageIndex.Vector}
-          style={styles.vectorLine}
-          resizeMode="contain"
-        />
-
+        <View style={styles.routeLineColumn}>
+          <View style={styles.routeDotPickup} />
+          <View style={styles.routeLine} />
+          <View style={styles.routeDotDrop} />
+        </View>
         <View style={styles.locationContent}>
           {/* Pickup */}
           <View style={styles.locationBlock}>
@@ -77,18 +79,12 @@ const OrderCard = ({ order, onPress }: { order: any; onPress: () => void }) => {
               {order?.dropLocation}
             </Text>
           </View>
+
         </View>
       </View>
 
       {/* Footer Status Section */}
-      <View style={styles.footer}>
-        <View style={styles.statusRow}>
-          <Text style={styles.statusLabel}>{strings.DeliveryStatus || "Delivery Status"} : </Text>
-          <Text style={[styles.statusValue, { color: statusColor }]}>
-            {statusLabel}
-          </Text>
-        </View>
-      </View>
+
       <View style={{
         backgroundColor: color.primary,
         padding: 6,
@@ -111,8 +107,8 @@ export default OrderCard;
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 24,
-    padding: 20,
+    borderRadius: 15,
+    padding: 15,
     marginBottom: 16,
     borderWidth: 0.5,
     borderColor: "#d6e1f9ff",
@@ -124,11 +120,6 @@ const styles = StyleSheet.create({
         shadowRadius: 10,
       },
 
-      android: {
-        borderWidth: 1,
-        borderColor: "#d6e1f9ff",
-        elevation: 2, // optional
-      },
     }),
 
 
@@ -137,6 +128,37 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 15,
+  },
+  routeLineColumn: {
+    width: 24,
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 15,
+  },
+  routeDotPickup: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: "#10B981", // Green dot for pickup
+  },
+  routeLine: {
+    flex: 1,
+    width: 2,
+    backgroundColor: "#E2E8F0",
+    marginVertical: 4,
+  },
+  routeDotDrop: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: "#EF4444", // Red dot for drop
+  },
+  routeDetailsColumn: {
+    flex: 1,
+    marginLeft: 8,
+  },
+  routeLocationRow: {
+    flexDirection: "column",
   },
   iconBox: {
     // backgroundColor: "#F9F9F9",
@@ -149,13 +171,14 @@ const styles = StyleSheet.create({
   },
   headerText: {
     flex: 1,
-    marginLeft: 12,
     flexDirection: 'row'
   },
   cardId: {
     fontFamily: font.MonolithRegular,
     fontSize: 15,
     color: TEXT,
+    lineHeight: 22,
+    marginTop: 3
   },
   cardDate: {
     fontFamily: font.MonolithRegular,
@@ -191,14 +214,21 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   label: {
-    fontSize: 14,
-    color: MUTED,
+    fontSize: 11,
     fontFamily: font.MonolithRegular,
-    marginBottom: 2
+    color: MUTED,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  trackingLabel: {
+    color: MUTED,
+    fontSize: 11,
+    fontFamily: font.MonolithRegular,
+    letterSpacing: 0.5,
   },
   value: {
     fontSize: 14,
-    color: "#76889A",
+    color: "black",
     fontFamily: font.MonolithRegular,
     marginTop: 2,
 
