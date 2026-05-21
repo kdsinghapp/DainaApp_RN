@@ -102,8 +102,6 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
   return (
     <Modal
       isVisible={visible}
-      onBackdropPress={closeNotification}
-      onBackButtonPress={closeNotification}
       animationIn="fadeInUp"
       animationOut="fadeOutDown"
       backdropOpacity={0.4}

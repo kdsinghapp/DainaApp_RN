@@ -248,6 +248,7 @@ export const useDeliveryHome = () => {
         const wsUrl = `${WebSocket_Url}/driver?token=${token}`;
         console.log('🌐 [WebSocket] Connecting to primary socket:', wsUrl);
         const ws = new WebSocket(wsUrl);
+        let lastPongTime = Date.now();
 
         ws.onopen = () => {
           if (cancelledRef.current) {
@@ -257,9 +258,15 @@ export const useDeliveryHome = () => {
           console.log('✅ [WebSocket] Primary driver socket connected');
           setIsConnected(true);
           socketRef.current = ws;
+          lastPongTime = Date.now();
 
           heartbeatIntervalRef.current = setInterval(() => {
             if (ws.readyState === WebSocket.OPEN) {
+              if (Date.now() - lastPongTime > 65000) {
+                 console.log('⚠️ [WebSocket] Primary silent disconnect detected (no pong), closing...');
+                 ws.close();
+                 return;
+              }
               ws.send(JSON.stringify({ type: 'ping' }));
             }
           }, 30000);
@@ -277,7 +284,10 @@ export const useDeliveryHome = () => {
           else raw = String(d);
           try {
             const data = JSON.parse(raw);
-            if (data?.type === 'pong') return;
+            if (data?.type === 'pong') {
+              lastPongTime = Date.now();
+              return;
+            }
 
             console.log('📩 [WebSocket] Received primary message type:', data?.type);
 
@@ -413,6 +423,7 @@ export const useDeliveryHome = () => {
 
         console.log("🌐 [WebSocket] Connecting to live/nearby socket:", wsUrl)
         const ws = new WebSocket(wsUrl);
+        let lastLivePongTime = Date.now();
 
         ws.onopen = () => {
           if (cancelledRef.current) {
@@ -421,9 +432,15 @@ export const useDeliveryHome = () => {
           }
           console.log('✅ [WebSocket] Live/nearby socket connected');
           socketLiveRef.current = ws;
+          lastLivePongTime = Date.now();
 
           liveHeartbeatIntervalRef.current = setInterval(() => {
             if (ws.readyState === WebSocket.OPEN) {
+              if (Date.now() - lastLivePongTime > 65000) {
+                 console.log('⚠️ [WebSocket] Live socket silent disconnect detected (no pong), closing...');
+                 ws.close();
+                 return;
+              }
               ws.send(JSON.stringify({ type: 'ping' }));
             }
           }, 30000);
@@ -460,7 +477,10 @@ export const useDeliveryHome = () => {
           try {
             const data = JSON.parse(raw);
             if (!data || typeof data !== 'object') return;
-            if (data?.type === 'pong') return;
+            if (data?.type === 'pong') {
+              lastLivePongTime = Date.now();
+              return;
+            }
 
             console.log('📩 [WebSocket] Received live/nearby message type:', data?.type);
             if (data?.type === 'nearby_parcel') {
@@ -590,12 +610,17 @@ export const useDeliveryHome = () => {
     if (!token) return;
 
     console.log('🔄 [WebSocket] Reconnecting all sockets due to state change...');
-    if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) {
-      connectSocket(token).catch(e => console.log('❌ Primary socket reconnect failed:', e));
+    if (socketRef.current) {
+      socketRef.current.close();
+      socketRef.current = null;
     }
-    if (!socketLiveRef.current || socketLiveRef.current.readyState !== WebSocket.OPEN) {
-      connectLiveLocationSocket(token).catch(e => console.log('❌ Live socket reconnect failed:', e));
+    connectSocket(token).catch(e => console.log('❌ Primary socket reconnect failed:', e));
+
+    if (socketLiveRef.current) {
+      socketLiveRef.current.close();
+      socketLiveRef.current = null;
     }
+    connectLiveLocationSocket(token).catch(e => console.log('❌ Live socket reconnect failed:', e));
   }, [token, userData?.type]);
 
   useEffect(() => {
