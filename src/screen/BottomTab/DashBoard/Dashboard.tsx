@@ -79,6 +79,7 @@ const ShippingScreen = () => {
       }}>
         <CustomButton title={strings.CreateParcel}
           onPress={() => navigation.navigate(ScreenNameEnum.CreateParcelFrom)}
+
         />
       </View>
       {/* Shipping History */}

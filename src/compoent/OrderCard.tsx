@@ -92,13 +92,13 @@ const OrderCard = ({ order, onPress }: { order: any; onPress: () => void }) => {
       <View style={{
         backgroundColor: color.primary,
         padding: 6,
-        height: 40,
+        height: 45,
         borderRadius: 10,
         marginTop: 15,
         alignItems: "center",
         justifyContent: "center",
       }}>
-        <Text style={[styles.viewDetailsText, { color: "black" }]}>
+        <Text style={[styles.viewDetailsText, { color: "white" }]}>
           {strings?.ViewDetails}
         </Text>
       </View>

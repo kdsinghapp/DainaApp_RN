@@ -377,7 +377,6 @@ const CreateParcelFrom = () => {
             onPress={() =>
               navgatoon.navigate(ScreenNameEnum.PickupLocationRapido, {
                 onLocationSelect: (data) => {
-                  console.log("Received location:", data);
                   setPickupLocation(data);
                 }
               })
@@ -656,7 +655,12 @@ const CreateParcelFrom = () => {
             marginBottom: 50,
             marginTop: 11
           }}>
-            <CustomButton title={strings.SendRequest} onPress={handleSubmit} />
+            <CustomButton title={strings.SendRequest} onPress={handleSubmit}
+
+              textStyle={{
+                color: "white"
+              }}
+            />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

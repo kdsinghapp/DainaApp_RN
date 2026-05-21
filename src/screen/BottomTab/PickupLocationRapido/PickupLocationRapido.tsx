@@ -5,10 +5,8 @@ import {
   StyleSheet,
   Platform,
   PermissionsAndroid,
-  ActivityIndicator,
 } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
-// import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'; // New Import
 import Geocoder from 'react-native-geocoding';
 import Geolocation from '@react-native-community/geolocation';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -18,6 +16,7 @@ import font from '../../../theme/font';
 import { GOOGLE_MAPS_APIKEY } from '../../../Api';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import strings from '../../../localization/Localization';
+import CustomHeader from '../../../compoent/CustomHeader';
 
 Geocoder.init(GOOGLE_MAPS_APIKEY);
 
@@ -126,6 +125,7 @@ const PickupLocationRapido = () => {
 
   return (
     <SafeAreaView style={styles.container}  >
+
       <MapView
         ref={mapRef}
         provider={PROVIDER_GOOGLE}
@@ -137,6 +137,8 @@ const PickupLocationRapido = () => {
 
       {/* SEARCH BAR OVERLAY */}
       <View style={styles.searchContainer}>
+        <CustomHeader />
+
         {/* <GooglePlacesAutocomplete
           ref={searchRef}
           placeholder="Search Pickup Area"
@@ -157,9 +159,7 @@ const PickupLocationRapido = () => {
       {/* FIXED PIN */}
       <View pointerEvents="none" style={styles.pinWrapper}>
         <View style={styles.pinContainer}>
-          {/* <View style={styles.pinCallout}>
-            {isFetchingAddress ? <ActivityIndicator size="small" color="#000" /> : <Text style={styles.calloutText}>{strings?.SetPickup}</Text>}
-          </View> */}
+
           <Icon name="location-on" size={48} color="#FF3B30" />
         </View>
       </View>
@@ -175,6 +175,9 @@ const PickupLocationRapido = () => {
           // onPress={() => navigation.goBack()} 
           onPress={confirmLocation}
           disable={isFetchingAddress || address === 'Locating...'}
+          textStyle={{
+            color: "white"
+          }}
         />
         <SafeAreaView edges={['bottom']} />
       </View>

@@ -348,37 +348,31 @@ const styles = StyleSheet.create({
 
   tabsWrap: {
     flexDirection: "row",
-    backgroundColor: "#E2E8F0",
-    borderRadius: 14,
-    padding: 4,
-    marginBottom: 16,
-    height: 48,
+    backgroundColor: "#FFFFFF",
+    padding: 10,
+    borderRadius: 20,
+    marginBottom: 12,
+    alignItems: "center",
+    marginTop: 12
   },
   tab: {
     flex: 1,
-    borderRadius: 10,
+    paddingVertical: 8,
+    borderRadius: 30,
     alignItems: "center",
     justifyContent: "center",
   },
   tabActive: {
     backgroundColor: "#FFCC00",
-    ...Platform.select({
-      ios: {
-        shadowColor: "#0F172A",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.08,
-        shadowRadius: 4,
-      },
-
-    }),
+    height: 40,
   },
   tabText: {
     fontSize: 14,
     fontFamily: font.MonolithRegular,
-    color: "#64748B",
+    color: "black",
   },
   tabTextActive: {
-    color: "#0F172A",
+    color: "white",
     fontSize: 14,
     fontFamily: font.MonolithRegular,
   },
