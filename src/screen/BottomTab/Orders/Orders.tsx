@@ -191,7 +191,6 @@ export default function OrdersScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBarComponent />
-      <LoadingModal visible={isLoading} />
       <View style={styles.container}>
         <Text style={styles.title}>{strings.Orders}</Text>
 
@@ -370,7 +369,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.08,
         shadowRadius: 4,
       },
-      
+
     }),
   },
   tabText: {

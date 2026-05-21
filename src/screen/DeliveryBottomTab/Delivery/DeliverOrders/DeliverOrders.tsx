@@ -242,7 +242,6 @@ const DeliveryHome = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
-      <LoadingModal visible={isLoading} />
 
       {/* <View style={styles.ordersHeader}>
         <Text style={styles.sectionTitle}>Orders</Text>

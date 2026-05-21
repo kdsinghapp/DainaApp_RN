@@ -20,7 +20,6 @@ import { loginSuccess, logout } from "../../../redux/feature/authSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DeleteAccountApi } from "../../../Api/apiRequest";
 import DeleteAccountModal from "../../../compoent/DeleteAccountModal";
-import LoadingModal from "../../../utils/Loader";
 import { styles } from "./style";
 import strings from "../../../localization/Localization";
 import NewOrderNotificationModal from "../../../compoent/NewOrderNotificationModal";
@@ -133,7 +132,6 @@ const DeliveryProfile: React.FC<Props> = ({
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBarComponent />
-      <LoadingModal visible={isLoading} />
       <NewOrderNotificationModal />
       <OfferAcceptedModal />
       <ScrollView

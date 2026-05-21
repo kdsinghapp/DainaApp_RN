@@ -141,7 +141,7 @@ const ChatScreen = () => {
       const storedToken = await AsyncStorage.getItem("token");
       if (!storedToken) return;
 
-      const response = await fetch(`https://aitechnotech.in/DAINA/api/offers/${id}/accept`, {
+      const response = await fetch(`${base_url}/offers/${id}/accept`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${storedToken}`,
@@ -501,7 +501,7 @@ const ChatScreen = () => {
           <>
 
             {item?.offerStatus != "assigned" ? <TouchableOpacity
-              onPress={() => setOfferModalVisible(true)}
+              onPress={() => onAcceptOffer(item?.id || item?.offerId)}
               style={styles.headerOfferBtn}
             >
               <Text style={styles.headerOfferText}>{strings.OrderOpen}</Text>
