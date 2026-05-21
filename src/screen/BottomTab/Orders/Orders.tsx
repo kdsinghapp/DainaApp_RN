@@ -382,8 +382,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 16,
     marginBottom: 12,
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
+
     ...Platform.select({
       ios: {
         shadowColor: "#0F172A",
@@ -392,6 +391,10 @@ const styles = StyleSheet.create({
         shadowRadius: 10,
       },
 
+      android: {
+        borderWidth: 1,
+        borderColor: "#E2E8F0",
+      },
     }),
   },
   cardHeader: {

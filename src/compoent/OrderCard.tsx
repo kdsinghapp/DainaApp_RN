@@ -114,8 +114,22 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     padding: 20,
     marginBottom: 16,
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: "#d6e1f9ff",
+    ...Platform.select({
+      ios: {
+        shadowColor: "#0F172A",
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.03,
+        shadowRadius: 10,
+      },
+
+      android: {
+        borderWidth: 1,
+        borderColor: "#d6e1f9ff",
+        elevation: 2, // optional
+      },
+    }),
 
 
   },
