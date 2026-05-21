@@ -1,9 +1,9 @@
- import Acttiv from "./svg/Acttiv";
+import Acttiv from "./svg/Acttiv";
 import Box from "./svg/Box";
 import Box1 from "./svg/Box1";
 import Earing from "./svg/Earing";
 import Edit from "./svg/Edit";
- import Gooogle from "./svg/Gooogle";
+import Gooogle from "./svg/Gooogle";
 import Home from "./svg/Home";
 import HomeAtive from "./svg/HomeAtive";
 import Lockss from "./svg/Lockss";
@@ -22,30 +22,30 @@ import Terms from "./svg/Terms";
 import User from "./svg/User";
 import UserActive from "./svg/UserActive";
 import Wallert from "./svg/Wallert";
- 
-   export default {
-    SlideArrow,
-     Acttiv,
-     Gooogle ,
-     Mobile ,
-     HomeAtive ,
-     Home ,
-     Box ,
-     Box1 ,
-     Order ,
-     OrderActive ,
-     Message ,
-     MessageActive ,
-     User ,
-     Notiftaction,
-     UserActive ,
-     Edit ,
-     Lockss ,
-     Privacy ,
-     Terms ,
-     Earing ,
-     Wallert ,
-     Privacys ,
-     Logout,
-     Soupport
-   };
+
+export default {
+  SlideArrow,
+  Acttiv,
+  Gooogle,
+  Mobile,
+  HomeAtive,
+  Home,
+  Box,
+  Box1,
+  Order,
+  OrderActive,
+  Message,
+  MessageActive,
+  User,
+  Notiftaction,
+  UserActive,
+  Edit,
+  Lockss,
+  Privacy,
+  Terms,
+  Earing,
+  Wallert,
+  Privacys,
+  Logout,
+  Soupport
+};
