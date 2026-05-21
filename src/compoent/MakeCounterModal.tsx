@@ -66,10 +66,9 @@ const AppModal = ({ visible, onRequestClose, children }) => {
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.center}
+        pointerEvents="box-none"
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.card}>{children}</View>
-        </TouchableWithoutFeedback>
+        <View style={styles.card} pointerEvents="auto">{children}</View>
       </KeyboardAvoidingView>
     </Modal>
   );
@@ -93,7 +92,8 @@ const CounterOfferModal = ({
   }, [visible, defaultValue]);
 
   const error = useMemo(() => {
-    const n = Number(value);
+    const numericStr = value.replace(',', '.');
+    const n = Number(numericStr);
     if (value === '') return null;
     if (Number.isNaN(n)) return strings.EnterValidAmount;
     if (min != null && n < min) return `${strings.MinimumIs} ${currency}${min}`;
@@ -103,7 +103,7 @@ const CounterOfferModal = ({
 
   const handleSubmit = () => {
     if (!error && value !== '') {
-      onSubmit?.(Number(value));
+      onSubmit?.(Number(value.replace(',', '.')));
     }
   };
 
@@ -115,8 +115,8 @@ const CounterOfferModal = ({
         <Text style={styles.currency}>{currency}</Text>
         <TextInput
           value={String(value)}
-          onChangeText={(t) => setValue(t.replace(/[^0-9.]/g, ''))}
-          placeholder={`${currency} 0`}
+          onChangeText={(t) => setValue(t.replace(/[^0-9.,]/g, ''))}
+          placeholder={`0`}
           keyboardType="decimal-pad"
           style={styles.input}
           returnKeyType="done"
@@ -213,7 +213,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 2,
     textAlign: 'center',
-    fontFamily: font.MonolithRegular
+    fontFamily: font.MonolithRegular,
+
 
   },
 });
