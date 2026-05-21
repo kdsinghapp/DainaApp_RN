@@ -221,7 +221,6 @@ export default function DocumentShow() {
   const BankCard = ({ data }: any) => {
     if (!data) return <EmptyState buttonText="Set Up Bank Details" onPress={() => navigation.navigate(ScreenNameEnum.BankSetupScreen)} />;
 
-    console.log("data", data)
     return (
       <Animated.View style={[styles.bankCard, { opacity: fadeAnim }]}>
         <View style={styles.bankHeader}>
@@ -268,8 +267,9 @@ export default function DocumentShow() {
         >
           <Text style={{
             color: '#000',
-            fontSize: 14,
-            fontFamily: font.MonolithRegular
+            fontSize: 15,
+            fontFamily: font.MonolithRegular,
+            textAlign: "center",
           }}>
             {buttonText}
           </Text>

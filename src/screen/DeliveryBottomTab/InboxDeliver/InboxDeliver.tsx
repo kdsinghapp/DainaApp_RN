@@ -265,7 +265,7 @@ export default function InboxDeliver() {
 
       {/* Screen Title & Subheader */}
       <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>{strings.Inbox || "Messages"}</Text>
+        <Text style={styles.headerTitle}>{strings.Messages}</Text>
 
       </View>
 
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8FAFC",
   },
   headerTitle: {
-    fontSize: 28,
+    fontSize: 25,
     fontFamily: font.MonolithRegular,
     color: "#0F172A",
     letterSpacing: -0.5,

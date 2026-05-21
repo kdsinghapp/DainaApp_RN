@@ -678,6 +678,8 @@ const AddParcelApi = async (param: any, setLoading: (loading: boolean) => void) 
     });
 
     const textResponse = await response.text();
+    console.log("textResponse -- 00000 ", textResponse)
+
     let parsedResponse;
     try {
       setLoading(false);
@@ -930,7 +932,7 @@ const GetDashboardCounts = async (
   setLoading(true);
   const token = await AsyncStorage.getItem('token');
   try {
-    const response = await fetch(`${base_url}/dispatcher/dashboard/counts`, {
+    const response = await fetch(`${base_url}/delivery/dashboard-counts`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

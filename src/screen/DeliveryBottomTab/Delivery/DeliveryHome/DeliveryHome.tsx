@@ -97,7 +97,10 @@ const DeliveryHome = () => {
     useCallback(() => {
       const fetchCounts = async () => {
         const res = await GetDashboardCounts(() => { });
+        console.log("res", res)
         if (res && (res?.status === 1 || res.status === "1")) {
+          console.log("res 9999 ", res)
+
           setCounts(res);
         }
       };

@@ -82,7 +82,6 @@ const CreateParcelFrom = () => {
     price: "",
     receiverName: "",
     receiverMobile: "",
-    // receiverAddress: "",
   });
 
   // Dropdown data
@@ -213,7 +212,7 @@ const CreateParcelFrom = () => {
         image
       };
       const response = await AddParcelApi(formDataObj, setIsLoading);
-
+      console.log("response -- create ", response)
       if (response && (response.status == "1" || response.status == 1)) {
         navgatoon.replace(ScreenNameEnum.NearbyDriversMap, {
           parcelId: response,
