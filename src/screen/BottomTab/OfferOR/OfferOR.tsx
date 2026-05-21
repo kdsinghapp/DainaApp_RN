@@ -180,7 +180,7 @@ export default function OfferOR() {
           currency="₮"
           max={50000}
           onCancel={() => setOpen(false)}
-          onSubmit={(amount) => {
+          onSubmit={(amount: any) => {
             if (selectedOfferId) {
               CounterOffer(selectedOfferId, amount); // 👈 ID + amount
             }

@@ -21,7 +21,7 @@ import strings from '../localization/Localization';
 import font from '../theme/font';
 
 /** Common: PillButton (reusable rounded button) */
-const PillButton = ({ label, onPress, variant = 'primary', disabled, loading }) => {
+const PillButton = ({ label, onPress, variant = 'primary', disabled, loading }: any) => {
   const bg = variant === 'primary' ? '#F2C200' : '#2D3A3A';
   const text = variant === 'primary' ? '#1A1A1A' : '#FFFFFF';
   return (
@@ -153,10 +153,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 18,
     padding: 18,
-    shadowColor: '#000',
-    shadowOpacity: 0.18,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 12 },
+
   },
   title: {
     textAlign: 'center',

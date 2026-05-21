@@ -38,9 +38,7 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 14,
     marginBottom: 15,
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 5,
+
     marginHorizontal: 2,
     marginTop: 5,
     borderColor: "#9DB2BF",

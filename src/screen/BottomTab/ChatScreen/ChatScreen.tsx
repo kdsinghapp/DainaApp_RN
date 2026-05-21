@@ -500,7 +500,7 @@ const ChatScreen = () => {
             <Text
               style={[
                 styles.timeText,
-                { color: isMe ? "rgba(0,0,0,0.5)" : "#aaa" },
+                { color: isMe ? "rgba(0, 0, 0, 0.54)" : "#aaa" },
               ]}
             >
               {msg?.time}
