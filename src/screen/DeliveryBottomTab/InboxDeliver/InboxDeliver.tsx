@@ -280,7 +280,8 @@ export default function InboxDeliver() {
         </View>
       ) : (
         <FlatList
-          data={filteredChats}
+          data={[...filteredChats].reverse()}
+
           keyExtractor={(item) => String(item.parcelId)}
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}

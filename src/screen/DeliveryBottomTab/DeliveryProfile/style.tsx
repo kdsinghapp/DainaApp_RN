@@ -55,8 +55,7 @@ export const styles = StyleSheet.create({
     width: 76,
     height: 76,
     borderRadius: 38,
-    borderWidth: 2,
-    borderColor: color.primary,
+
   },
   statusBadge: {
     position: "absolute",

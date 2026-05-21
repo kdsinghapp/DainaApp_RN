@@ -14,11 +14,11 @@ import Animated, {
   FadeInDown,
   FadeInUp,
   FadeInRight,
-   useAnimatedStyle,
+  useAnimatedStyle,
   useSharedValue,
   withSpring,
   withTiming,
- } from "react-native-reanimated";
+} from "react-native-reanimated";
 import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 import font from "../../../theme/font";
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -221,7 +221,7 @@ const ProfileScreen: React.FC = () => {
                   title: strings.PrivacyPolicy
                 })}
               />
-       
+
               <MenuItem
                 index={5}
                 isLast
@@ -326,10 +326,7 @@ const styles = StyleSheet.create({
     left: -3,
     right: -3,
     bottom: -3,
-    borderRadius: 43,
-    borderWidth: 2,
-    borderColor: color.primary,
-    opacity: 0.5,
+
   },
   avatar: {
     width: 66,
@@ -337,6 +334,7 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     borderWidth: 1,
     borderColor: "#FFF",
+
   },
   editBadge: {
     position: "absolute",
