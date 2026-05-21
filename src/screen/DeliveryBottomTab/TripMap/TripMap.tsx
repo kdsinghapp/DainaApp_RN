@@ -509,7 +509,6 @@ const TripMap = () => {
             mapType='standard'
             ref={mapRef}
             provider={PROVIDER_GOOGLE}
-            customMapStyle={MAP_STYLE}
             style={[styles.mapView, Platform.OS === 'ios' && { height: Dimensions.get('window').height }]}
             initialRegion={{
               latitude: (pickup?.latitude + dropoff?.latitude) / 2,

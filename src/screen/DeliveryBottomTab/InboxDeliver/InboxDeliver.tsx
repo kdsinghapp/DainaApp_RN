@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
-  Platform,
 } from "react-native";
 import StatusBarComponent from "../../../compoent/StatusBarCompoent";
 import { SafeAreaView } from "react-native-safe-area-context";
