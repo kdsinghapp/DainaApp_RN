@@ -531,12 +531,22 @@ export const useDeliveryHome = () => {
               const removeId = data?.parcelId ?? data?.id;
               if (removeId) {
                 setRequests((prev: any[]) => prev.filter((r: any) => String(r.id ?? r.parcelId) !== String(removeId)));
-              }
-              setNewOrderNotification(null);
-              stopNotificationSound();
-              if (soundTimerRef.current) {
-                clearTimeout(soundTimerRef.current);
-                soundTimerRef.current = null;
+                
+                setNewOrderNotification((currentNotification) => {
+                  if (!currentNotification?.data) return currentNotification;
+                  const currentData = currentNotification.data as Record<string, any>;
+                  const currentId = currentData?.parcelId ?? currentData?.id ?? currentData?.parcel?.id ?? currentData?.parcel?.parcelId;
+                  
+                  if (String(currentId) === String(removeId)) {
+                    stopNotificationSound();
+                    if (soundTimerRef.current) {
+                      clearTimeout(soundTimerRef.current);
+                      soundTimerRef.current = null;
+                    }
+                    return null;
+                  }
+                  return currentNotification;
+                });
               }
               return;
             }

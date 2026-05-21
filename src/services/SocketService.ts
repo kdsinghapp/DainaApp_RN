@@ -1,12 +1,33 @@
 import { WebSocket_Url } from '../Api';
+import { AppState, AppStateStatus } from 'react-native';
 
 class SocketService {
   private socket: WebSocket | null = null;
   private onMessageCallback: ((data: any) => void) | null = null;
   private reconnectInterval: any = null;
   private url: string = '';
+  private currentType: 'driver' | 'user' | null = null;
+  private currentToken: string | null = null;
+  private appStateSubscription: any = null;
+
+  constructor() {
+    this.appStateSubscription = AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
+  private handleAppStateChange = (nextAppState: AppStateStatus) => {
+    // If the app comes to foreground and we don't have an active connection but we have credentials
+    if (nextAppState === 'active' && this.currentType && this.currentToken) {
+      if (!this.socket || this.socket.readyState === WebSocket.CLOSED || this.socket.readyState === WebSocket.CLOSING) {
+        console.log(`📱 App foregrounded, reconnecting ${this.currentType} socket...`);
+        this.connect(this.currentType, this.currentToken);
+      }
+    }
+  };
 
   connect(type: 'driver' | 'user', token: string) {
+    this.currentType = type;
+    this.currentToken = token;
+
     if (this.socket) {
       this.socket.close();
     }
@@ -68,6 +89,8 @@ class SocketService {
   }
 
   disconnect() {
+    this.currentType = null;
+    this.currentToken = null;
     if (this.reconnectInterval) {
       clearInterval(this.reconnectInterval);
       this.reconnectInterval = null;
