@@ -212,7 +212,7 @@ export default function ChatInboxScreen() {
 
   // ── Render Item ─────────────────────────────────────────────────────────────
 
-  const renderItem = ({ item }: { item: ChatItem }) => {
+  const renderItem = useCallback(({ item }: { item: ChatItem }) => {
     const avatarUri = item.driver?.image;
     const driverName = item.driver?.name ?? strings.Unknown;
     const lastMsgText = item.lastMessage?.text ?? strings.NoMessagesYet;
@@ -274,11 +274,11 @@ export default function ChatInboxScreen() {
         </View>
       </TouchableOpacity>
     );
-  };
+  }, [navigation]);
 
   // ── Render Empty State ──────────────────────────────────────────────────────
 
-  const renderEmptyState = () => (
+  const renderEmptyState = useCallback(() => (
     <View style={styles.emptyWrap}>
       <View style={styles.illustrationWrap}>
         <View style={styles.illustrationBg} />
@@ -289,7 +289,7 @@ export default function ChatInboxScreen() {
         {strings.NoConversationsSubtitle || "Your active conversations and delivery updates will show up here."}
       </Text>
     </View>
-  );
+  ), []);
 
   // ── Render Main Layout ──────────────────────────────────────────────────────
 
@@ -333,7 +333,11 @@ export default function ChatInboxScreen() {
               containerStyle={styles.searchBox}
             />
           }
-          ListEmptyComponent={renderEmptyState()}
+          ListEmptyComponent={renderEmptyState}
+          initialNumToRender={5}
+          maxToRenderPerBatch={5}
+          windowSize={11}
+          removeClippedSubviews={true}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}

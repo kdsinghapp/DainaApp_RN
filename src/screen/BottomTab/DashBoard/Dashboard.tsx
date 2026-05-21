@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   View,
   Text,
@@ -43,6 +43,30 @@ const ShippingScreen = () => {
   const closeOfferAcceptedModal = () => {
     setCounterOfferAcceptedModal({ visible: false, data: null });
   };
+
+  const renderItem = useCallback(({ item }: any) => {
+    return (
+      <OrderCard
+        order={item}
+        onPress={() => {
+          navigation.navigate(ScreenNameEnum.ViewDetails, { item });
+        }}
+      />
+    );
+  }, [navigation]);
+
+  const ListEmptyComponent = useCallback(() => (
+    <View style={styles.emptyWrap}>
+      <View style={styles.illustrationWrap}>
+        <View style={styles.illustrationBg} />
+        <Image source={imageIndex.ordePracle} style={styles.emptyIcon} />
+      </View>
+      <Text style={styles.emptyTitle}>{strings.NoOrder}</Text>
+      <Text style={styles.emptySubtitle}>{strings.NoOrdersFound1}</Text>
+    </View>
+  ), []);
+
+  const ItemSeparatorComponent = useCallback(() => <View style={{ height: 14 }} />, []);
 
 
   return (
@@ -90,34 +114,14 @@ const ShippingScreen = () => {
         contentContainerStyle={{ paddingBottom: 120 }}
         data={orderData}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => {
-          return (
-            <OrderCard order={item} onPress={() => {
-              if (item?.deliveryStatus === "pending") {
-                navigation.navigate(ScreenNameEnum.ViewDetails, {
-                  item: item
-                })
-              } else {
-                navigation.navigate(ScreenNameEnum.ViewDetails, {
-                  item: item
-                })
-              }
-
-            }} />
-          )
-        }}
-        ItemSeparatorComponent={() => <View style={{ height: 14 }} />}
+        renderItem={renderItem}
+        ItemSeparatorComponent={ItemSeparatorComponent}
         showsVerticalScrollIndicator={false}
-        ListEmptyComponent={() => (
-          <View style={styles.emptyWrap}>
-            <View style={styles.illustrationWrap}>
-              <View style={styles.illustrationBg} />
-              <Image source={imageIndex.ordePracle} style={styles.emptyIcon} />
-            </View>
-            <Text style={styles.emptyTitle}>{strings.NoOrder}</Text>
-            <Text style={styles.emptySubtitle}>{strings.NoOrdersFound1}</Text>
-          </View>
-        )}
+        ListEmptyComponent={ListEmptyComponent}
+        initialNumToRender={5}
+        maxToRenderPerBatch={5}
+        windowSize={11}
+        removeClippedSubviews={true}
       />
       <AddressModalInput
         value={address}

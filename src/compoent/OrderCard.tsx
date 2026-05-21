@@ -12,7 +12,16 @@ const TEXT = "#0F0F0F";
 const MUTED = "#BABFC5";
 const BORDER = "#EFEFEF";
 
-const OrderCard = ({ order, onPress }: { order: any; onPress: () => void }) => {
+const arePropsEqual = (prevProps: any, nextProps: any) => {
+  return (
+    prevProps.order?.id === nextProps.order?.id &&
+    prevProps.order?.deliveryStatus === nextProps.order?.deliveryStatus &&
+    prevProps.order?.pickupLocation === nextProps.order?.pickupLocation &&
+    prevProps.order?.dropLocation === nextProps.order?.dropLocation
+  );
+};
+
+const OrderCard = React.memo(({ order, onPress }: { order: any; onPress?: () => void }) => {
   const isoTime = order?.createdAt;
 
   // Helper to format the date/time
@@ -34,7 +43,7 @@ const OrderCard = ({ order, onPress }: { order: any; onPress: () => void }) => {
     <TouchableOpacity
       activeOpacity={0.9}
       style={styles.card}
-      onPress={() => onPress()}
+      onPress={() => onPress && onPress()}
     >
       {/* Top Header Section */}
       <View style={styles.cardTop}>
@@ -100,7 +109,7 @@ const OrderCard = ({ order, onPress }: { order: any; onPress: () => void }) => {
       </View>
     </TouchableOpacity>
   );
-};
+}, arePropsEqual);
 
 export default OrderCard;
 

@@ -59,6 +59,89 @@ const STATUS_STEPS = [
 
 const norm = (s: string | undefined) => (s || "").toLowerCase().trim();
 
+const areOrderCardPropsEqual = (prev: any, next: any) => prev.order.id === next.order.id && prev.order.deliveryStatus === next.order.deliveryStatus;
+
+const OrderCard = React.memo(({ order }: { order: Order }) => {
+  const nava = useNavigation();
+  const formatDate = (isoString: string | undefined) => {
+    if (!isoString) return "—";
+    const date = new Date(isoString);
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric",
+    });
+  };
+
+  return (
+    <TouchableOpacity style={styles.card}
+      activeOpacity={0.8}
+      onPress={() => {
+        const s = norm(order.deliveryStatus);
+        if (s === STATUS.CANCELLED) return;
+        (nava as any).navigate(ScreenNameEnum.ViewDetails, { item: order });
+      }}
+    >
+      <View style={styles.cardHeader}>
+        <View style={styles.trackingGroup}>
+          <Text style={styles.trackingLabel}>{strings.TrackingID}</Text>
+          <Text style={styles.trackingId}>#{order.trackingId}</Text>
+        </View>
+        <StatusPill status={order.deliveryStatus} />
+      </View>
+
+      <View style={styles.routeContainer}>
+        <View style={styles.routeLineColumn}>
+          <View style={styles.routeDotPickup} />
+          <View style={styles.routeLine} />
+          <View style={styles.routeDotDrop} />
+        </View>
+
+        <View style={styles.routeDetailsColumn}>
+          <View style={styles.routeLocationRow}>
+            <View style={styles.addressHeaderRow}>
+              <Text style={styles.locationLabel}>{strings.From || "From"}</Text>
+              {order.pickupDate ? (
+                <Text style={styles.routeDateText}>{formatDate(order.pickupDate)}</Text>
+              ) : null}
+            </View>
+            <Text style={styles.addressText}>{order?.pickupLocation || "—"}</Text>
+          </View>
+
+          <View style={{ height: 16 }} />
+
+          <View style={styles.routeLocationRow}>
+            <View style={styles.addressHeaderRow}>
+              <Text style={styles.locationLabel}>{strings.To || "To"}</Text>
+              {order.pickupTime ? (
+                <Text style={styles.routeDateText}>{order.pickupTime}</Text>
+              ) : null}
+            </View>
+            <Text style={styles.addressText}>{order?.dropLocation || "—"}</Text>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.divider} />
+
+      <ProgressTrack status={order.deliveryStatus} />
+
+      <View style={styles.footerRow}>
+        <Text style={styles.dateLabel}>
+          {order.startDate ? `${strings.Today || "Date"}: ${formatDate(order.startDate)}` : ""}
+        </Text>
+        <Pressable onPress={() => (nava as any).navigate(ScreenNameEnum.ViewDetails, { item: order })}>
+          <Text style={styles.viewDetails}>
+            {norm(order.deliveryStatus) === STATUS.DELIVERED || norm(order.deliveryStatus) === STATUS.COMPLETED
+              ? strings.WriteAReview
+              : strings.ViewDetails}
+          </Text>
+        </Pressable>
+      </View>
+    </TouchableOpacity>
+  );
+}, areOrderCardPropsEqual);
+
 export default function OrdersScreen() {
   const {
     isLoading,
@@ -103,90 +186,21 @@ export default function OrdersScreen() {
       setRefreshing(false);
     }
   }, [getParceldetailsApi]);
-  const OrderCard = ({ order }: { order: Order }) => {
-    const formatDate = (isoString: string | undefined) => {
-      if (!isoString) return "—";
-      const date = new Date(isoString);
-      return date.toLocaleDateString("en-US", {
-        month: "short",
-        day: "2-digit",
-        year: "numeric",
-      });
-    };
 
-    return (
-      <TouchableOpacity style={styles.card}
-        activeOpacity={0.8}
-        onPress={() => {
-          const s = norm(order.deliveryStatus);
-          if (s === STATUS.CANCELLED) return;
-          (nava as any).navigate(ScreenNameEnum.ViewDetails, { item: order });
-        }}
-      >
-        {/* Card Header: Tracking ID & Status Pill */}
-        <View style={styles.cardHeader}>
-          <View style={styles.trackingGroup}>
-            <Text style={styles.trackingLabel}>{strings.TrackingID}</Text>
-            <Text style={styles.trackingId}>#{order.trackingId}</Text>
-          </View>
-          <StatusPill status={order.deliveryStatus} />
-        </View>
+  const renderItem = useCallback(({ item }: any) => <OrderCard order={item} />, []);
 
-        {/* Route Details: Vertical Address Timeline */}
-        <View style={styles.routeContainer}>
-          <View style={styles.routeLineColumn}>
-            <View style={styles.routeDotPickup} />
-            <View style={styles.routeLine} />
-            <View style={styles.routeDotDrop} />
-          </View>
+  const ListEmptyComponent = useCallback(() => (
+    <View style={styles.emptyWrap}>
+      <View style={styles.illustrationWrap}>
+        <View style={styles.illustrationBg} />
+        <Image source={imageIndex.ordePracle} style={styles.emptyIcon} />
+      </View>
+      <Text style={styles.emptyTitle}>{strings.NoOrder}</Text>
+      <Text style={styles.emptySubtitle}>{strings.NoOrdersFound1}</Text>
+    </View>
+  ), []);
 
-          <View style={styles.routeDetailsColumn}>
-            <View style={styles.routeLocationRow}>
-              <View style={styles.addressHeaderRow}>
-                <Text style={styles.locationLabel}>{strings.From || "From"}</Text>
-                {order.pickupDate ? (
-                  <Text style={styles.routeDateText}>{formatDate(order.pickupDate)}</Text>
-                ) : null}
-              </View>
-              <Text style={styles.addressText}  >{order?.pickupLocation || "—"}</Text>
-            </View>
-
-            <View style={{ height: 16 }} />
-
-            <View style={styles.routeLocationRow}>
-              <View style={styles.addressHeaderRow}>
-                <Text style={styles.locationLabel}>{strings.To || "To"}</Text>
-                {order.pickupTime ? (
-                  <Text style={styles.routeDateText}>{order.pickupTime}</Text>
-                ) : null}
-              </View>
-              <Text style={styles.addressText} >{order?.dropLocation || "—"}</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Divider line before Progress Stepper */}
-        <View style={styles.divider} />
-
-        {/* Stepper Progress Bar */}
-        <ProgressTrack status={order.deliveryStatus} />
-
-        {/* Card Footer: Detail Link */}
-        <View style={styles.footerRow}>
-          <Text style={styles.dateLabel}>
-            {order.startDate ? `${strings.Today || "Date"}: ${formatDate(order.startDate)}` : ""}
-          </Text>
-          <Pressable onPress={() => (nava as any).navigate(ScreenNameEnum.ViewDetails, { item: order })}>
-            <Text style={styles.viewDetails}>
-              {norm(order.deliveryStatus) === STATUS.DELIVERED || norm(order.deliveryStatus) === STATUS.COMPLETED
-                ? strings.WriteAReview
-                : strings.ViewDetails}
-            </Text>
-          </Pressable>
-        </View>
-      </TouchableOpacity>
-    );
-  };
+  const ItemSeparatorComponent = useCallback(() => <View style={{ height: 10 }} />, []);
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -217,19 +231,14 @@ export default function OrdersScreen() {
           contentContainerStyle={{ paddingBottom: 120, marginTop: 4 }}
           data={data}
           keyExtractor={(item: any) => item.id}
-          renderItem={({ item }) => <OrderCard order={item} />}
-          ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+          renderItem={renderItem}
+          ItemSeparatorComponent={ItemSeparatorComponent}
           showsVerticalScrollIndicator={false}
-          ListEmptyComponent={() => (
-            <View style={styles.emptyWrap}>
-              <View style={styles.illustrationWrap}>
-                <View style={styles.illustrationBg} />
-                <Image source={imageIndex.ordePracle} style={styles.emptyIcon} />
-              </View>
-              <Text style={styles.emptyTitle}>{strings.NoOrder}</Text>
-              <Text style={styles.emptySubtitle}>{strings.NoOrdersFound1}</Text>
-            </View>
-          )}
+          ListEmptyComponent={ListEmptyComponent}
+          initialNumToRender={5}
+          maxToRenderPerBatch={5}
+          windowSize={11}
+          removeClippedSubviews={true}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}

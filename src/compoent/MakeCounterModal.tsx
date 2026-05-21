@@ -1,7 +1,3 @@
-// CounterOfferModal.js
-// Reusable React Native modal styled like the provided screenshot
-// Drop this file into your project and import the default export.
-// Example usage at the bottom.
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -14,13 +10,11 @@ import {
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
-  Keyboard,
   Animated,
 } from 'react-native';
 import strings from '../localization/Localization';
 import font from '../theme/font';
 
-/** Common: PillButton (reusable rounded button) */
 const PillButton = ({ label, onPress, variant = 'primary', disabled, loading }: any) => {
   const bg = variant === 'primary' ? '#F2C200' : '#2D3A3A';
   const text = variant === 'primary' ? '#1A1A1A' : '#FFFFFF';
