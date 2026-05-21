@@ -6,7 +6,6 @@ import font from "../../../theme/font";
 
 export const styles = StyleSheet.create({
   container: {
-    // backgroundColor: '#FFF',
     padding: 15,
     flex: 1,
   },
