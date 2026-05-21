@@ -23,6 +23,7 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 import font from "../../../theme/font";
 import { base_url, WebSocket_Url } from "../../../Api";
 import { useSelector } from "react-redux";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import CounterOfferModal from "../../../compoent/MakeCounterModal";
 import AcceptOfferModal from "../../../compoent/AcceptOfferModal";
 import { errorToast, successToast } from "../../../utils/customToast";
@@ -200,6 +201,23 @@ const ChatScreen = () => {
     }
   };
 
+  // ── Mark Messages Read ────────────────────────────────────────────────────
+  const markMessagesAsRead = useCallback(async () => {
+    if (!token || !parcelId) return;
+    try {
+      await fetch(`${base_url}/chat/${parcelId}/mark-read`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      });
+    } catch (error) {
+      console.error("Mark read error:", error);
+    }
+  }, [parcelId, token]);
+
   // ── 0. Load & clean token ─────────────────────────────────────────────────
   useEffect(() => {
     const loadToken = async () => {
@@ -216,58 +234,68 @@ const ChatScreen = () => {
   }, []);
 
   // ── 1. Fetch existing chat history ────────────────────────────────────────
+  const fetchMessages = useCallback(async (showLoading = true) => {
+    if (!tokenLoaded || !parcelId || !token) return;
+
+    try {
+      if (showLoading) setLoading(true);
+      const response = await fetch(`${base_url}/chat/${parcelId}/messages`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        console.error(`HTTP Error: ${response.status}`);
+        return;
+      }
+
+      const json = await response.json();
+      const raw: ApiMessage[] = Array.isArray(json) ? json : json?.messages ?? [];
+      const dates: Record<string, string> = {};
+
+      const mapped: Message[] = raw.map((m) => {
+        const id = String(m.id);
+        dates[id] = m.createdAt;
+        return {
+          id,
+          text: m.message,
+          sender: m.isMine ? "me" : "other",
+          time: toTimeString(m.createdAt),
+          isRead: m.isRead,
+        };
+      });
+
+      rawDatesRef.current = dates;
+      setMessages(mapped);
+
+      // Only mark as read on initial load, not every poll
+      if (showLoading) markMessagesAsRead();
+    } catch (error) {
+      console.error("Fetch Messages Error:", error);
+    } finally {
+      if (showLoading) setLoading(false);
+    }
+  }, [parcelId, token, tokenLoaded, markMessagesAsRead]);
+
+  // Initial fetch and polling for read receipts
   useEffect(() => {
     if (!tokenLoaded || !parcelId || !token) {
       setLoading(false);
       return;
     }
 
-    const fetchMessages = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`${base_url}/chat/${parcelId}/messages`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        });
+    fetchMessages(true);
 
-        if (!response.ok) {
-          console.error(`HTTP Error: ${response.status}`);
-          return;
-        }
+    const intervalId = setInterval(() => {
+      fetchMessages(false);
+    }, 4000); // Poll every 4 seconds for read receipts
 
-        const json = await response.json();
-
-        const raw: ApiMessage[] = Array.isArray(json) ? json : json?.messages ?? [];
-
-        const dates: Record<string, string> = {};
-
-        const mapped: Message[] = raw.map((m) => {
-          const id = String(m.id);
-          dates[id] = m.createdAt;
-          return {
-            id,
-            text: m.message,
-            sender: m.isMine ? "me" : "other",  // ✅ isMine is single source of truth
-            time: toTimeString(m.createdAt),
-            isRead: m.isRead,
-          };
-        });
-
-        rawDatesRef.current = dates;
-        setMessages(mapped);
-      } catch (error) {
-        console.error("Fetch Messages Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMessages();
-  }, [parcelId, token, tokenLoaded]);
+    return () => clearInterval(intervalId);
+  }, [fetchMessages, tokenLoaded, parcelId, token]);
 
   // ── 2. Connect WebSocket ──────────────────────────────────────────────────
   useEffect(() => {
@@ -326,6 +354,7 @@ const ChatScreen = () => {
 
         LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
         setMessages((prev) => [...prev, incoming]);
+        markMessagesAsRead();
       } catch (e) {
         console.error("WS parse error:", e);
       }
@@ -343,7 +372,7 @@ const ChatScreen = () => {
       ws.close();
       wsRef.current = null;
     };
-  }, [parcelId, token, tokenLoaded]);
+  }, [parcelId, token, tokenLoaded, markMessagesAsRead]);
 
   // ── 3. Auto-scroll on new message ────────────────────────────────────────
   useEffect(() => {
@@ -471,11 +500,19 @@ const ChatScreen = () => {
             <Text
               style={[
                 styles.timeText,
-                { color: isMe ? "rgba(255,255,255,0.75)" : "#aaa" },
+                { color: isMe ? "rgba(0,0,0,0.5)" : "#aaa" },
               ]}
             >
               {msg?.time}
             </Text>
+            {isMe && (
+              <Ionicons
+                name="checkmark-done"
+                size={16}
+                color={msg?.isRead ? "#2196F3" : "rgba(0,0,0,0.4)"}
+                style={{ marginLeft: 4 }}
+              />
+            )}
           </View>
         </View>
       </View>
@@ -817,7 +854,7 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 4,
   },
   myMessageText: {
-    color: "#000",
+    color: "white",
     fontFamily: font.MonolithRegular,
     fontSize: 15,
     lineHeight: 22,
@@ -839,6 +876,11 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontFamily: font.MonolithRegular,
     color: "rgba(0,0,0,0.4)",
+  },
+  tickText: {
+    fontSize: 12,
+    marginLeft: 4,
+    fontFamily: font.MonolithRegular,
   },
   inputContainer: {
     flexDirection: "row",
