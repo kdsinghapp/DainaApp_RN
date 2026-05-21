@@ -1,6 +1,6 @@
 import messaging from '@react-native-firebase/messaging';
 import { Platform, Alert } from 'react-native';
-import { request, check, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import { request, check, RESULTS } from 'react-native-permissions';
 import notifee, { AndroidImportance, EventType } from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { playNotificationSound, stopNotificationSound } from '../utils/soundPlayer';

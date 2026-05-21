@@ -3,8 +3,6 @@ import {
     View,
     Text,
     TextInput,
-    FlatList,
-
     Animated,
     TouchableWithoutFeedback,
     Keyboard
@@ -44,9 +42,7 @@ const HelpScreen = () => {
         <SafeAreaView style={styles.safeContainer}>
 
             <CustomHeader
-                navigation={navigation}
                 menuType="svg"
-                MenuIcon={svgIndex.BackSvg}
                 label={'Helps'}
 
             />

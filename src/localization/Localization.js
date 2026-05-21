@@ -425,8 +425,9 @@ const strings = new LocalizedStrings({
     StartDelivery: "Start Delivery",
     MarkDelivered: "Mark as Delivered",
     StatusUpdatedTo: "Success, Status updated to {0}",
+    NewDeliveryRequest: "New parcel request",
+
     CounterOfferReceived: "Counter Offer Received",
-    NewDeliveryRequest: "New delivery request",
     CounterOfferMessage: "User sent a counter offer. Tap to view and respond.",
     NewDeliveryRequestMessage: "A parcel pickup is nearby. Tap below to see details and send your offer.",
     Later: "Later",

@@ -263,9 +263,9 @@ export const useDeliveryHome = () => {
           heartbeatIntervalRef.current = setInterval(() => {
             if (ws.readyState === WebSocket.OPEN) {
               if (Date.now() - lastPongTime > 65000) {
-                 console.log('⚠️ [WebSocket] Primary silent disconnect detected (no pong), closing...');
-                 ws.close();
-                 return;
+                console.log('⚠️ [WebSocket] Primary silent disconnect detected (no pong), closing...');
+                ws.close();
+                return;
               }
               ws.send(JSON.stringify({ type: 'ping' }));
             }
@@ -437,9 +437,9 @@ export const useDeliveryHome = () => {
           liveHeartbeatIntervalRef.current = setInterval(() => {
             if (ws.readyState === WebSocket.OPEN) {
               if (Date.now() - lastLivePongTime > 65000) {
-                 console.log('⚠️ [WebSocket] Live socket silent disconnect detected (no pong), closing...');
-                 ws.close();
-                 return;
+                console.log('⚠️ [WebSocket] Live socket silent disconnect detected (no pong), closing...');
+                ws.close();
+                return;
               }
               ws.send(JSON.stringify({ type: 'ping' }));
             }
@@ -531,12 +531,12 @@ export const useDeliveryHome = () => {
               const removeId = data?.parcelId ?? data?.id;
               if (removeId) {
                 setRequests((prev: any[]) => prev.filter((r: any) => String(r.id ?? r.parcelId) !== String(removeId)));
-                
+
                 setNewOrderNotification((currentNotification) => {
                   if (!currentNotification?.data) return currentNotification;
                   const currentData = currentNotification.data as Record<string, any>;
                   const currentId = currentData?.parcelId ?? currentData?.id ?? currentData?.parcel?.id ?? currentData?.parcel?.parcelId;
-                  
+
                   if (String(currentId) === String(removeId)) {
                     stopNotificationSound();
                     if (soundTimerRef.current) {
@@ -733,7 +733,7 @@ export const useDeliveryHome = () => {
               setCurrentLocation(parsed.address);
               return;
             }
-          } catch (e) {}
+          } catch (e) { }
         }
       } else {
         // Store in AsyncStorage

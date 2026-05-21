@@ -18,7 +18,6 @@ import strings from '../localization/Localization';
 import { STATUS } from '../utils/Constant';
 import { useDeliveryContext } from '../context/DeliveryContext';
 import { stopNotificationSound } from '../utils/soundPlayer';
-import { color } from '../constant';
 
 import { useSelector } from 'react-redux';
 
@@ -120,7 +119,7 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
               <Icon
                 name={isCounterOffer ? "cash-outline" : "cube"}
                 size={wp(7)}
-                color={color.black}
+                color={"white"}
               />
             </View>
           </View>
@@ -129,13 +128,7 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
             <Text style={styles.headerTitle}>
               {isCounterOffer ? strings.CounterOfferReceived : strings.NewDeliveryRequest}
             </Text>
-            <View style={styles.badgeRow}>
-              {(data?.trackingId || data?.id) && (
-                <View style={styles.trackingBadge}>
-                  <Text style={styles.trackingIdText}>#{data.trackingId || data.id}</Text>
-                </View>
-              )}
-            </View>
+
           </View>
 
           <TouchableOpacity
@@ -213,20 +206,7 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
             </View>
           )}
 
-          {/* Additional Info Grid */}
-          {(data?.weight || data?.package_size || data?.packageSize) && (
-            <View style={styles.infoGrid}>
-              {(data?.weight || data?.package_size || data?.packageSize) && (
-                <View style={styles.infoBox}>
-                  <Icon name="scale-outline" size={wp(4.5)} color="#64748B" />
-                  <View>
-                    <Text style={styles.infoBoxLabel}>{strings.Weight || 'Weight'}</Text>
-                    <Text style={styles.infoBoxValue}>{data.weight || data.package_size || data.packageSize}</Text>
-                  </View>
-                </View>
-              )}
-            </View>
-          )}
+
 
         </ScrollView>
 
@@ -310,6 +290,7 @@ const styles = StyleSheet.create({
     fontSize: wp(5.5),
     color: '#0F172A',
     fontFamily: font.MonolithRegular,
+    textAlign: "center"
   },
   badgeRow: {
     flexDirection: 'row',
