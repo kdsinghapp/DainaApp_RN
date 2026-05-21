@@ -588,7 +588,7 @@ const ChatScreen = () => {
             ref={flatListRef}
             data={listItems}
             renderItem={renderItem}
-            keyExtractor={(i) => i.id}
+            keyExtractor={(i, index) => i?.id ? String(i.id) : String(index)}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.chatContainer}
             onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: false })}

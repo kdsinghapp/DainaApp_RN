@@ -230,7 +230,7 @@ export default function OrdersScreen() {
         <FlatList
           contentContainerStyle={{ paddingBottom: 120, marginTop: 4 }}
           data={data}
-          keyExtractor={(item: any) => item.id}
+          keyExtractor={(item: any, index) => item?.id ? String(item.id) : String(index)}
           renderItem={renderItem}
           ItemSeparatorComponent={ItemSeparatorComponent}
           showsVerticalScrollIndicator={false}

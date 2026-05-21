@@ -243,7 +243,7 @@ const DeliveryHome = () => {
         <FlatList
           data={filteredRequests}
           style={{ marginTop: 12 }}
-          keyExtractor={(item: any) => item.id}
+          keyExtractor={(item: any, index) => item?.id ? String(item.id) : String(index)}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 20 }}
           renderItem={renderItem}

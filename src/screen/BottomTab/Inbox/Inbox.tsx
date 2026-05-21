@@ -318,7 +318,7 @@ export default function ChatInboxScreen() {
       ) : (
         <FlatList
           data={filteredChats}
-          keyExtractor={(item) => String(item.parcelId)}
+          keyExtractor={(item, index) => item?.parcelId ? String(item.parcelId) : String(index)}
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={[

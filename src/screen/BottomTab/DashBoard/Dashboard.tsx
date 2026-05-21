@@ -113,7 +113,7 @@ const ShippingScreen = () => {
       <FlatList
         contentContainerStyle={{ paddingBottom: 120 }}
         data={orderData}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => item?.id ? String(item.id) : String(index)}
         renderItem={renderItem}
         ItemSeparatorComponent={ItemSeparatorComponent}
         showsVerticalScrollIndicator={false}
