@@ -84,6 +84,19 @@ const useDashboard = () => {
          if (retryCount < 2) {
            setTimeout(() => handleGetLocation(retryCount + 1), 2000);
         } else {
+          // Fallback to cached location before giving up
+          const cached = await AsyncStorage.getItem('pickupLocation');
+          if (cached) {
+            try {
+              const parsed = JSON.parse(cached);
+              if (parsed?.address) {
+                setcurrentlocation(parsed.address);
+                setCurrentLocation(parsed.address);
+                setPickupLocation(parsed);
+                return;
+              }
+            } catch (e) {}
+          }
           setcurrentlocation(strings?.Locationu);
         }
       } else if (data && data.address) {

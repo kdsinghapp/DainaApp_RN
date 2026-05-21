@@ -724,7 +724,17 @@ export const useDeliveryHome = () => {
     try {
       const data = await locationRef?.current?.fetchLocation();
       if (data.error) {
-        // Alert.alert('Error', data.error);
+        // Fallback to cached location before giving up
+        const cached = await AsyncStorage.getItem('pickupLocation');
+        if (cached) {
+          try {
+            const parsed = JSON.parse(cached);
+            if (parsed?.address) {
+              setCurrentLocation(parsed.address);
+              return;
+            }
+          } catch (e) {}
+        }
       } else {
         // Store in AsyncStorage
         await AsyncStorage.setItem('pickupLocation', JSON.stringify(data));
