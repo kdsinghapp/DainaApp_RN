@@ -591,6 +591,8 @@ const ChatScreen = () => {
             keyExtractor={(i) => i.id}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.chatContainer}
+            onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: false })}
+            onLayout={() => flatListRef.current?.scrollToEnd({ animated: false })}
             ListEmptyComponent={
               <View style={styles.emptyContainer}>
                 <Text style={styles.emptyEmoji}>💬</Text>
