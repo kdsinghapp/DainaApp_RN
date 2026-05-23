@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
+  Platform,
 } from "react-native";
 import StatusBarComponent from "../../../compoent/StatusBarCompoent";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -182,11 +183,11 @@ export default function InboxDeliver() {
   // ── Render Item ─────────────────────────────────────────────────────────────
 
   const renderItem = ({ item }: { item: ChatItem }) => {
-    const avatarUri = item?.parcelOwner?.image;
-    const displayName = item?.parcelOwner?.name ?? strings?.Unknown;
-    const lastMsgText = item?.lastMessage?.text ?? strings?.NoMessagesYet;
-    const msgTime = formatTime(item?.lastMessage?.time);
-    const hasUnread = (item?.unreadCount ?? 0) > 0;
+    const avatarUri = item.parcelOwner?.image;
+    const displayName = item.parcelOwner?.name ?? strings.Unknown;
+    const lastMsgText = item.lastMessage?.text ?? strings.NoMessagesYet;
+    const msgTime = formatTime(item.lastMessage?.time);
+    const hasUnread = (item.unreadCount ?? 0) > 0;
 
     return (
       <TouchableOpacity
@@ -206,7 +207,9 @@ export default function InboxDeliver() {
           ) : (
             <Image source={imageIndex.prfile} style={styles.avatar} />
           )}
-
+          {item.deliveryStatus?.toLowerCase() === "assigned" && (
+            <View style={styles.onlineDot} />
+          )}
         </View>
 
         {/* Right Side: Info Column */}
@@ -262,7 +265,7 @@ export default function InboxDeliver() {
 
       {/* Screen Title & Subheader */}
       <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>{strings.Messages}</Text>
+        <Text style={styles.headerTitle}>{strings.Inbox || "Messages"}</Text>
 
       </View>
 
@@ -272,13 +275,15 @@ export default function InboxDeliver() {
           <Text style={styles.errorText}>{error}</Text>
         </View>
       )}
+
+      {/* Main List */}
       {loading && !refreshing ? (
         <View style={styles.loaderWrap}>
           <ActivityIndicator size="large" color="#FFCC00" />
         </View>
       ) : (
         <FlatList
-          data={[...filteredChats].reverse()}
+          data={filteredChats}
           keyExtractor={(item) => String(item.parcelId)}
           renderItem={renderItem}
           showsVerticalScrollIndicator={false}
@@ -323,7 +328,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8FAFC",
   },
   headerTitle: {
-    fontSize: 25,
+    fontSize: 28,
     fontFamily: font.MonolithRegular,
     color: "#0F172A",
     letterSpacing: -0.5,

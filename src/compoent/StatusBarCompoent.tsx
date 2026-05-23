@@ -1,5 +1,5 @@
 import React from 'react';
-import { StatusBar, View, StyleSheet } from 'react-native';
+import { StatusBar, SafeAreaView, View, StyleSheet } from 'react-native';
 
 type StatusBarComponentProps = {
   barStyle?: 'default' | 'light-content' | 'dark-content';
@@ -8,8 +8,8 @@ type StatusBarComponentProps = {
 };
 
 const StatusBarComponent: React.FC<StatusBarComponentProps> = ({
-  barStyle = 'dark-content',
-  backgroundColor = 'white',
+  barStyle = 'dark-content', // dark text/icons for white background
+  backgroundColor = 'white', // default app background
   translucent = false,
 }) => {
   return (

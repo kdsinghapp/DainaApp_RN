@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -22,8 +22,10 @@ import LoadingModal from "../../../utils/Loader";
 import { FlatList } from "react-native-gesture-handler";
 import OrderCard from "../../../compoent/OrderCard";
 import strings from "../../../localization/Localization";
-import RequestLoading from "./RequestSend/RequestLoading";
+
 const ShippingScreen = () => {
+
+
   const {
     navigation,
     isLoading,
@@ -45,30 +47,6 @@ const ShippingScreen = () => {
     setCounterOfferAcceptedModal({ visible: false, data: null });
   };
 
-  const renderItem = useCallback(({ item }: any) => {
-    return (
-      <OrderCard
-        order={item}
-        onPress={() => {
-          navigation.navigate(ScreenNameEnum.ViewDetails, { item });
-        }}
-      />
-    );
-  }, [navigation]);
-
-  const ListEmptyComponent = useCallback(() => (
-    <View style={styles.emptyWrap}>
-      <View style={styles.illustrationWrap}>
-        <View style={styles.illustrationBg} />
-        <Image source={imageIndex.ordePracle} style={styles.emptyIcon} />
-      </View>
-      <Text style={styles.emptyTitle}>{strings.NoOrder}</Text>
-      <Text style={styles.emptySubtitle}>{strings.NoOrdersFound1}</Text>
-    </View>
-  ), []);
-
-  const ItemSeparatorComponent = useCallback(() => <View style={{ height: 14 }} />, []);
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -76,9 +54,11 @@ const ShippingScreen = () => {
       <LoadingModal visible={isLoading} />
 
       <CurrentLocation ref={locationRef} />
+
       <HomeHeaderBar
         location={currentlocation || address}
         onNotificationPress={() => navigation.navigate(ScreenNameEnum.NotificationsScreen)}
+
         hasNotification={false}
       />
 
@@ -93,16 +73,16 @@ const ShippingScreen = () => {
       }}
       />
        </TouchableOpacity> */}
+
       <View style={{
         marginTop: 11, marginBottom: 5
       }}>
         <CustomButton title={strings.CreateParcel}
-          textStyle={{
-            color: "white"
-          }}
           onPress={() => navigation.navigate(ScreenNameEnum.CreateParcelFrom)}
         />
       </View>
+      {/* Shipping History */}
+
       <View style={{
         flexDirection: "row",
         justifyContent: "space-between",
@@ -111,19 +91,42 @@ const ShippingScreen = () => {
         marginBottom: 10
       }}>
         <Text style={styles.sectionTitle}>{strings.ShippingHistory}</Text>
+
       </View>
+
       <FlatList
         contentContainerStyle={{ paddingBottom: 120 }}
         data={orderData}
-        keyExtractor={(item, index) => item?.id ? String(item.id) : String(index)}
-        renderItem={renderItem}
-        ItemSeparatorComponent={ItemSeparatorComponent}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => {
+          return (
+            <OrderCard order={item} onPress={() => {
+              if (item?.deliveryStatus === "pending") {
+                navigation.navigate(ScreenNameEnum.ViewDetails, {
+                  item: item
+                })
+              } else {
+                // navigation.navigate(ScreenNameEnum.NearbyDriversMap)
+                navigation.navigate(ScreenNameEnum.ViewDetails, {
+                  item: item
+                })
+              }
+
+            }} />
+          )
+        }}
+        ItemSeparatorComponent={() => <View style={{ height: 14 }} />}
         showsVerticalScrollIndicator={false}
-        ListEmptyComponent={ListEmptyComponent}
-        initialNumToRender={5}
-        maxToRenderPerBatch={5}
-        windowSize={11}
-        removeClippedSubviews={true}
+        ListEmptyComponent={() => (
+          <View style={styles.emptyWrap}>
+            <View style={styles.illustrationWrap}>
+              <View style={styles.illustrationBg} />
+              <Image source={imageIndex.ordePracle} style={styles.emptyIcon} />
+            </View>
+            <Text style={styles.emptyTitle}>{strings.NoOrder}</Text>
+            <Text style={styles.emptySubtitle}>{strings.NoOrdersFound1}</Text>
+          </View>
+        )}
       />
       <AddressModalInput
         value={address}
@@ -259,7 +262,6 @@ const styles = StyleSheet.create({
     fontFamily: font.MonolithRegular,
     marginBottom: 10,
     textAlign: 'center',
-
   },
   emptySubtitle: {
     fontSize: 15,

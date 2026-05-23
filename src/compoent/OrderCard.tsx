@@ -12,16 +12,7 @@ const TEXT = "#0F0F0F";
 const MUTED = "#BABFC5";
 const BORDER = "#EFEFEF";
 
-const arePropsEqual = (prevProps: any, nextProps: any) => {
-  return (
-    prevProps.order?.id === nextProps.order?.id &&
-    prevProps.order?.deliveryStatus === nextProps.order?.deliveryStatus &&
-    prevProps.order?.pickupLocation === nextProps.order?.pickupLocation &&
-    prevProps.order?.dropLocation === nextProps.order?.dropLocation
-  );
-};
-
-const OrderCard = React.memo(({ order, onPress }: { order: any; onPress?: () => void }) => {
+const OrderCard = ({ order, onPress }: { order: any; onPress: () => void }) => {
   const isoTime = order?.createdAt;
 
   // Helper to format the date/time
@@ -43,33 +34,31 @@ const OrderCard = React.memo(({ order, onPress }: { order: any; onPress?: () => 
     <TouchableOpacity
       activeOpacity={0.9}
       style={styles.card}
-      onPress={() => onPress && onPress()}
+      onPress={() => onPress()}
     >
       {/* Top Header Section */}
       <View style={styles.cardTop}>
-
-        <View style={styles.headerText}>
-          <View >
-            <Text style={styles.trackingLabel}>{strings.TrackingID}</Text>
-
-            <Text style={styles.cardId}>#{order?.trackingId || order?.id}</Text>
-            <Text style={styles.cardDate}> {formatDateTime(order?.createdAt)}</Text>
-
-          </View>
+        <View style={styles.iconBox}>
+          <Image
+            source={imageIndex.icons} // This is the parcel/box icon
+            style={styles.headerIcon}
+          />
         </View>
-        <Text style={[styles.statusValue, { color: statusColor }]}>
-          {statusLabel}
-        </Text>
+        <View style={styles.headerText}>
+          <Text style={styles.cardId}>#{order?.trackingId || order?.id} <Text style={{ color: MUTED, fontFamily: font.MonolithRegular }}> •</Text></Text>
+          <Text style={styles.cardDate}> {formatDateTime(order?.createdAt)}</Text>
+        </View>
       </View>
 
       {/* Location Section with Vertical Vector */}
       <View style={styles.locationSection}>
         {/* Vertical Line Image */}
-        <View style={styles.routeLineColumn}>
-          <View style={styles.routeDotPickup} />
-          <View style={styles.routeLine} />
-          <View style={styles.routeDotDrop} />
-        </View>
+        <Image
+          source={imageIndex.Vector}
+          style={styles.vectorLine}
+          resizeMode="contain"
+        />
+
         <View style={styles.locationContent}>
           {/* Pickup */}
           <View style={styles.locationBlock}>
@@ -88,48 +77,45 @@ const OrderCard = React.memo(({ order, onPress }: { order: any; onPress?: () => 
               {order?.dropLocation}
             </Text>
           </View>
-
         </View>
       </View>
 
       {/* Footer Status Section */}
-
+      <View style={styles.footer}>
+        <View style={styles.statusRow}>
+          <Text style={styles.statusLabel}>{strings.DeliveryStatus || "Delivery Status"} : </Text>
+          <Text style={[styles.statusValue, { color: statusColor }]}>
+            {statusLabel}
+          </Text>
+        </View>
+      </View>
       <View style={{
         backgroundColor: color.primary,
         padding: 6,
-        height: 45,
+        height: 40,
         borderRadius: 10,
         marginTop: 15,
         alignItems: "center",
         justifyContent: "center",
       }}>
-        <Text style={[styles.viewDetailsText, { color: "white" }]}>
+        <Text style={[styles.viewDetailsText, { color: "black" }]}>
           {strings?.ViewDetails}
         </Text>
       </View>
     </TouchableOpacity>
   );
-}, arePropsEqual);
+};
 
 export default OrderCard;
 
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 15,
-    padding: 15,
+    borderRadius: 24,
+    padding: 20,
     marginBottom: 16,
-    borderWidth: 0.5,
+    borderWidth: 1,
     borderColor: "#d6e1f9ff",
-    ...Platform.select({
-      ios: {
-        shadowColor: "#0F172A",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.03,
-        shadowRadius: 10,
-      },
-
-    }),
 
 
   },
@@ -137,37 +123,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 15,
-  },
-  routeLineColumn: {
-    width: 24,
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingVertical: 15,
-  },
-  routeDotPickup: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: "#10B981", // Green dot for pickup
-  },
-  routeLine: {
-    flex: 1,
-    width: 2,
-    backgroundColor: "#E2E8F0",
-    marginVertical: 4,
-  },
-  routeDotDrop: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: "#EF4444", // Red dot for drop
-  },
-  routeDetailsColumn: {
-    flex: 1,
-    marginLeft: 8,
-  },
-  routeLocationRow: {
-    flexDirection: "column",
   },
   iconBox: {
     // backgroundColor: "#F9F9F9",
@@ -180,14 +135,13 @@ const styles = StyleSheet.create({
   },
   headerText: {
     flex: 1,
+    marginLeft: 12,
     flexDirection: 'row'
   },
   cardId: {
     fontFamily: font.MonolithRegular,
     fontSize: 15,
     color: TEXT,
-    lineHeight: 22,
-    marginTop: 3
   },
   cardDate: {
     fontFamily: font.MonolithRegular,
@@ -223,21 +177,14 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   label: {
-    fontSize: 11,
-    fontFamily: font.MonolithRegular,
+    fontSize: 14,
     color: MUTED,
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-  },
-  trackingLabel: {
-    color: MUTED,
-    fontSize: 11,
     fontFamily: font.MonolithRegular,
-    letterSpacing: 0.5,
+    marginBottom: 2
   },
   value: {
     fontSize: 14,
-    color: "black",
+    color: "#76889A",
     fontFamily: font.MonolithRegular,
     marginTop: 2,
 

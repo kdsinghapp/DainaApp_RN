@@ -59,89 +59,6 @@ const STATUS_STEPS = [
 
 const norm = (s: string | undefined) => (s || "").toLowerCase().trim();
 
-const areOrderCardPropsEqual = (prev: any, next: any) => prev.order.id === next.order.id && prev.order.deliveryStatus === next.order.deliveryStatus;
-
-const OrderCard = React.memo(({ order }: { order: Order }) => {
-  const nava = useNavigation();
-  const formatDate = (isoString: string | undefined) => {
-    if (!isoString) return "—";
-    const date = new Date(isoString);
-    return date.toLocaleDateString("en-US", {
-      month: "short",
-      day: "2-digit",
-      year: "numeric",
-    });
-  };
-
-  return (
-    <TouchableOpacity style={styles.card}
-      activeOpacity={0.8}
-      onPress={() => {
-        const s = norm(order.deliveryStatus);
-        if (s === STATUS.CANCELLED) return;
-        (nava as any).navigate(ScreenNameEnum.ViewDetails, { item: order });
-      }}
-    >
-      <View style={styles.cardHeader}>
-        <View style={styles.trackingGroup}>
-          <Text style={styles.trackingLabel}>{strings.TrackingID}</Text>
-          <Text style={styles.trackingId}>#{order.trackingId}</Text>
-        </View>
-        <StatusPill status={order.deliveryStatus} />
-      </View>
-
-      <View style={styles.routeContainer}>
-        <View style={styles.routeLineColumn}>
-          <View style={styles.routeDotPickup} />
-          <View style={styles.routeLine} />
-          <View style={styles.routeDotDrop} />
-        </View>
-
-        <View style={styles.routeDetailsColumn}>
-          <View style={styles.routeLocationRow}>
-            <View style={styles.addressHeaderRow}>
-              <Text style={styles.locationLabel}>{strings.From || "From"}</Text>
-              {order.pickupDate ? (
-                <Text style={styles.routeDateText}>{formatDate(order.pickupDate)}</Text>
-              ) : null}
-            </View>
-            <Text style={styles.addressText}>{order?.pickupLocation || "—"}</Text>
-          </View>
-
-          <View style={{ height: 16 }} />
-
-          <View style={styles.routeLocationRow}>
-            <View style={styles.addressHeaderRow}>
-              <Text style={styles.locationLabel}>{strings.To || "To"}</Text>
-              {order.pickupTime ? (
-                <Text style={styles.routeDateText}>{order.pickupTime}</Text>
-              ) : null}
-            </View>
-            <Text style={styles.addressText}>{order?.dropLocation || "—"}</Text>
-          </View>
-        </View>
-      </View>
-
-      <View style={styles.divider} />
-
-      <ProgressTrack status={order.deliveryStatus} />
-
-      <View style={styles.footerRow}>
-        <Text style={styles.dateLabel}>
-          {order.startDate ? `${strings.Today || "Date"}: ${formatDate(order.startDate)}` : ""}
-        </Text>
-        <Pressable onPress={() => (nava as any).navigate(ScreenNameEnum.ViewDetails, { item: order })}>
-          <Text style={styles.viewDetails}>
-            {norm(order.deliveryStatus) === STATUS.DELIVERED || norm(order.deliveryStatus) === STATUS.COMPLETED
-              ? strings.WriteAReview
-              : strings.ViewDetails}
-          </Text>
-        </Pressable>
-      </View>
-    </TouchableOpacity>
-  );
-}, areOrderCardPropsEqual);
-
 export default function OrdersScreen() {
   const {
     isLoading,
@@ -186,25 +103,95 @@ export default function OrdersScreen() {
       setRefreshing(false);
     }
   }, [getParceldetailsApi]);
+  const OrderCard = ({ order }: { order: Order }) => {
+    const formatDate = (isoString: string | undefined) => {
+      if (!isoString) return "—";
+      const date = new Date(isoString);
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "2-digit",
+        year: "numeric",
+      });
+    };
 
-  const renderItem = useCallback(({ item }: any) => <OrderCard order={item} />, []);
+    return (
+      <TouchableOpacity style={styles.card}
+        activeOpacity={0.8}
+        onPress={() => {
+          const s = norm(order.deliveryStatus);
+          if (s === STATUS.CANCELLED) return;
+          (nava as any).navigate(ScreenNameEnum.ViewDetails, { item: order });
+        }}
+      >
+        {/* Card Header: Tracking ID & Status Pill */}
+        <View style={styles.cardHeader}>
+          <View style={styles.trackingGroup}>
+            <Text style={styles.trackingLabel}>{strings.TrackingID}</Text>
+            <Text style={styles.trackingId}>#{order.trackingId}</Text>
+          </View>
+          <StatusPill status={order.deliveryStatus} />
+        </View>
 
-  const ListEmptyComponent = useCallback(() => (
-    <View style={styles.emptyWrap}>
-      <View style={styles.illustrationWrap}>
-        <View style={styles.illustrationBg} />
-        <Image source={imageIndex.ordePracle} style={styles.emptyIcon} />
-      </View>
-      <Text style={styles.emptyTitle}>{strings.NoOrder}</Text>
-      <Text style={styles.emptySubtitle}>{strings.NoOrdersFound1}</Text>
-    </View>
-  ), []);
+        {/* Route Details: Vertical Address Timeline */}
+        <View style={styles.routeContainer}>
+          <View style={styles.routeLineColumn}>
+            <View style={styles.routeDotPickup} />
+            <View style={styles.routeLine} />
+            <View style={styles.routeDotDrop} />
+          </View>
 
-  const ItemSeparatorComponent = useCallback(() => <View style={{ height: 10 }} />, []);
+          <View style={styles.routeDetailsColumn}>
+            <View style={styles.routeLocationRow}>
+              <View style={styles.addressHeaderRow}>
+                <Text style={styles.locationLabel}>{strings.From || "From"}</Text>
+                {order.pickupDate ? (
+                  <Text style={styles.routeDateText}>{formatDate(order.pickupDate)}</Text>
+                ) : null}
+              </View>
+              <Text style={styles.addressText} numberOfLines={2}>{order?.pickupLocation || "—"}</Text>
+            </View>
+
+            <View style={{ height: 16 }} />
+
+            <View style={styles.routeLocationRow}>
+              <View style={styles.addressHeaderRow}>
+                <Text style={styles.locationLabel}>{strings.To || "To"}</Text>
+                {order.pickupTime ? (
+                  <Text style={styles.routeDateText}>{order.pickupTime}</Text>
+                ) : null}
+              </View>
+              <Text style={styles.addressText} numberOfLines={2}>{order?.dropLocation || "—"}</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* Divider line before Progress Stepper */}
+        <View style={styles.divider} />
+
+        {/* Stepper Progress Bar */}
+        <ProgressTrack status={order.deliveryStatus} />
+
+        {/* Card Footer: Detail Link */}
+        <View style={styles.footerRow}>
+          <Text style={styles.dateLabel}>
+            {order.startDate ? `${strings.Today || "Date"}: ${formatDate(order.startDate)}` : ""}
+          </Text>
+          <Pressable onPress={() => (nava as any).navigate(ScreenNameEnum.ViewDetails, { item: order })}>
+            <Text style={styles.viewDetails}>
+              {norm(order.deliveryStatus) === STATUS.DELIVERED || norm(order.deliveryStatus) === STATUS.COMPLETED
+                ? strings.WriteAReview
+                : strings.ViewDetails}
+            </Text>
+          </Pressable>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBarComponent />
+      <LoadingModal visible={isLoading} />
       <View style={styles.container}>
         <Text style={styles.title}>{strings.Orders}</Text>
 
@@ -230,15 +217,20 @@ export default function OrdersScreen() {
         <FlatList
           contentContainerStyle={{ paddingBottom: 120, marginTop: 4 }}
           data={data}
-          keyExtractor={(item: any, index) => item?.id ? String(item.id) : String(index)}
-          renderItem={renderItem}
-          ItemSeparatorComponent={ItemSeparatorComponent}
+          keyExtractor={(item: any) => item.id}
+          renderItem={({ item }) => <OrderCard order={item} />}
+          ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
           showsVerticalScrollIndicator={false}
-          ListEmptyComponent={ListEmptyComponent}
-          initialNumToRender={5}
-          maxToRenderPerBatch={5}
-          windowSize={11}
-          removeClippedSubviews={true}
+          ListEmptyComponent={() => (
+            <View style={styles.emptyWrap}>
+              <View style={styles.illustrationWrap}>
+                <View style={styles.illustrationBg} />
+                <Image source={imageIndex.ordePracle} style={styles.emptyIcon} />
+              </View>
+              <Text style={styles.emptyTitle}>{strings.NoOrder}</Text>
+              <Text style={styles.emptySubtitle}>{strings.NoOrdersFound1}</Text>
+            </View>
+          )}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -357,31 +349,37 @@ const styles = StyleSheet.create({
 
   tabsWrap: {
     flexDirection: "row",
-    backgroundColor: "#FFFFFF",
-    padding: 10,
-    borderRadius: 20,
-    marginBottom: 12,
-    alignItems: "center",
-    marginTop: 12
+    backgroundColor: "#E2E8F0",
+    borderRadius: 14,
+    padding: 4,
+    marginBottom: 16,
+    height: 48,
   },
   tab: {
     flex: 1,
-    paddingVertical: 8,
-    borderRadius: 30,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
   },
   tabActive: {
     backgroundColor: "#FFCC00",
-    height: 40,
+    ...Platform.select({
+      ios: {
+        shadowColor: "#0F172A",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 4,
+      },
+      
+    }),
   },
   tabText: {
     fontSize: 14,
     fontFamily: font.MonolithRegular,
-    color: "black",
+    color: "#64748B",
   },
   tabTextActive: {
-    color: "white",
+    color: "#0F172A",
     fontSize: 14,
     fontFamily: font.MonolithRegular,
   },
@@ -391,7 +389,8 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 16,
     marginBottom: 12,
-
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
     ...Platform.select({
       ios: {
         shadowColor: "#0F172A",
@@ -400,10 +399,6 @@ const styles = StyleSheet.create({
         shadowRadius: 10,
       },
 
-      android: {
-        borderWidth: 1,
-        borderColor: "#E2E8F0",
-      },
     }),
   },
   cardHeader: {

@@ -8,8 +8,7 @@ import {
   TouchableOpacity,
   Linking,
   Modal,
-  Dimensions,
-  Platform
+  Dimensions
 } from "react-native";
 import StatusBarComponent from "../../../compoent/StatusBarCompoent";
 import CustomHeader from "../../../compoent/CustomHeader";
@@ -126,6 +125,7 @@ export default function ViewDetails() {
       } else {
 
         successToast(strings.OrderCancelled);
+
         // successToast(res?.message || "Order cancelled successfully");
         // nav.goBack();
         // If API fails but we want to allow user to clear it locally, we could do more here.
@@ -241,6 +241,7 @@ export default function ViewDetails() {
   const statusLabel = STATUS_LABELS[statusNorm] || "Unknown";
   const statusColor = STATUS_COLORS[statusNorm] || "black";
 
+  console.log("ss", parcel)
   const navigation = useNavigation()
   const driver = parcel?.assignedDriver ?? item?.assignedDriver ?? parcel?.driver ?? item?.driver;
   return (
@@ -670,27 +671,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     borderRadius: 16,
     padding: 14,
-
-    shadowColor: "#000",
     shadowOpacity: 0.05,
     shadowRadius: 8,
-
-    ...Platform.select({
-      android: {
-        borderWidth: 1,
-        borderColor: "#eee",
-      },
-
-      ios: {
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-      },
-    }),
-
-
-
+    borderWidth: 1,
+    borderColor: "#eee", shadowColor: "#000",
+   
+    
   },
   cardHeader: { flexDirection: "row", justifyContent: "space-between", marginBottom: 10 },
   muted: { color: MUTED, fontFamily: font.MonolithRegular },
@@ -766,23 +752,9 @@ const styles = StyleSheet.create({
     marginTop: 16,
     borderRadius: 20,
     padding: 20,
+    borderWidth: 1,
+    borderColor: "#F0F0F0",
 
-    ...Platform.select({
-      android: {
-        borderWidth: 1,
-        borderColor: "#F0F0F0",
-      },
-
-      ios: {
-        shadowColor: "#000",
-        shadowOffset: {
-          width: 0,
-          height: 1,
-        },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
-      },
-    }),
   },
   pendingHeader: {
     flexDirection: "row",
@@ -829,7 +801,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-  },
+   },
   verificationButtonTitle: {
     fontSize: 14,
     fontFamily: font.MonolithRegular,
@@ -840,7 +812,7 @@ const styles = StyleSheet.create({
     fontFamily: font.MonolithRegular,
     color: "#64748B",
     marginTop: 2,
-
+    
   },
   modalContainer: {
     flex: 1,

@@ -94,8 +94,6 @@ const AllOrder = () => {
 
       <CustomHeader label="All Orders" />
       <NewOrderNotificationModal />
-
-
       <OfferAcceptedModal />
       <View style={styles.tabs}>
         {TABS?.map((tab) => {

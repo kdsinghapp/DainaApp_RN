@@ -599,9 +599,9 @@ const CourierTrackingScreen = () => {
           )}
         </MapView>
 
+   
 
-
-
+      
       </View>
 
       <SafeAreaView style={styles.headerOverlay} edges={["top"]}>
@@ -619,7 +619,7 @@ const CourierTrackingScreen = () => {
           contentContainerStyle={styles.scrollContentContainer}
           showsVerticalScrollIndicator={false}
         >
-
+          
           <View style={styles.driverSection}>
             <View style={styles.driverCore}>
               <View style={styles.avatarWrap}>
@@ -732,7 +732,11 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     flexDirection: "row",
     alignItems: "center",
-
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    elevation: 8,
     zIndex: 4,
   },
   routeSummaryIcon: {
@@ -813,7 +817,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderWidth: 2,
     borderColor: '#FFF',
-
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
     zIndex: 2,
   },
   dropoffPinInner: {
@@ -851,7 +859,9 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingBottom: Platform.OS === "ios" ? 0 : 0,
-
+    ...Platform.select({
+      ios: { shadowColor: "#000", shadowOffset: { width: 0, height: -4 }, shadowOpacity: 0.15, shadowRadius: 16 },
+    }),
   },
   dragArea: { width: "100%", paddingVertical: 10, alignItems: "center" },
   handleBar: {
@@ -893,7 +903,10 @@ const styles = StyleSheet.create({
     marginTop: 4,
     borderWidth: 2,
     borderColor: "#FFF",
-
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
     elevation: 2,
   },
   timelineConnector: {
@@ -1022,7 +1035,10 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 16,
     gap: 12,
-
+    shadowColor: '#059669',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
     elevation: 10,
     zIndex: 1000,
     borderWidth: 1,

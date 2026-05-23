@@ -26,25 +26,10 @@ const useDashboard = () => {
   const initialFetchDone = useRef(false);
 
   useEffect(() => {
-    const loadCachedLocation = async () => {
-      try {
-        const cached = await AsyncStorage.getItem('pickupLocation');
-        if (cached) {
-          const parsed = JSON.parse(cached);
-          if (parsed?.address) {
-            setcurrentlocation(parsed.address);
-            setCurrentLocation(parsed.address);
-            setPickupLocation(parsed);
-          }
-        }
-      } catch (e) {}
-    };
-    loadCachedLocation();
-
-    // Small delay to ensure refs are attached
+    // Add a small delay to ensure refs are attached and system is ready
     const timer = setTimeout(() => {
       handleGetLocation();
-    }, 100);
+    }, 1000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -99,19 +84,6 @@ const useDashboard = () => {
          if (retryCount < 2) {
            setTimeout(() => handleGetLocation(retryCount + 1), 2000);
         } else {
-          // Fallback to cached location before giving up
-          const cached = await AsyncStorage.getItem('pickupLocation');
-          if (cached) {
-            try {
-              const parsed = JSON.parse(cached);
-              if (parsed?.address) {
-                setcurrentlocation(parsed.address);
-                setCurrentLocation(parsed.address);
-                setPickupLocation(parsed);
-                return;
-              }
-            } catch (e) {}
-          }
           setcurrentlocation(strings?.Locationu);
         }
       } else if (data && data.address) {

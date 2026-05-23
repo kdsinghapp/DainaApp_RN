@@ -27,10 +27,11 @@ import { useParcelDetails } from "./useParcelDetails";
 import LoadingModal from "../../../utils/Loader";
 import font from "../../../theme/font";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { image_url } from "../../../Api";
 import { errorToast, successToast } from "../../../utils/customToast";
 import strings from "../../../localization/Localization";
 
-
+// Status Constants
 const STATUS = {
   PENDING: 'pending',
   ASSIGNED: 'assigned',

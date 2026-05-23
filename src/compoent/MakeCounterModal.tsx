@@ -1,3 +1,7 @@
+// CounterOfferModal.js
+// Reusable React Native modal styled like the provided screenshot
+// Drop this file into your project and import the default export.
+// Example usage at the bottom.
 
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -10,12 +14,14 @@ import {
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
+  Keyboard,
   Animated,
 } from 'react-native';
 import strings from '../localization/Localization';
 import font from '../theme/font';
 
-const PillButton = ({ label, onPress, variant = 'primary', disabled, loading }: any) => {
+/** Common: PillButton (reusable rounded button) */
+const PillButton = ({ label, onPress, variant = 'primary', disabled, loading }) => {
   const bg = variant === 'primary' ? '#F2C200' : '#2D3A3A';
   const text = variant === 'primary' ? '#1A1A1A' : '#FFFFFF';
   return (
@@ -60,9 +66,10 @@ const AppModal = ({ visible, onRequestClose, children }) => {
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.center}
-        pointerEvents="box-none"
       >
-        <View style={styles.card} pointerEvents="auto">{children}</View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.card}>{children}</View>
+        </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </Modal>
   );
@@ -86,8 +93,7 @@ const CounterOfferModal = ({
   }, [visible, defaultValue]);
 
   const error = useMemo(() => {
-    const numericStr = value.replace(',', '.');
-    const n = Number(numericStr);
+    const n = Number(value);
     if (value === '') return null;
     if (Number.isNaN(n)) return strings.EnterValidAmount;
     if (min != null && n < min) return `${strings.MinimumIs} ${currency}${min}`;
@@ -97,7 +103,7 @@ const CounterOfferModal = ({
 
   const handleSubmit = () => {
     if (!error && value !== '') {
-      onSubmit?.(Number(value.replace(',', '.')));
+      onSubmit?.(Number(value));
     }
   };
 
@@ -109,8 +115,8 @@ const CounterOfferModal = ({
         <Text style={styles.currency}>{currency}</Text>
         <TextInput
           value={String(value)}
-          onChangeText={(t) => setValue(t.replace(/[^0-9.,]/g, ''))}
-          placeholder={`0`}
+          onChangeText={(t) => setValue(t.replace(/[^0-9.]/g, ''))}
+          placeholder={`${currency} 0`}
           keyboardType="decimal-pad"
           style={styles.input}
           returnKeyType="done"
@@ -147,7 +153,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 18,
     padding: 18,
-
+    shadowColor: '#000',
+    shadowOpacity: 0.18,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 12 },
   },
   title: {
     textAlign: 'center',
@@ -204,8 +213,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 2,
     textAlign: 'center',
-    fontFamily: font.MonolithRegular,
-
+    fontFamily: font.MonolithRegular
 
   },
 });

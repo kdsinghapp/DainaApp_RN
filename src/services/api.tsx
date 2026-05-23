@@ -1,6 +1,6 @@
 const BASE_URL = 'https://aitechnotech.in/DAINA/api';
 
-export const apiClient = async (url: any, options = {}) => {
+export const apiClient = async (url, options = {}) => {
   const response = await fetch(`${BASE_URL}${url}`, {
     headers: {
       'Content-Type': 'application/json',

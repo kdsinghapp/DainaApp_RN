@@ -41,7 +41,8 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
   const navigation = useNavigation();
   const userData = useSelector((state: any) => state.auth.userData);
 
-
+  // If props are provided, we use them. 
+  // Otherwise, we fallback to context (Delivery flow).
   const isFromProps = propsVisible !== undefined;
 
   if (!isFromProps && (!ctx || userData?.type !== 'Delivery')) return null;
@@ -101,6 +102,8 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
   return (
     <Modal
       isVisible={visible}
+      onBackdropPress={closeNotification}
+      onBackButtonPress={closeNotification}
       animationIn="fadeInUp"
       animationOut="fadeOutDown"
       backdropOpacity={0.4}

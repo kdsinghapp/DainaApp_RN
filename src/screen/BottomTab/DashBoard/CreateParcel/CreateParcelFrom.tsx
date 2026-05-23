@@ -459,7 +459,6 @@ const CreateParcelFrom = () => {
             placeholderTextColor="#ADA4A5"
             value={senderMobile}
             onChangeText={(value) => handleInputChange("senderMobile", value)}
-            maxLength={10}
           />
           {errors.senderMobile ? <Text style={styles.errorText}>{errors.senderMobile}</Text> : null}
 
@@ -601,7 +600,7 @@ const CreateParcelFrom = () => {
             placeholderTextColor={"#ADA4A5"}
             value={receiverMobile}
             onChangeText={(value) => handleInputChange("receiverMobile", value)}
-            maxLength={10}
+
           />
           {errors.receiverMobile ? <Text style={styles.errorText}>{errors.receiverMobile}</Text> : null}
 
