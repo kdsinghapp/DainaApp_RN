@@ -660,10 +660,10 @@ const AddParcelApi = async (param: any, setLoading: (loading: boolean) => void) 
     if (param.receiverAddress) formdata.append("receiverAddress", param.receiverAddress);
     if (param.extraMessage) formdata.append("message", param.extraMessage);
 
-    if (param.pickupLat?.latitude) formdata.append("pickupLat", param.pickupLat.latitude.toString());
-    if (param.pickupLat?.longitude) formdata.append("pickupLon", param.pickupLat.longitude.toString());
-    if (param.droplat?.latitude) formdata.append("droplat", param.droplat.latitude.toString());
-    if (param.droplat?.longitude) formdata.append("dropLon", param.droplat.longitude.toString());
+    // if (param.pickupLat?.latitude) formdata.append("pickupLat", param.pickupLat.latitude.toString());
+    // if (param.pickupLat?.longitude) formdata.append("pickupLon", param.pickupLat.longitude.toString());
+    // if (param.droplat?.latitude) formdata.append("droplat", param.droplat.latitude.toString());
+    // if (param.droplat?.longitude) formdata.append("dropLon", param.droplat.longitude.toString());
 
     console.log("FormData Lat/Lon:", formdata);
     const headers: any = {
