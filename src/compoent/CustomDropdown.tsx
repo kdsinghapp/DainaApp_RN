@@ -9,7 +9,6 @@ import {
   Image,
   Modal,
 } from "react-native";
-import { color } from "../constant";
 import font from "../theme/font";
 import imageIndex from "../assets/imageIndex";
 

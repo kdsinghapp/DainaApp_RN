@@ -57,7 +57,7 @@ const CreateParcelFrom = () => {
   const [image, setImage] = useState<any>();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const pickImageFromGallery = () => {
-    launchImageLibrary({ mediaType: "photo" }, (response) => {
+    launchImageLibrary({ mediaType: "photo", quality: 0.5, maxWidth: 800, maxHeight: 800 }, (response) => {
       if (response.didCancel) {
         console.log("User cancelled image picker");
       } else if (response.errorCode) {

@@ -1,4 +1,3 @@
-// components/AppIcon.tsx
 import React from 'react';
 import { Image, StyleSheet, ImageSourcePropType } from 'react-native';
 import { color } from '../constant';

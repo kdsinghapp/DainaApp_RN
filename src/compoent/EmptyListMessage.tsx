@@ -1,4 +1,3 @@
-// EmptyListMessage.tsx
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import font from '../theme/font';
