@@ -87,16 +87,16 @@ export const useDeliveryHome = () => {
         try {
           const position = await new Promise<{ coords: { latitude: number; longitude: number } }>((resolve, reject) => {
             Geolocation.getCurrentPosition(resolve, (err) => {
-              // Fallback to low accuracy immediately if high accuracy fails
+              // Fallback to high accuracy if fast fetch fails
               Geolocation.getCurrentPosition(resolve, reject, {
-                enableHighAccuracy: false,
-                timeout: 10000,
+                enableHighAccuracy: true,
+                timeout: 15000,
                 maximumAge: 10000
               });
             }, {
-              enableHighAccuracy: true,
-              timeout: 10000,
-              maximumAge: 10000,
+              enableHighAccuracy: false,
+              timeout: 2000,
+              maximumAge: 60000,
             });
           });
           lat = position?.coords?.latitude;
@@ -212,10 +212,25 @@ export const useDeliveryHome = () => {
         startWatching();
       },
       (err) => {
-        console.warn('Initial location fetch failed, starting watch anyway:', err);
-        startWatching();
+        Geolocation.getCurrentPosition(
+          (pos2) => {
+            const lat = pos2?.coords?.latitude;
+            const lon = pos2?.coords?.longitude;
+            if (lat != null && lon != null) {
+              setCoords({ lat, lon });
+              sendLiveLocation(lat, lon);
+              nearbyparcels(lat, lon);
+            }
+            startWatching();
+          },
+          (err2) => {
+            console.warn('Initial location fetch failed, starting watch anyway:', err2);
+            startWatching();
+          },
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+        );
       },
-      { enableHighAccuracy: false, timeout: 10000, maximumAge: 10000 }
+      { enableHighAccuracy: false, timeout: 2000, maximumAge: 60000 }
     );
 
 

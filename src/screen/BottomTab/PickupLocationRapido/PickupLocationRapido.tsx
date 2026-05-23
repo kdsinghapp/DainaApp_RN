@@ -72,17 +72,29 @@ const PickupLocationRapido = () => {
         const { latitude, longitude } = pos.coords;
         const userRegion = { ...region, latitude, longitude, latitudeDelta: 0.005, longitudeDelta: 0.005 };
         setRegion(userRegion);
-        mapRef.current?.animateToRegion(userRegion, 1000);
+        mapRef.current?.animateToRegion(userRegion, 300);
         setIsLocatingUser(false);
-        // Android par onRegionChangeComplete kabhi kabhi nahi chalta, isliye yahan hi address fetch karo
         fetchAddressForCoords(latitude, longitude);
       },
       (err) => {
-        setIsLocatingUser(false);
-        setIsFetchingAddress(false);
-        setAddress(strings?.PermissionDenied,);
+        Geolocation.getCurrentPosition(
+          (pos) => {
+            const { latitude, longitude } = pos.coords;
+            const userRegion = { ...region, latitude, longitude, latitudeDelta: 0.005, longitudeDelta: 0.005 };
+            setRegion(userRegion);
+            mapRef.current?.animateToRegion(userRegion, 300);
+            setIsLocatingUser(false);
+            fetchAddressForCoords(latitude, longitude);
+          },
+          (err2) => {
+            setIsLocatingUser(false);
+            setIsFetchingAddress(false);
+            setAddress(strings?.PermissionDenied);
+          },
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+        );
       },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+      { enableHighAccuracy: false, timeout: 2000, maximumAge: 60000 }
     );
   };
   const route = useRoute();
@@ -120,7 +132,7 @@ const PickupLocationRapido = () => {
       } finally {
         setIsFetchingAddress(false);
       }
-    }, 1000);
+    }, 400);
   };
 
   return (

@@ -102,22 +102,22 @@ const CurrentLocation = forwardRef(({ onLocationFetched }, ref) => {
         }
       };
 
-      // iOS specific: try to get a quick fix first
+      // Primary call: Low accuracy for instantaneous result
       Geolocation.getCurrentPosition(
         (pos) => finish(pos.coords.latitude, pos.coords.longitude),
         (err) => {
-          console.log("First attempt failed, trying fallback...", err.message);
-          // Fallback to low accuracy
+          console.log("First fast attempt failed, trying fallback...", err.message);
+          // Fallback
           Geolocation.getCurrentPosition(
             (pos2) => finish(pos2.coords.latitude, pos2.coords.longitude),
             (err2) => {
               console.log("Second attempt failed:", err2.message);
               finish(null, null, err2.message);
             },
-            { enableHighAccuracy: false, timeout: 10000, maximumAge: 10000 }
+            { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
           );
         },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 10000 }
+        { enableHighAccuracy: false, timeout: 2000, maximumAge: 60000 }
       );
 
       // Final fail-safe

@@ -6,10 +6,6 @@ import CustomHeader from '../../../compoent/CustomHeader';
 import { color } from '../../../constant';
 import font from '../../../theme/font';
 import strings from '../../../localization/Localization';
-
-// If you want icons, install react-native-vector-icons, or use any icon library you prefer
-// import Icon from 'react-native-vector-icons/Ionicons';
-
 const NotificationsSetting = () => {
   // State for toggles
   const [generalNotification, setGeneralNotification] = useState(true);

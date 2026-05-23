@@ -740,15 +740,8 @@ const TripMap = () => {
               opacity: (actionLoading || buttonConfig.disabled) ? 0.6 : 1,
 
             }}
-            // txtcolor={'white'}
-            leftIcon={
-              <Ionicons
-                name={buttonConfig.icon}
-                size={25}
-                color="#fff"
-                style={{ marginRight: 8 }}
-              />
-            }
+          // txtcolor={'white'}
+
           />
         </View>
       </TouchableWithoutFeedback>

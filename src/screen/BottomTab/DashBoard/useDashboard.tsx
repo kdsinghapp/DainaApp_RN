@@ -26,10 +26,25 @@ const useDashboard = () => {
   const initialFetchDone = useRef(false);
 
   useEffect(() => {
-    // Add a small delay to ensure refs are attached and system is ready
+    const loadCachedLocation = async () => {
+      try {
+        const cached = await AsyncStorage.getItem('pickupLocation');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (parsed?.address) {
+            setcurrentlocation(parsed.address);
+            setCurrentLocation(parsed.address);
+            setPickupLocation(parsed);
+          }
+        }
+      } catch (e) {}
+    };
+    loadCachedLocation();
+
+    // Small delay to ensure refs are attached
     const timer = setTimeout(() => {
       handleGetLocation();
-    }, 1000);
+    }, 100);
     return () => clearTimeout(timer);
   }, []);
 

@@ -152,7 +152,6 @@ const ProfileScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <StatusBarComponent />
-      <LoadingModal visible={isLoading} />
 
       <ScrollView
         showsVerticalScrollIndicator={false}
