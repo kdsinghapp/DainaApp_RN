@@ -18,6 +18,7 @@ import strings from '../localization/Localization';
 import { STATUS } from '../utils/Constant';
 import { useDeliveryContext } from '../context/DeliveryContext';
 import { stopNotificationSound } from '../utils/soundPlayer';
+import { color } from '../constant';
 
 import { useSelector } from 'react-redux';
 
@@ -40,11 +41,10 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
   const navigation = useNavigation();
   const userData = useSelector((state: any) => state.auth.userData);
 
-  // If props are provided, we use them. 
-  // Otherwise, we fallback to context (Delivery flow).
+
   const isFromProps = propsVisible !== undefined;
 
-  if (!isFromProps && !ctx) return null;
+  if (!isFromProps && (!ctx || userData?.type !== 'Delivery')) return null;
 
   const {
     newOrderNotification,
@@ -59,15 +59,8 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
 
   // Robustly merge parcel data if it exists nested
   const data = { ...rawData, ...(rawData?.parcel ?? {}), ...(rawData?.data ?? {}) };
-  let pickupAddress = data?.pickup?.location || data?.sender?.address || data?.pickupLocation || data?.pickup_address;
-  let dropAddress = data?.drop?.location || data?.receiver?.address || data?.dropLocation || data?.drop_address;
-
-  if (typeof pickupAddress === 'object' && pickupAddress !== null) {
-    pickupAddress = pickupAddress?.address || pickupAddress?.name || pickupAddress?.location || '';
-  }
-  if (typeof dropAddress === 'object' && dropAddress !== null) {
-    dropAddress = dropAddress?.address || dropAddress?.name || dropAddress?.location || '';
-  }
+  const pickupAddress = data?.pickup?.location || data?.sender?.address || data?.pickupLocation || data?.pickup_address;
+  const dropAddress = data?.drop?.location || data?.receiver?.address || data?.dropLocation || data?.drop_address;
 
   if (!visible) return null;
 
@@ -95,7 +88,6 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
       } else {
         navigation.navigate(ScreenNameEnum.ParcelDetails as never, {
           item: {
-            ...data,
             data: data,
             deliveryStatus: STATUS.PENDING,
           },
@@ -127,7 +119,7 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
               <Icon
                 name={isCounterOffer ? "cash-outline" : "cube"}
                 size={wp(7)}
-                color={"white"}
+                color={color.black}
               />
             </View>
           </View>
@@ -136,13 +128,13 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
             <Text style={styles.headerTitle}>
               {isCounterOffer ? strings.CounterOfferReceived : strings.NewDeliveryRequest}
             </Text>
-            {data?.trackingId ? (
-              <View style={styles.badgeRow}>
-                <View style={[styles.trackingBadge, { backgroundColor: '#F1F5F9' }]}>
-                  <Text style={styles.trackingIdText}>#{data.trackingId}</Text>
+            <View style={styles.badgeRow}>
+              {(data?.trackingId || data?.id) && (
+                <View style={styles.trackingBadge}>
+                  <Text style={styles.trackingIdText}>#{data.trackingId || data.id}</Text>
                 </View>
-              </View>
-            ) : null}
+              )}
+            </View>
           </View>
 
           <TouchableOpacity
@@ -220,7 +212,20 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
             </View>
           )}
 
-
+          {/* Additional Info Grid */}
+          {(data?.weight || data?.package_size || data?.packageSize) && (
+            <View style={styles.infoGrid}>
+              {(data?.weight || data?.package_size || data?.packageSize) && (
+                <View style={styles.infoBox}>
+                  <Icon name="scale-outline" size={wp(4.5)} color="#64748B" />
+                  <View>
+                    <Text style={styles.infoBoxLabel}>{strings.Weight || 'Weight'}</Text>
+                    <Text style={styles.infoBoxValue}>{data.weight || data.package_size || data.packageSize}</Text>
+                  </View>
+                </View>
+              )}
+            </View>
+          )}
 
         </ScrollView>
 
@@ -304,7 +309,6 @@ const styles = StyleSheet.create({
     fontSize: wp(5.5),
     color: '#0F172A',
     fontFamily: font.MonolithRegular,
-    textAlign: "center"
   },
   badgeRow: {
     flexDirection: 'row',
