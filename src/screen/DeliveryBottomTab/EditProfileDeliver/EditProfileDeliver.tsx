@@ -145,6 +145,7 @@ const EditProfileDeliver = () => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBarComponent />
       <CustomHeader label={strings.Profile} />
+      <LoadingModal visible={isLoading} />
 
       <KeyboardAvoidingView
         style={{ flex: 1 }}
