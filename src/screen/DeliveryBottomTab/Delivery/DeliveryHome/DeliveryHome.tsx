@@ -29,12 +29,12 @@ import strings from "../../../../localization/Localization";
 import OnlineSlideRight from "../../../../compoent/OnlineSlideRight";
 import { successToast } from "../../../../utils/customToast";
 import font from "../../../../theme/font";
-
+import NetworkStatusModal from "../../../../compoent/NetworkStatusModal";
 
 const DeliveryHome = () => {
   const ctx = useDeliveryContext();
   if (!ctx) return null;
-  const { isLoading, requests, coords, newOrderNotification, fetchAvailableRequests, isOnline, setIsOnline } = ctx;
+  const { isLoading, requests, coords, newOrderNotification, fetchAvailableRequests, isOnline, setIsOnline, isConnected } = ctx;
   // console.log("newOrderNotification",newOrderNotification?.data?.user?.name)
 
   const [counts, setCounts] = useState<any>(null);

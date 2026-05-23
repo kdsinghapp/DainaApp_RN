@@ -1,5 +1,5 @@
 import messaging from '@react-native-firebase/messaging';
-import { Platform, Alert } from 'react-native';
+import { Platform, Alert, DeviceEventEmitter } from 'react-native';
 import { request, check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import notifee, { AndroidImportance, EventType } from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -131,7 +131,7 @@ class NotificationService {
       const title = String(notification?.title || '').toLowerCase();
       const body = String(notification?.body || '').toLowerCase();
 
-      const isNearbyParcel = type === 'nearby_parcel';
+      const isNearbyParcel = type === 'nearby_parcel' || type === 'new_offer' || type === 'counter_offer' || type === 'new_parcel';
 
       // Check if logged-in user has the 'Delivery' role.
       // If it is a regular user (Customer), suppress nearby parcel requests.
@@ -139,9 +139,13 @@ class NotificationService {
       const parsedAuth = authData ? JSON.parse(authData) : null;
       const userType = parsedAuth?.userData?.type;
 
-      if (isNearbyParcel && userType !== 'Delivery') {
+      if (isNearbyParcel && String(userType || '').trim().toLowerCase() !== 'delivery') {
         console.log('Suppressing foreground nearby_parcel notification for non-delivery user type:', userType);
         return;
+      }
+
+      if (isNearbyParcel) {
+        DeviceEventEmitter.emit('NEW_ORDER_FCM', data);
       }
 
       console.log('--- NOTIFICATION RECEIVED ---', JSON.stringify(remoteMessage, null, 2));
@@ -207,19 +211,38 @@ class NotificationService {
     });
 
     // App opened from background via FCM notification
-    messaging().onNotificationOpenedApp(remoteMessage => {
+    const unsubscribeOpenedApp = messaging().onNotificationOpenedApp(remoteMessage => {
       console.log('App opened via notification');
       stopNotificationSound();
+      if (remoteMessage?.data) {
+        const type = String(remoteMessage.data.type || '').toLowerCase();
+        if (type === 'nearby_parcel' || type === 'new_offer' || type === 'counter_offer' || type === 'new_parcel') {
+          setTimeout(() => {
+            DeviceEventEmitter.emit('NEW_ORDER_FCM', remoteMessage.data);
+          }, 1000);
+        }
+      }
     });
 
     // App opened from quit state
     messaging().getInitialNotification().then(remoteMessage => {
-      if (remoteMessage) stopNotificationSound();
+      if (remoteMessage) {
+        stopNotificationSound();
+        if (remoteMessage?.data) {
+          const type = String(remoteMessage.data.type || '').toLowerCase();
+          if (type === 'nearby_parcel' || type === 'new_offer' || type === 'counter_offer' || type === 'new_parcel') {
+            setTimeout(() => {
+              DeviceEventEmitter.emit('NEW_ORDER_FCM', remoteMessage.data);
+            }, 2500);
+          }
+        }
+      }
     });
 
     return () => {
       unsubscribeForeground();
       unsubscribeNotifee();
+      unsubscribeOpenedApp();
     };
   };
 
@@ -233,16 +256,20 @@ class NotificationService {
       const title = String(notification?.title || '').toLowerCase();
       const body = String(notification?.body || '').toLowerCase();
 
-      const isNearbyParcel = type === 'nearby_parcel';
+      const isNearbyParcel = type === 'nearby_parcel' || type === 'new_offer' || type === 'counter_offer' || type === 'new_parcel';
 
       // Check if logged-in user has the 'Delivery' role in background.
       const authData = await AsyncStorage.getItem('authData');
       const parsedAuth = authData ? JSON.parse(authData) : null;
       const userType = parsedAuth?.userData?.type;
 
-      if (isNearbyParcel && userType !== 'Delivery') {
+      if (isNearbyParcel && String(userType || '').trim().toLowerCase() !== 'delivery') {
         console.log('Suppressing background nearby_parcel notification for non-delivery user type:', userType);
         return;
+      }
+
+      if (isNearbyParcel) {
+        DeviceEventEmitter.emit('NEW_ORDER_FCM', data);
       }
 
       // Prevent duplicate notifications: Firebase automatically displays notifications in background

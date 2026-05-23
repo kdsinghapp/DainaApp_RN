@@ -29,10 +29,10 @@ const AppNavigator: React.FC = () => {
       <PersistGate loading={null} persistor={persistor}>
         <GestureHandlerRootView  >
           <NavigationContainer>
-            <NetworkStatusModal
+            {/* <NetworkStatusModal
               modalVisible={!isConnected}
               offlineText={strings.NoInternetConnection}
-            />
+            /> */}
             <SafeAreaView style={{ flex: 1 }} edges={['bottom']} >
               <RegistrationRoutes />
             </SafeAreaView>

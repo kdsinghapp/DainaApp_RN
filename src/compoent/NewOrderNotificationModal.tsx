@@ -4,7 +4,6 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  Platform,
   Dimensions,
   ScrollView,
 } from 'react-native';
@@ -40,13 +39,8 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
   const ctx = useDeliveryContext();
   const navigation = useNavigation();
   const userData = useSelector((state: any) => state.auth.userData);
-
-  // If props are provided, we use them. 
-  // Otherwise, we fallback to context (Delivery flow).
   const isFromProps = propsVisible !== undefined;
-
-  if (!isFromProps && (!ctx || userData?.type !== 'Delivery')) return null;
-
+  if (!isFromProps && (!ctx || String(userData?.type || '').trim().toLowerCase() !== 'delivery')) return null;
   const {
     newOrderNotification,
     setNewOrderNotification,
@@ -59,9 +53,28 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
   const rawData = isFromProps ? propsData : newOrderNotification?.data;
 
   // Robustly merge parcel data if it exists nested
-  const data = { ...rawData, ...(rawData?.parcel ?? {}), ...(rawData?.data ?? {}) };
-  const pickupAddress = data?.pickup?.location || data?.sender?.address || data?.pickupLocation || data?.pickup_address;
-  const dropAddress = data?.drop?.location || data?.receiver?.address || data?.dropLocation || data?.drop_address;
+  // Robustly merge parcel data if it exists nested
+  let parsedParcel = rawData?.parcel;
+  if (typeof parsedParcel === 'string') {
+    try { parsedParcel = JSON.parse(parsedParcel); } catch (e) { }
+  }
+  let parsedDataObj = rawData?.data;
+  if (typeof parsedDataObj === 'string') {
+    try { parsedDataObj = JSON.parse(parsedDataObj); } catch (e) { }
+  }
+
+  const data = {
+    ...rawData,
+    ...(parsedParcel ?? {}),
+    ...(parsedDataObj ?? {})
+  };
+
+  // Normalize fields that might come in snake_case from FCM
+  if (!data.id && data.parcel_id) data.id = data.parcel_id;
+  if (!data.parcelId && data.parcel_id) data.parcelId = data.parcel_id;
+
+  const pickupAddress = data?.pickup?.location || data?.sender?.address || data?.pickupLocation || data?.pickup_address || data?.pickup_location;
+  const dropAddress = data?.drop?.location || data?.receiver?.address || data?.dropLocation || data?.drop_address || data?.drop_location;
 
   if (!visible) return null;
 
