@@ -29,6 +29,7 @@ import strings from "../../../../localization/Localization";
 import OnlineSlideRight from "../../../../compoent/OnlineSlideRight";
 import { successToast } from "../../../../utils/customToast";
 import font from "../../../../theme/font";
+import LoadingModal from "../../../../utils/Loader";
 
 
 const DeliveryHome = () => {
@@ -181,7 +182,7 @@ const DeliveryHome = () => {
     <>
       <OnlineSlideRight
         coords={coords}
-        onSlideSuccess={(newStatus: boolean) => {}}
+        onSlideSuccess={(newStatus: boolean) => { }}
         isOnline={isOnline}
         setIsOnline={setIsOnline}
       />
@@ -229,8 +230,7 @@ const DeliveryHome = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
-      <NewOrderNotificationModal />
-      <OfferAcceptedModal />
+      <LoadingModal visible={isLoading} />
 
       <CurrentLocation ref={locationRef} />
       <HomeHeaderBar

@@ -44,7 +44,7 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
   // Otherwise, we fallback to context (Delivery flow).
   const isFromProps = propsVisible !== undefined;
 
-  if (!isFromProps && (!ctx || userData?.type !== 'Delivery')) return null;
+  if (!isFromProps && !ctx) return null;
 
   const {
     newOrderNotification,
@@ -59,8 +59,15 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
 
   // Robustly merge parcel data if it exists nested
   const data = { ...rawData, ...(rawData?.parcel ?? {}), ...(rawData?.data ?? {}) };
-  const pickupAddress = data?.pickup?.location || data?.sender?.address || data?.pickupLocation || data?.pickup_address;
-  const dropAddress = data?.drop?.location || data?.receiver?.address || data?.dropLocation || data?.drop_address;
+  let pickupAddress = data?.pickup?.location || data?.sender?.address || data?.pickupLocation || data?.pickup_address;
+  let dropAddress = data?.drop?.location || data?.receiver?.address || data?.dropLocation || data?.drop_address;
+
+  if (typeof pickupAddress === 'object' && pickupAddress !== null) {
+    pickupAddress = pickupAddress?.address || pickupAddress?.name || pickupAddress?.location || '';
+  }
+  if (typeof dropAddress === 'object' && dropAddress !== null) {
+    dropAddress = dropAddress?.address || dropAddress?.name || dropAddress?.location || '';
+  }
 
   if (!visible) return null;
 
@@ -88,6 +95,7 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
       } else {
         navigation.navigate(ScreenNameEnum.ParcelDetails as never, {
           item: {
+            ...data,
             data: data,
             deliveryStatus: STATUS.PENDING,
           },
@@ -128,7 +136,13 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
             <Text style={styles.headerTitle}>
               {isCounterOffer ? strings.CounterOfferReceived : strings.NewDeliveryRequest}
             </Text>
-
+            {data?.trackingId ? (
+              <View style={styles.badgeRow}>
+                <View style={[styles.trackingBadge, { backgroundColor: '#F1F5F9' }]}>
+                  <Text style={styles.trackingIdText}>#{data.trackingId}</Text>
+                </View>
+              </View>
+            ) : null}
           </View>
 
           <TouchableOpacity

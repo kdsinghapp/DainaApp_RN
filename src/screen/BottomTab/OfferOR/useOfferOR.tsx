@@ -29,7 +29,9 @@ export const useOfferOR = () => {
         },
       });
       const result = await response.json();
-      console.log("result offers ", result)
+      console.log("api end point  ---  ", response)
+      console.log("id?.parcel.id  ---  ", id?.parcel.id)
+      console.log("result offers ---  ", result)
       if (result?.status == 1 || result?.success === true) {
         setOfferData(result);
         setIsLoading(false)

@@ -72,6 +72,8 @@ const ShippingScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
+      <LoadingModal visible={isLoading} />
+
       <CurrentLocation ref={locationRef} />
       <HomeHeaderBar
         location={currentlocation || address}
