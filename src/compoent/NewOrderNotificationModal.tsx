@@ -102,7 +102,7 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
       } else {
         navigation.navigate(ScreenNameEnum.ParcelDetails as never, {
           item: {
-            data: data,
+            ...data,
             deliveryStatus: STATUS.PENDING,
           },
         } as never);
