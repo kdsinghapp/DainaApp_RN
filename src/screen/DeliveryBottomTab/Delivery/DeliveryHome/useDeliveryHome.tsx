@@ -87,16 +87,16 @@ export const useDeliveryHome = () => {
         try {
           const position = await new Promise<{ coords: { latitude: number; longitude: number } }>((resolve, reject) => {
             Geolocation.getCurrentPosition(resolve, (err) => {
-              // Fallback to high accuracy if fast fetch fails
+              // Fallback to low accuracy immediately if high accuracy fails
               Geolocation.getCurrentPosition(resolve, reject, {
-                enableHighAccuracy: true,
-                timeout: 15000,
+                enableHighAccuracy: false,
+                timeout: 10000,
                 maximumAge: 10000
               });
             }, {
-              enableHighAccuracy: false,
-              timeout: 2000,
-              maximumAge: 60000,
+              enableHighAccuracy: true,
+              timeout: 10000,
+              maximumAge: 10000,
             });
           });
           lat = position?.coords?.latitude;
@@ -212,25 +212,10 @@ export const useDeliveryHome = () => {
         startWatching();
       },
       (err) => {
-        Geolocation.getCurrentPosition(
-          (pos2) => {
-            const lat = pos2?.coords?.latitude;
-            const lon = pos2?.coords?.longitude;
-            if (lat != null && lon != null) {
-              setCoords({ lat, lon });
-              sendLiveLocation(lat, lon);
-              nearbyparcels(lat, lon);
-            }
-            startWatching();
-          },
-          (err2) => {
-            console.warn('Initial location fetch failed, starting watch anyway:', err2);
-            startWatching();
-          },
-          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-        );
+        console.warn('Initial location fetch failed, starting watch anyway:', err);
+        startWatching();
       },
-      { enableHighAccuracy: false, timeout: 2000, maximumAge: 60000 }
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 10000 }
     );
 
 
@@ -497,6 +482,7 @@ export const useDeliveryHome = () => {
               return;
             }
 
+            console.log('📩 [WebSocket] Received live/nearby message type:', data?.type);
             if (data?.type === 'nearby_parcel') {
               if (cancelledRef.current) return;
 
@@ -541,7 +527,8 @@ export const useDeliveryHome = () => {
 
             if (data?.type === 'remove_nearby_parcel') {
               if (cancelledRef.current) return;
-              const removeId = data?.parcelId ?? data?.id ?? data?.parcel?.id ?? data?.parcel?.parcelId;
+              console.log("🗑️ [WebSocket] Removing nearby parcel notification");
+              const removeId = data?.parcelId ?? data?.id;
               if (removeId) {
                 setRequests((prev: any[]) => prev.filter((r: any) => String(r.id ?? r.parcelId) !== String(removeId)));
 
@@ -560,13 +547,6 @@ export const useDeliveryHome = () => {
                   }
                   return currentNotification;
                 });
-              } else {
-                setNewOrderNotification(null);
-                stopNotificationSound();
-                if (soundTimerRef.current) {
-                  clearTimeout(soundTimerRef.current);
-                  soundTimerRef.current = null;
-                }
               }
               return;
             }

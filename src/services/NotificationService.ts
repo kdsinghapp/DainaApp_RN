@@ -1,6 +1,6 @@
 import messaging from '@react-native-firebase/messaging';
 import { Platform, Alert } from 'react-native';
-import { request, check, RESULTS } from 'react-native-permissions';
+import { request, check, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import notifee, { AndroidImportance, EventType } from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { playNotificationSound, stopNotificationSound } from '../utils/soundPlayer';
@@ -167,7 +167,7 @@ class NotificationService {
           pressAction: { id: 'default' },
         },
         ios: {
-          sound: isNearbyParcel ? 'ringtone-.mp3' : 'default',
+          sound: isNearbyParcel ? 'ringtone_notification.mp3' : 'default',
         },
       });
 
@@ -178,6 +178,7 @@ class NotificationService {
 
       if (isNearbyParcel && isUserOnline) {
         playNotificationSound();
+        // Stop after 10 seconds to match the socket behavior in DeliveryHome
         setTimeout(() => {
           stopNotificationSound();
         }, 10000);
@@ -265,7 +266,7 @@ class NotificationService {
             pressAction: { id: 'default' },
           },
           ios: {
-            sound: isNearbyParcel ? 'ringtone-.mp3' : 'default',
+            sound: isNearbyParcel ? 'ringtone_notification.mp3' : 'default',
           },
         });
       }

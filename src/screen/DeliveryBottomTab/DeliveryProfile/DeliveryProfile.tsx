@@ -133,6 +133,7 @@ const DeliveryProfile: React.FC<Props> = ({
     <SafeAreaView style={styles.safe}>
       <StatusBarComponent />
       <NewOrderNotificationModal />
+
       <OfferAcceptedModal />
       <ScrollView
         showsVerticalScrollIndicator={false}
