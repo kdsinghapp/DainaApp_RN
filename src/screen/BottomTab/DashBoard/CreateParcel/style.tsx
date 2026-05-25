@@ -1,10 +1,29 @@
 import { StyleSheet } from "react-native";
 import font from "../../../../theme/font";
+
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    marginHorizontal: 15
+    backgroundColor: "#F4F6F9",
+    paddingHorizontal: 16,
+    paddingTop: 16,
+  },
+  card: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  cardTitle: {
+    fontSize: 17,
+    color: "#1E293B",
+    fontFamily: font.MonolithRegular,
+    marginBottom: 16,
   },
   sectionTitle: {
     fontSize: 16,
@@ -13,81 +32,117 @@ export const styles = StyleSheet.create({
     color: "black",
     fontFamily: font.MonolithRegular
   },
-  input: {
-    borderWidth: 1.5,
-    borderColor: "#F0F0F0",
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    height: 55,
-    backgroundColor: "#fff",
-    justifyContent: "space-between",
-    color: "black",
+  inputContainer: {
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 13,
+    color: "#64748B",
+    marginBottom: 8,
     fontFamily: font.MonolithRegular,
-    fontSize: 15,
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    minHeight: 56,
+    backgroundColor: "#F8FAFC",
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 15,
-    marginBottom: 15
-
-
+  },
+  textInput: {
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    height: 56,
+    backgroundColor: "#F8FAFC",
+    color: "#0F172A",
+    fontFamily: font.MonolithRegular,
+    fontSize: 15,
+  },
+  textArea: {
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    minHeight: 100,
+    backgroundColor: "#F8FAFC",
+    color: "#0F172A",
+    fontFamily: font.MonolithRegular,
+    fontSize: 15,
+    textAlignVertical: "top",
   },
   placeholderText: {
-    color: "#ADA4A5",
+    color: "#94A3B8",
     fontSize: 15,
-    fontFamily: font.MonolithRegular
+    fontFamily: font.MonolithRegular,
+    flex: 1,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  halfInput: {
+    width: "48%",
   },
   packageRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 20,
+    marginBottom: 8,
   },
   packageBox: {
-    width: "30%",
-    paddingVertical: 40,
+    width: "31%",
+    paddingVertical: 16,
     borderWidth: 1.5,
-    borderRadius: 10,
-    borderColor: "#EAEAEA",
+    borderRadius: 12,
+    borderColor: "#F1F5F9",
+    backgroundColor: "#F8FAFC",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 11,
   },
   packageText: {
-    fontSize: 14,
-    color: "#333",
+    fontSize: 13,
+    color: "#64748B",
     fontFamily: font.MonolithRegular,
-
+    textAlign: "center",
+    marginTop: 8,
   },
   selectedBox: {
-    borderColor: "#FFD600",
+    borderColor: "#FFCC00",
     backgroundColor: "#FFFBE6",
   },
   selectedText: {
-    color: "#FFD600",
-    fontFamily: font.MonolithRegular
-
+    color: "#B28E00",
+    fontFamily: font.MonolithRegular,
+  },
+  submitBtnContainer: {
+    marginBottom: 50,
+    marginTop: 11,
   },
   submitBtn: {
     marginTop: 30,
-    backgroundColor: "#FFD600",
+    backgroundColor: "#FFCC00",
     borderRadius: 10,
     paddingVertical: 15,
     alignItems: "center",
   },
   submitText: {
     fontSize: 16,
-    fontFamily: font.MonolithRegular
-    ,
+    fontFamily: font.MonolithRegular,
     color: "#000",
   },
   inputError: {
-    borderColor: 'red',
-    borderWidth: 1,
+    borderColor: '#EF4444',
+    backgroundColor: '#FEF2F2',
   },
   errorText: {
-    color: 'red',
+    color: '#EF4444',
     fontSize: 12,
     marginTop: 4,
-    marginBottom: 8,
+    marginBottom: 4,
     fontFamily: font.MonolithRegular,
   },
   imageUploadButton: {
@@ -106,7 +161,7 @@ export const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: font.MonolithRegular,
     color: "#475569",
-    fontWeight: "600",
+    marginTop: 10,
   },
   imageUploadSubText: {
     fontSize: 12,
@@ -150,6 +205,10 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: font.MonolithRegular,
     color: "#0F172A",
-    fontWeight: "600",
+  },
+  iconLocation: {
+    height: 24,
+    width: 24,
+    resizeMode: "contain",
   },
 });

@@ -119,6 +119,5 @@ export const styles = StyleSheet.create({
     fontFamily: font.MonolithRegular,
     color: color.primary,
     marginLeft: 4,
-    fontWeight: "bold",
   },
 });

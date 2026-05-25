@@ -363,301 +363,324 @@ const CreateParcelFrom = () => {
       <LoadingModal visible={isLoading} />
 
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : 'height'} // undefined often works best for Android with adjustResize
+        behavior={Platform.OS === "ios" ? "padding" : 'height'}
         style={{ flex: 1 }}
       >
         <ScrollView
           showsVerticalScrollIndicator={false}
           style={styles.container}
         >
-          {/* Pickup & Drop */}
-          <Text style={styles.sectionTitle}>{strings.PickupAndDrop}</Text>
+          {/* Route Details Card */}
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>{strings.PickupAndDrop || "Route Details"}</Text>
 
-          <TouchableOpacity
-            onPress={() =>
-              navgatoon.navigate(ScreenNameEnum.PickupLocationRapido, {
-                onLocationSelect: (data) => {
-                  setPickupLocation(data);
-                }
-              })
-            }
-            style={[styles.input, { height: "auto", minHeight: 55, paddingVertical: 12 }, errors.pickupLocation ? styles.inputError : null]}
-          >
-            <Text style={{
-              color: pickupLocation?.address ? "black" : "#ADA4A5",
-              fontSize: 15,
-              fontFamily: font.MonolithRegular,
-              flex: 1,
-              paddingRight: 10,
-            }}>
-              {pickupLocation ? pickupLocation?.address : strings.AddPickupLocation}
-            </Text>
-            <Image style={{
-              height: 22,
-              width: 22,
-              resizeMode: "contain"
-            }} source={imageIndex.location1} />
-          </TouchableOpacity>
-          {errors.pickupLocation ? <Text style={styles.errorText}>{errors.pickupLocation}</Text> : null}
-
-          <TouchableOpacity
-            onPress={() =>
-              navgatoon.navigate(ScreenNameEnum.PickupLocationRapido, {
-                onLocationSelect: (data) => {
-                  setDropLocation(data?.address);
-                  sedroplat({
-                    latitude: data?.latitude,
-                    longitude: data?.longitude,
-                  });
-
-                }
-              })
-            }
-            style={[styles.input, { height: "auto", minHeight: 55, paddingVertical: 12 }, errors.dropLocation ? styles.inputError : null]}
-          >
-            <Text style={{
-              color: dropLocation ? "black" : "#ADA4A5",
-              fontSize: 15,
-              fontFamily: font.MonolithRegular,
-              flex: 1,
-              paddingRight: 10,
-            }}>
-              {dropLocation ? dropLocation : strings.AddDropLocation}
-            </Text>
-            <Image style={{
-              height: 22,
-              width: 22,
-              resizeMode: "contain"
-            }} source={imageIndex.location1} />
-          </TouchableOpacity>
-          {errors.dropLocation ? <Text style={styles.errorText}>{errors.dropLocation}</Text> : null}
-
-          {/* Shipment & Sender Details */}
-          <Text style={styles.sectionTitle}>{strings.ShipmentSenderDetails}</Text>
-
-          <CustomDropdown
-            data={shipmentTypeData}
-            placeholder={strings.ShipmentType}
-            selectedValue={shipmentType}
-            onSelect={(value) => handleDropdownSelect("shipmentType", value)}
-          />
-          {errors.shipmentType ? <Text style={styles.errorText}>{errors.shipmentType}</Text> : null}
-
-          <TextInput
-            placeholderTextColor={"#ADA4A5"}
-            value={senderName}
-            onChangeText={(value) => handleInputChange("senderName", value)}
-            style={[styles.input, errors.senderName ? styles.inputError : null]}
-            placeholder={strings.SenderName}
-          />
-          {errors.senderName ? <Text style={styles.errorText}>{errors.senderName}</Text> : null}
-
-          <TextInput
-            style={[styles.input, errors.senderMobile ? styles.inputError : null]}
-            placeholder={strings.SenderMobileNumber}
-            keyboardType="phone-pad"
-            placeholderTextColor="#ADA4A5"
-            value={senderMobile}
-            onChangeText={(value) => handleInputChange("senderMobile", value)}
-          />
-          {errors.senderMobile ? <Text style={styles.errorText}>{errors.senderMobile}</Text> : null}
-
-          {/* <TextInput
-            placeholderTextColor={"#ADA4A5"}
-            value={senderAddress}
-            onChangeText={(value) => handleInputChange("senderAddress", value)}
-            style={[styles.input, errors.senderAddress ? styles.inputError : null]}
-            placeholder="Sender Address"
-          />
-          {errors.senderAddress ? <Text style={styles.errorText}>{errors.senderAddress}</Text> : null} */}
-
-          <TouchableOpacity
-            style={[styles.input, errors.pickupDate ? styles.inputError : null]}
-            onPress={() => setShowDate(true)}
-          >
-            <Text style={styles.placeholderText}>
-              {pickupDate ? pickupDate.toDateString() : strings.PickupDate}
-            </Text>
-          </TouchableOpacity>
-          {errors.pickupDate ? <Text style={styles.errorText}>{errors.pickupDate}</Text> : null}
-
-          {showDate && (
-            <DateTimePicker
-              value={pickupDate || new Date()}
-              mode="date"
-              display={Platform.OS === "ios" ? "inline" : "default"}
-              onChange={(e, date) => {
-                setShowDate(false);
-                if (date) {
-                  setPickupDate(date);
-                  if (errors.pickupDate) {
-                    setErrors(prev => ({ ...prev, pickupDate: "" }));
-                  }
-                }
-              }}
-            />
-          )}
-
-          <TouchableOpacity
-            style={[styles.input, errors.pickupTime ? styles.inputError : null]}
-            onPress={() => setShowTime(true)}
-          >
-            <Text style={styles.placeholderText}>
-              {pickupTime
-                ? pickupTime.toLocaleTimeString()
-                : strings.PickupTime}
-            </Text>
-          </TouchableOpacity>
-          {errors?.pickupTime ? <Text style={styles.errorText}>{errors.pickupTime}</Text> : null}
-
-          {showTime && (
-            <DateTimePicker
-              value={pickupTime || new Date()}
-              mode="time"
-              display={Platform.OS === "ios" ? "inline" : "default"}
-              onChange={(e, time) => {
-                setShowTime(false);
-                if (time) {
-                  setPickupTime(time);
-                  if (errors.pickupTime) {
-                    setErrors(prev => ({ ...prev, pickupTime: "" }));
-                  }
-                }
-              }}
-            />
-          )}
-
-          <CustomDropdown
-            data={consignmentTypeData}
-            placeholder={strings.ConsignmentType}
-            selectedValue={consignmentType}
-            onSelect={(value) => handleDropdownSelect("consignmentType", value)}
-          />
-          {errors.consignmentType ? <Text style={styles.errorText}>{errors.consignmentType}</Text> : null}
-
-          {/* Package Size */}
-          <Text style={styles.sectionTitle}>{strings.PackageSize}</Text>
-          <View style={styles.packageRow}>
-            {[
-              { label: strings.SmallSize, value: "1 KG" },
-              { label: strings.MediumSize, value: "3KG-10KG" },
-              { label: strings.LargeSize, value: "10kG" }
-            ].map((item) => (
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>{strings.PickupLocation || "Pickup Location"}</Text>
               <TouchableOpacity
-                key={item.value}
-                style={[
-                  styles.packageBox,
-                  packageSize === item.value && styles.selectedBox,
-                ]}
-                onPress={() => setPackageSize(item.value)}
+                onPress={() =>
+                  navgatoon.navigate(ScreenNameEnum.PickupLocationRapido, {
+                    onLocationSelect: (data: any) => {
+                      setPickupLocation(data);
+                    }
+                  })
+                }
+                style={[styles.input, errors.pickupLocation ? styles.inputError : null]}
               >
-                <Text
-                  style={[
-                    styles.packageText,
-                    packageSize === item.value && styles.selectedText,
-                  ]}
-                >
-                  {item.label}
+                <Image style={[styles.iconLocation, { tintColor: "#FFCC00", marginRight: 10 }]} source={imageIndex.location1} />
+                <Text style={[styles.placeholderText, { color: pickupLocation?.address ? "#0F172A" : "#94A3B8" }]}>
+                  {pickupLocation ? pickupLocation?.address : strings.AddPickupLocation}
                 </Text>
               </TouchableOpacity>
-            ))}
+              {errors.pickupLocation ? <Text style={styles.errorText}>{errors.pickupLocation}</Text> : null}
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>{strings.DropLocation || "Drop Location"}</Text>
+              <TouchableOpacity
+                onPress={() =>
+                  navgatoon.navigate(ScreenNameEnum.PickupLocationRapido, {
+                    onLocationSelect: (data: any) => {
+                      setDropLocation(data?.address);
+                      sedroplat({
+                        latitude: data?.latitude,
+                        longitude: data?.longitude,
+                      });
+                    }
+                  })
+                }
+                style={[styles.input, errors.dropLocation ? styles.inputError : null]}
+              >
+                <Image style={[styles.iconLocation, { tintColor: "#EF4444", marginRight: 10 }]} source={imageIndex.location1} />
+                <Text style={[styles.placeholderText, { color: dropLocation ? "#0F172A" : "#94A3B8" }]}>
+                  {dropLocation ? dropLocation : strings.AddDropLocation}
+                </Text>
+              </TouchableOpacity>
+              {errors.dropLocation ? <Text style={styles.errorText}>{errors.dropLocation}</Text> : null}
+            </View>
           </View>
 
-          {/* Delivery Type */}
-          <CustomDropdown
-            data={deliveryTypeData}
-            placeholder={strings.DeliveryType}
-            selectedValue={deliveryType}
-            onSelect={(value) => handleDropdownSelect("deliveryType", value)}
-          />
-          {errors.deliveryType ? <Text style={styles.errorText}>{errors.deliveryType}</Text> : null}
+          {/* Parcel Details Card */}
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>{strings.ShipmentSenderDetails || "Parcel Details"}</Text>
 
-          <TextInput
-            placeholderTextColor={"#ADA4A5"}
-            value={price}
-            onChangeText={(value) => handleInputChange("price", value)}
-            style={[styles.input, errors.price ? styles.inputError : null]}
-            placeholder={strings.Price}
-            keyboardType="numeric"
-          />
-          {errors.price ? <Text style={styles.errorText}>{errors.price}</Text> : null}
-
-          {/* Receiver Details */}
-          <Text style={styles.sectionTitle}>{strings.ReceiverDetails}</Text>
-          <TextInput
-            style={[styles.input, errors.receiverName ? styles.inputError : null]}
-            placeholderTextColor={"#ADA4A5"}
-            value={receiverName}
-            onChangeText={(value) => handleInputChange("receiverName", value)}
-            placeholder={strings.ReceiverName}
-          />
-          {errors.receiverName ? <Text style={styles.errorText}>{errors.receiverName}</Text> : null}
-
-          <TextInput
-            style={[styles.input, errors.receiverMobile ? styles.inputError : null]}
-            placeholder={strings.ReceiverMobileNumber}
-            keyboardType="phone-pad"
-            placeholderTextColor={"#ADA4A5"}
-            value={receiverMobile}
-            onChangeText={(value) => handleInputChange("receiverMobile", value)}
-
-          />
-          {errors.receiverMobile ? <Text style={styles.errorText}>{errors.receiverMobile}</Text> : null}
-
-          {/* <TextInput
-            style={[styles.input, errors.receiverAddress ? styles.inputError : null]}
-            placeholder="Receiver Address"
-            placeholderTextColor={"#ADA4A5"}
-            value={receiverAddress}
-            onChangeText={(value) => handleInputChange("receiverAddress", value)}
-          />
-          {errors.receiverAddress ? <Text style={styles.errorText}>{errors.receiverAddress}</Text> : null} */}
-
-          <TextInput
-            style={[styles.input, { height: 80 }]}
-            placeholder={strings.ExtraMessage}
-            multiline
-            placeholderTextColor={"#ADA4A5"}
-            value={extraMessage}
-            onChangeText={setExtraMessage}
-          />
-          {image?.uri ? (
-            <TouchableOpacity
-              onPress={() => setIsModalVisible(true)}
-              style={styles.imagePreviewContainer}
-              activeOpacity={0.8}
-            >
-              <Image
-                source={{ uri: image?.uri || image }}
-                style={styles.parcelImage}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>{strings.ShipmentType}</Text>
+              <CustomDropdown
+                data={shipmentTypeData}
+                placeholder={strings.ShipmentType}
+                selectedValue={shipmentType}
+                onSelect={(value) => handleDropdownSelect("shipmentType", value)}
               />
-              <View style={styles.imageEditBadge}>
-                <Icon name="camera" size={16} color="#0F172A" style={{ marginRight: 4 }} />
-                <Text style={styles.imageEditBadgeText}>{strings.Edit || "Change"}</Text>
-              </View>
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity
-              onPress={() => setIsModalVisible(true)}
-              style={styles.imageUploadButton}
-              activeOpacity={0.7}
-            >
-              <Icon name="cloud-upload-outline" size={32} color="#FFD600" style={{ marginBottom: 6 }} />
-              <Text style={styles.imageUploadPlaceholderText}>{strings.AddParcelImage}</Text>
-              <Text style={styles.imageUploadSubText}>Supports JPG, PNG formats</Text>
-            </TouchableOpacity>
-          )}
+              {errors.shipmentType ? <Text style={styles.errorText}>{errors.shipmentType}</Text> : null}
+            </View>
 
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>{strings.ConsignmentType}</Text>
+              <CustomDropdown
+                data={consignmentTypeData}
+                placeholder={strings.ConsignmentType}
+                selectedValue={consignmentType}
+                onSelect={(value) => handleDropdownSelect("consignmentType", value)}
+              />
+              {errors.consignmentType ? <Text style={styles.errorText}>{errors.consignmentType}</Text> : null}
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>{strings.PackageSize}</Text>
+              <View style={styles.packageRow}>
+                {[
+                  { label: strings.SmallSize, value: "1 KG" },
+                  { label: strings.MediumSize, value: "3KG-10KG" },
+                  { label: strings.LargeSize, value: "10kG" }
+                ].map((item) => (
+                  <TouchableOpacity
+                    key={item.value}
+                    style={[
+                      styles.packageBox,
+                      packageSize === item.value && styles.selectedBox,
+                    ]}
+                    onPress={() => setPackageSize(item.value)}
+                  >
+                    <Icon
+                      name={item.value === "1 KG" ? "cube-outline" : item.value === "3KG-10KG" ? "layers-outline" : "archive-outline"}
+                      size={24}
+                      color={packageSize === item.value ? "#B28E00" : "#64748B"}
+                    />
+                    <Text
+                      style={[
+                        styles.packageText,
+                        packageSize === item.value && styles.selectedText,
+                      ]}
+                    >
+                      {item.label}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>{strings.DeliveryType}</Text>
+              <CustomDropdown
+                data={deliveryTypeData}
+                placeholder={strings.DeliveryType}
+                selectedValue={deliveryType}
+                onSelect={(value) => handleDropdownSelect("deliveryType", value)}
+              />
+              {errors.deliveryType ? <Text style={styles.errorText}>{errors.deliveryType}</Text> : null}
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>{strings.Price}</Text>
+              <TextInput
+                placeholderTextColor={"#94A3B8"}
+                value={price}
+                onChangeText={(value) => handleInputChange("price", value)}
+                style={[styles.textInput, errors.price ? styles.inputError : null]}
+                placeholder={strings.Price}
+                keyboardType="numeric"
+              />
+              {errors.price ? <Text style={styles.errorText}>{errors.price}</Text> : null}
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>{strings.AddParcelImage || "Parcel Image"}</Text>
+              {image?.uri ? (
+                <TouchableOpacity
+                  onPress={() => setIsModalVisible(true)}
+                  style={styles.imagePreviewContainer}
+                  activeOpacity={0.8}
+                >
+                  <Image
+                    source={{ uri: image?.uri || image }}
+                    style={styles.parcelImage}
+                  />
+                  <View style={styles.imageEditBadge}>
+                    <Icon name="camera" size={16} color="#0F172A" style={{ marginRight: 4 }} />
+                    <Text style={styles.imageEditBadgeText}>{strings.Edit || "Change"}</Text>
+                  </View>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => setIsModalVisible(true)}
+                  style={styles.imageUploadButton}
+                  activeOpacity={0.7}
+                >
+                  <Icon name="cloud-upload-outline" size={36} color="#FFCC00" style={{ marginBottom: 6 }} />
+                  <Text style={styles.imageUploadPlaceholderText}>{strings.AddParcelImage}</Text>
+                  <Text style={styles.imageUploadSubText}>Supports JPG, PNG formats</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+
+          {/* Schedule Card */}
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>{strings.PickupAndDrop || "Schedule Pickup"}</Text>
+
+            <View style={styles.row}>
+              <View style={[styles.inputContainer, styles.halfInput]}>
+                <Text style={styles.label}>{strings.PickupDate}</Text>
+                <TouchableOpacity
+                  style={[styles.input, errors.pickupDate ? styles.inputError : null]}
+                  onPress={() => setShowDate(true)}
+                >
+                  <Icon name="calendar-outline" size={20} color="#64748B" style={{ marginRight: 8 }} />
+                  <Text style={[styles.placeholderText, { color: pickupDate ? "#0F172A" : "#94A3B8" }]}>
+                    {pickupDate ? pickupDate.toDateString() : strings.PickupDate}
+                  </Text>
+                </TouchableOpacity>
+                {errors.pickupDate ? <Text style={styles.errorText}>{errors.pickupDate}</Text> : null}
+              </View>
+
+              <View style={[styles.inputContainer, styles.halfInput]}>
+                <Text style={styles.label}>{strings.PickupTime}</Text>
+                <TouchableOpacity
+                  style={[styles.input, errors.pickupTime ? styles.inputError : null]}
+                  onPress={() => setShowTime(true)}
+                >
+                  <Icon name="time-outline" size={20} color="#64748B" style={{ marginRight: 8 }} />
+                  <Text style={[styles.placeholderText, { color: pickupTime ? "#0F172A" : "#94A3B8" }]}>
+                    {pickupTime
+                      ? pickupTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                      : strings.PickupTime}
+                  </Text>
+                </TouchableOpacity>
+                {errors?.pickupTime ? <Text style={styles.errorText}>{errors.pickupTime}</Text> : null}
+              </View>
+            </View>
+
+            {showDate && (
+              <DateTimePicker
+                value={pickupDate || new Date()}
+                mode="date"
+                display={Platform.OS === "ios" ? "inline" : "default"}
+                onChange={(e, date) => {
+                  setShowDate(false);
+                  if (date) {
+                    setPickupDate(date);
+                    if (errors.pickupDate) {
+                      setErrors(prev => ({ ...prev, pickupDate: "" }));
+                    }
+                  }
+                }}
+              />
+            )}
+
+            {showTime && (
+              <DateTimePicker
+                value={pickupTime || new Date()}
+                mode="time"
+                display={Platform.OS === "ios" ? "inline" : "default"}
+                onChange={(e, time) => {
+                  setShowTime(false);
+                  if (time) {
+                    setPickupTime(time);
+                    if (errors.pickupTime) {
+                      setErrors(prev => ({ ...prev, pickupTime: "" }));
+                    }
+                  }
+                }}
+              />
+            )}
+          </View>
+
+          {/* Contact Details Card */}
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>{strings.ContactDetails || "Contact Details"}</Text>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>{strings.SenderName}</Text>
+              <TextInput
+                placeholderTextColor={"#94A3B8"}
+                value={senderName}
+                onChangeText={(value) => handleInputChange("senderName", value)}
+                style={[styles.textInput, errors.senderName ? styles.inputError : null]}
+                placeholder={strings.SenderName}
+              />
+              {errors.senderName ? <Text style={styles.errorText}>{errors.senderName}</Text> : null}
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>{strings.SenderMobileNumber}</Text>
+              <TextInput
+                style={[styles.textInput, errors.senderMobile ? styles.inputError : null]}
+                placeholder={strings.SenderMobileNumber}
+                keyboardType="phone-pad"
+                placeholderTextColor="#94A3B8"
+                value={senderMobile}
+                onChangeText={(value) => handleInputChange("senderMobile", value)}
+              />
+              {errors.senderMobile ? <Text style={styles.errorText}>{errors.senderMobile}</Text> : null}
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>{strings.ReceiverName}</Text>
+              <TextInput
+                style={[styles.textInput, errors.receiverName ? styles.inputError : null]}
+                placeholderTextColor={"#94A3B8"}
+                value={receiverName}
+                onChangeText={(value) => handleInputChange("receiverName", value)}
+                placeholder={strings.ReceiverName}
+              />
+              {errors.receiverName ? <Text style={styles.errorText}>{errors.receiverName}</Text> : null}
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>{strings.ReceiverMobileNumber}</Text>
+              <TextInput
+                style={[styles.textInput, errors.receiverMobile ? styles.inputError : null]}
+                placeholder={strings.ReceiverMobileNumber}
+                keyboardType="phone-pad"
+                placeholderTextColor={"#94A3B8"}
+                value={receiverMobile}
+                onChangeText={(value) => handleInputChange("receiverMobile", value)}
+              />
+              {errors.receiverMobile ? <Text style={styles.errorText}>{errors.receiverMobile}</Text> : null}
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>{strings.ExtraMessage}</Text>
+              <TextInput
+                style={[styles.textArea]}
+                placeholder={strings.ExtraMessage}
+                multiline
+                placeholderTextColor={"#94A3B8"}
+                value={extraMessage}
+                onChangeText={setExtraMessage}
+              />
+            </View>
+          </View>
 
           {/* Submit Button */}
-          <View style={{
-            marginBottom: 50,
-            marginTop: 11
-          }}>
-            <CustomButton title={strings.SendRequest} onPress={handleSubmit}
-
+          <View style={styles.submitBtnContainer}>
+            <CustomButton
+              title={strings.SendRequest}
+              onPress={handleSubmit}
               textStyle={{
-                color: "white"
+                color: "black",
+
+                fontFamily: font.MonolithRegular,
               }}
             />
           </View>

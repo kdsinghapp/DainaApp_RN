@@ -79,7 +79,7 @@ const Countdown = ({ eventTime = 1683526848, interval = 1000 }) => {
     }, [eventTime]);
 
     return (
-        <Text size={14} fontWeight="700" color="#FFF">
+        <Text size={14} color="#FFF">
             This class start in - {duration.days()}D : {duration.hours()}H :{' '}
             {duration.minutes()}M : {duration.seconds()}S
         </Text>

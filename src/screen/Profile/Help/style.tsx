@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
     searchInput: {
         flex: 1,
         fontSize: 14,
-        fontWeight: "500"
+
     },
     headerText: {
         fontSize: 15,

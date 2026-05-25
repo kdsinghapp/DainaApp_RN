@@ -96,7 +96,7 @@ export default function OfferOR() {
             <Text style={[styles.bold, { color: "#878787", fontFamily: font.MonolithRegular, marginLeft: 8 }]}>
               {item?.deliveryUser?.rating || 0}
               {item?.deliveryUser?.totalReviews !== undefined && (
-                <Text style={{ fontWeight: 'normal', color: '#64748B' }}> ({item?.deliveryUser?.totalReviews} {strings?.ReviewsLabel})</Text>
+                <Text style={{ color: '#64748B' }}> ({item?.deliveryUser?.totalReviews} {strings?.ReviewsLabel})</Text>
               )}
             </Text>
           </View>
@@ -139,75 +139,75 @@ export default function OfferOR() {
       <LoadingModal visible={isLoading} />
       <CustomHeader label={strings?.Back} />
       <ScrollView showsVerticalScrollIndicator={false}
-      style={{
-        marginBottom: 45
-      }}
-      showsHorizontalScrollIndicator={false}
+        style={{
+          marginBottom: 45
+        }}
+        showsHorizontalScrollIndicator={false}
       >
-      <View style={{
-        marginHorizontal: 15
-      }}>
-        <Text style={styles.header}>{strings.OffersForYourAd}</Text>
+        <View style={{
+          marginHorizontal: 15
+        }}>
+          <Text style={styles.header}>{strings.OffersForYourAd}</Text>
 
-        <FlatList
-          style={{
-            marginTop: 20,
-            marginBottom: 45
+          <FlatList
+            style={{
+              marginTop: 20,
+              marginBottom: 45
+            }}
+            ListEmptyComponent={() => (
+              <Text style={styles.emptyText}>
+                {strings?.NoOffersAvailable}
+              </Text>
+            )}
+
+            data={offerData?.offers}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item, index }) => {
+              return (
+                <Animated.View entering={FadeInDown.delay(index * 100).duration(600)}>
+                  <OfferCard item={item} onCounterPress={
+
+                    () => setOpen(true)} />
+                </Animated.View>
+              )
+            }}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
+        <CounterOfferModal
+          visible={Open}
+          defaultValue={1}
+          currency="$"
+          min={1}
+          max={50000}
+          onCancel={() => setOpen(false)}
+          onSubmit={(amount) => {
+            if (selectedOfferId) {
+              CounterOffer(selectedOfferId, amount); // 👈 ID + amount
+            }
+            setOpen(false);
           }}
-          ListEmptyComponent={() => (
-            <Text style={styles.emptyText}>
-              {strings?.NoOffersAvailable}
-            </Text>
-          )}
 
-          data={offerData?.offers}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item, index }) => {
-            return (
-              <Animated.View entering={FadeInDown.delay(index * 100).duration(600)}>
-                <OfferCard item={item} onCounterPress={
-
-                  () => setOpen(true)} />
-              </Animated.View>
-            )
-          }}
-          showsVerticalScrollIndicator={false}
         />
-      </View>
-      <CounterOfferModal
-        visible={Open}
-        defaultValue={1}
-        currency="$"
-        min={1}
-        max={50000}
-        onCancel={() => setOpen(false)}
-        onSubmit={(amount) => {
-          if (selectedOfferId) {
-            CounterOffer(selectedOfferId, amount); // 👈 ID + amount
-          }
-          setOpen(false);
-        }}
-
-      />
 
 
 
-      <TrackCourierModal visible={trackerModal}
+        <TrackCourierModal visible={trackerModal}
 
-        onClose={() => {
-          settrackerModal(false)
+          onClose={() => {
+            settrackerModal(false)
 
-          setOpen(false)
-        }}
-        onpress={() => {
-          setOpen(false)
-          settrackerModal(false)
+            setOpen(false)
+          }}
+          onpress={() => {
+            setOpen(false)
+            settrackerModal(false)
 
-          navgation.navigate(ScreenNameEnum.CourierTrackingScreen)
+            navgation.navigate(ScreenNameEnum.CourierTrackingScreen)
 
-        }}
-      //  onLocationGranted
-      />
+          }}
+        //  onLocationGranted
+        />
       </ScrollView>
     </SafeAreaView>
   );
