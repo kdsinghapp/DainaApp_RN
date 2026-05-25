@@ -9,7 +9,6 @@ import {
   ImageBackground,
   TextInput,
   ScrollView,
-  Image,
   Alert,
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -27,7 +26,6 @@ import { useParcelDetails } from "./useParcelDetails";
 import LoadingModal from "../../../utils/Loader";
 import font from "../../../theme/font";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { image_url } from "../../../Api";
 import { errorToast, successToast } from "../../../utils/customToast";
 import strings from "../../../localization/Localization";
 
@@ -44,15 +42,6 @@ const STATUS = {
   CANCELLED: 'cancelled'
 };
 
-const STATUS_LABELS = {
-  [STATUS.PENDING]: strings.StatusPending,
-  [STATUS.ASSIGNED]: strings.StatusAssigned,
-  [STATUS.GOING_TO_PICKUP]: strings.StatusGoingToPickup,
-  [STATUS.PICKED_UP]: strings.StatusPickedUp,
-  [STATUS.ON_THE_WAY]: strings.StatusOnTheWay,
-  [STATUS.DELIVERED]: strings.StatusDelivered,
-  [STATUS.CANCELLED]: strings.StatusCancelled
-};
 
 const STATUS_COLORS = {
   [STATUS.PENDING]: '#FF9500',

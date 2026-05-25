@@ -10,7 +10,7 @@ import {
   RefreshControl,
   Animated,
 } from "react-native";
-import ReAnimated, { FadeInDown, FadeIn, Layout } from "react-native-reanimated";
+import ReAnimated, { FadeInDown, } from "react-native-reanimated";
 import { SafeAreaView, } from "react-native-safe-area-context";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import StatusBarComponent from "../../../../compoent/StatusBarCompoent";
@@ -19,7 +19,6 @@ import imageIndex from "../../../../assets/imageIndex";
 import { useDeliveryContext } from "../../../../context/DeliveryContext";
 import { styles } from "./style";
 import CurrentLocation from "../../../../CurrentLocation";
-
 import ScreenNameEnum from "../../../../routes/screenName.enum";
 import useDashboard from "../../../BottomTab/DashBoard/useDashboard";
 import NewOrderNotificationModal from "../../../../compoent/NewOrderNotificationModal";
@@ -112,18 +111,6 @@ const AllOrder = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
-
-
-      {/* 
-      <HomeHeaderBar
-        location={ "Wallace, Australia"}
-        onLocationPress={() => console.log("Change location")}
-        onNotificationPress={() => console.log("Notifications clicked")}
-        hasNotification={true}
-        style1={{
-        
-        }}
-      /> */}
       <ScrollView
         showsVerticalScrollIndicator={false}
         style={{
@@ -134,23 +121,10 @@ const AllOrder = () => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-
-
-
         <CustomHeader label={strings.Order} />
-
-
-
-
         <View style={styles.ordersHeader}>
           <Text style={styles.sectionTitle1}> Nearby {strings.Order}</Text>
-
         </View>
-
-
-
-
-
         <Animated.View
           style={{
             flex: 1, transform: [{ translateX }], opacity: fade,
@@ -158,8 +132,6 @@ const AllOrder = () => {
         >
           <FlatList
             data={filteredRequests}
-
-
             style={{
               marginTop: 12,
             }}
@@ -194,10 +166,8 @@ const AllOrder = () => {
                       <Text style={styles.cardDate}>
                         {item?.date}
                       </Text>
-
                       <View style={{ flex: 1 }} />
                     </View>
-
                     <View style={styles.routeRow}>
                       <View style={styles.timelineContainer}>
                         <View style={styles.timelineDotStart} />
@@ -230,7 +200,6 @@ const AllOrder = () => {
             }
           />
         </Animated.View>
-
       </ScrollView>
     </SafeAreaView>
   );

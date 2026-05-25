@@ -74,7 +74,7 @@ const useOrders = () => {
               setPickupLocation(parsed);
               return;
             }
-          } catch (e) {}
+          } catch (e) { }
         }
       } else {
         // Store in AsyncStorage

@@ -132,12 +132,12 @@ class NotificationService {
       const body = String(notification?.body || '').toLowerCase();
 
       const isNearbyParcel = type === 'nearby_parcel' || type === 'new_offer' || type === 'counter_offer' || type === 'new_parcel';
-
       // Check if logged-in user has the 'Delivery' role.
       // If it is a regular user (Customer), suppress nearby parcel requests.
       const authData = await AsyncStorage.getItem('authData');
       const parsedAuth = authData ? JSON.parse(authData) : null;
       const userType = parsedAuth?.userData?.type;
+
 
       if (isNearbyParcel && String(userType || '').trim().toLowerCase() !== 'delivery') {
         console.log('Suppressing foreground nearby_parcel notification for non-delivery user type:', userType);

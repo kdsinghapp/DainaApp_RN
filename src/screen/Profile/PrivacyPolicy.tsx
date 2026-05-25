@@ -13,6 +13,7 @@ import LoadingModal from '../../utils/Loader';
 import strings from '../../localization/Localization';
 
 const PrivacyPolicy = () => {
+
     const [isLoading, setLoading] = useState(false);
     const [content, setContent] = useState<string>('');
     const { width } = useWindowDimensions();

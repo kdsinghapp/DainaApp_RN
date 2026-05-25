@@ -8,6 +8,8 @@ import { color } from '../../constant';
 const WebViewScreen = ({ route }: any) => {
   const { url, title } = route?.params;
 
+
+
   return (
     <SafeAreaView style={styles.container}>
       <CustomHeader label={title} />

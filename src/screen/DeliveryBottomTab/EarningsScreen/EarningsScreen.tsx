@@ -79,7 +79,6 @@ const EarningsScreen = () => {
 
         <View style={styles.chartWrapper}>
           <Svg height={chartHeight + 20} width="100%">
-            {/* Grid Lines */}
             {[0].map((p, i) => (
               <Line
                 key={i}

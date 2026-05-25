@@ -19,7 +19,7 @@ import axios from "axios";
 import { base_url } from "../../../../Api";
 import LoadingModal from "../../../../utils/Loader";
 import { styles } from "./style";
-import { hp, STATUS, STATUS_COLORS, STATUS_LABELS } from "../../../../utils/Constant";
+import { STATUS, STATUS_COLORS, STATUS_LABELS } from "../../../../utils/Constant";
 import strings from "../../../../localization/Localization";
 
 type OrderStatus = "Pending" | "Completed" | "Cancelled";

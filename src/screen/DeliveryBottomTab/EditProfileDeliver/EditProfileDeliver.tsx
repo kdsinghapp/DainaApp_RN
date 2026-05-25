@@ -12,8 +12,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { launchImageLibrary } from "react-native-image-picker";
 import { openCamera } from "../../../utils/cameraHelper";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import { useDispatch, useSelector } from "react-redux";
-
+import { useDispatch, useSelector } from "react-redux"
 import StatusBarComponent from "../../../compoent/StatusBarCompoent";
 import CustomHeader from "../../../compoent/CustomHeader";
 import CustomInput from "../../../compoent/CustomInput";

@@ -22,7 +22,6 @@ import { STATUS, STATUS_LABELS, STATUS_ICONS, STATUS_COLORS, s } from "../../../
 import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { successToast } from "../../../utils/customToast";
-import { color } from "../../../constant";
 import RatingModal from "../../../compoent/RatingModal";
 import { WebSocket_Url } from "../../../Api";
 import strings from "../../../localization/Localization";
@@ -675,8 +674,8 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     borderWidth: 1,
     borderColor: "#eee", shadowColor: "#000",
-   
-    
+
+
   },
   cardHeader: { flexDirection: "row", justifyContent: "space-between", marginBottom: 10 },
   muted: { color: MUTED, fontFamily: font.MonolithRegular },
@@ -801,7 +800,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-   },
+  },
   verificationButtonTitle: {
     fontSize: 14,
     fontFamily: font.MonolithRegular,
@@ -812,7 +811,7 @@ const styles = StyleSheet.create({
     fontFamily: font.MonolithRegular,
     color: "#64748B",
     marginTop: 2,
-    
+
   },
   modalContainer: {
     flex: 1,

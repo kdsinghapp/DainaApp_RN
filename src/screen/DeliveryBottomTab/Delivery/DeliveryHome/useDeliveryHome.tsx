@@ -8,7 +8,7 @@ import Geolocation from '@react-native-community/geolocation';
 import { successToast, errorToast } from '../../../../utils/customToast';
 import ScreenNameEnum from '../../../../routes/screenName.enum';
 import { STATUS } from '../../../../utils/Constant';
-import { View, Text, TouchableOpacity, FlatList, AppState, AppStateStatus, DeviceEventEmitter } from "react-native";
+import { AppState, AppStateStatus, DeviceEventEmitter } from "react-native";
 import NetInfo, { NetInfoState } from "@react-native-community/netinfo";
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '../../../../redux/feature/authSlice';

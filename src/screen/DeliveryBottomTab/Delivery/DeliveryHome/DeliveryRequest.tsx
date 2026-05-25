@@ -22,7 +22,6 @@ const DeliveryRequest = () => {
   const [timeLeft, setTimeLeft] = useState(30);
   const [deliveryInfo, setDeliveryInfo] = useState(null);
   const dashboardCtx = useDashboardContext();
-
   useEffect(() => {
     fetchOfferDetail();
   }, []);
@@ -131,8 +130,7 @@ const DeliveryRequest = () => {
   const handleAccept = async () => {
     setLoading(true);
     try {
-      // Add your accept API call here
-      // await acceptDeliveryAPI();
+
       dashboardCtx?.setGeneralAlert({
         visible: true,
         type: 'success',

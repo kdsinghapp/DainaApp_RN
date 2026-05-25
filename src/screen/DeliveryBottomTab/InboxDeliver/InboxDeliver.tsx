@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
-  Platform,
 } from "react-native";
 import StatusBarComponent from "../../../compoent/StatusBarCompoent";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -20,9 +19,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import strings from "../../../localization/Localization";
 import imageIndex from "../../../assets/imageIndex";
 import SearchBar from "../../../compoent/SearchBar";
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 type LastMessage = {
   text: string;
   senderRole: "user" | "delivery";
@@ -90,18 +86,7 @@ const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
   default: { bg: "#F8FAFC", text: "#64748B" },
 };
 
-const StatusBadge = ({ status }: { status: string }) => {
-  const colors = STATUS_COLORS[status?.toLowerCase()] ?? STATUS_COLORS.default;
-  return (
-    <View style={[styles.badge, { backgroundColor: colors.bg }]}>
-      <Text style={[styles.badgeText, { color: colors.text }]}>
-        {capitalize(status)}
-      </Text>
-    </View>
-  );
-};
 
-// ─── Unread Count Badge ───────────────────────────────────────────────────────
 
 const UnreadBadge = ({ count }: { count: number }) => {
   if (!count || count === 0) return null;
@@ -112,27 +97,20 @@ const UnreadBadge = ({ count }: { count: number }) => {
   );
 };
 
-// ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function InboxDeliver() {
   const navigation = useNavigation<any>();
-
   const [chats, setChats] = useState<ChatItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [query, setQuery] = useState("");
   const [error, setError] = useState<string | null>(null);
-
-  // ── Fetch Chats ─────────────────────────────────────────────────────────────
-
   const fetchChats = useCallback(async (isRefresh = false) => {
     try {
       isRefresh ? setRefreshing(true) : setLoading(true);
       setError(null);
-
       const token = await AsyncStorage.getItem("token");
       const url = `${base_url}/chat/history`;
-
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -151,7 +129,6 @@ export default function InboxDeliver() {
       const json = await response.json();
       setChats(Array.isArray(json?.chats) ? json.chats : []);
     } catch (err: any) {
-      console.error("fetchChats error:", err);
       setError(strings.FailedLoadChats);
     } finally {
       setLoading(false);

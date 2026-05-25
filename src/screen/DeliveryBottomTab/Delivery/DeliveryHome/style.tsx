@@ -123,7 +123,6 @@ export const styles = StyleSheet.create({
   },
   card1: {
     flex: 1,
-    // backgroundColor: "#FFCC00",
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,

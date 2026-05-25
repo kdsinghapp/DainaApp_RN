@@ -10,7 +10,6 @@ import {
     Platform,
     Dimensions
 } from 'react-native';
-
 import { useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -29,8 +28,6 @@ const HelpSupport = () => {
     const navigation = useNavigation()
     const [SupportHelp, setSupportHelp] = useState('')
     const [isLoading, setLoading] = useState(false)
-    const isLogin = useSelector((state: any) => state?.auth);
-
     const handleSubmit = async () => {
         if (!SupportHelp) {
             navigation.goBack();

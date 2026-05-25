@@ -361,33 +361,75 @@ const CourierTrackingScreen = () => {
   }, [fitMapToRoute]);
 
   useEffect(() => {
-    if (!item?.trackingId) return;
-    const socket = new WebSocket(`${WebSocket_Url}/${item.trackingId}`);
-    socket.onmessage = (e) => {
+    const parcelId = parcel?.id ?? item?.parcelId ?? item?.id;
+    const currentStatus = parcel?.deliveryStatus ?? item?.deliveryStatus;
+
+    // Only connect if the parcel is in an active tracking state
+    const isActive = [STATUS.ASSIGNED, STATUS.GOING_TO_PICKUP, STATUS.PICKED_UP, STATUS.ON_THE_WAY].includes(currentStatus);
+
+    if (!parcelId || !isActive) return;
+
+    let socket: WebSocket | null = null;
+    let isCancelled = false;
+
+    const connectTrackSocket = async () => {
       try {
-        const data = JSON.parse(e.data);
-        if (data?.latitude != null && data?.longitude != null) {
-          const newPoint = {
-            latitude: parseFloat(data.latitude),
-            longitude: parseFloat(data.longitude),
-          };
-          setCurrentCoords(newPoint);
-          (driverLocation as any)
-            .timing({
-              ...newPoint,
-              latitudeDelta: 0.01,
-              longitudeDelta: 0.01,
-              duration: 2000,
-              useNativeDriver: false,
-            })
-            .start();
-        }
+        const token = await AsyncStorage.getItem('token');
+        if (!token || isCancelled) return;
+
+        socket = new WebSocket(`${WebSocket_Url}/parcel/${parcelId}/track?token=${encodeURIComponent(token)}`);
+
+        socket.onopen = () => {
+          console.log("Tracking socket connected for parcel", parcelId);
+        };
+
+        socket.onmessage = (e) => {
+          try {
+            const data = JSON.parse(e.data);
+            // console.log("Tracking socket data:", data);
+
+            if (data?.type === "driver_location" && data?.lat != null && data?.lon != null) {
+              const newPoint = {
+                latitude: parseFloat(data.lat),
+                longitude: parseFloat(data.lon),
+              };
+              setCurrentCoords(newPoint);
+              (driverLocation as any)
+                .timing({
+                  ...newPoint,
+                  latitudeDelta: 0.01,
+                  longitudeDelta: 0.01,
+                  duration: 2000,
+                  useNativeDriver: false,
+                })
+                .start();
+            }
+          } catch (err) {
+            console.log("Tracking Socket Error:", err);
+          }
+        };
+
+        socket.onerror = (e) => {
+          console.warn("Tracking socket error:", e);
+        };
+
+        socket.onclose = () => {
+          console.log("Tracking socket closed");
+        };
       } catch (err) {
-        console.log("Socket Error:", err);
+        console.warn("Tracking setup error:", err);
       }
     };
-    return () => socket.close();
-  }, [item?.trackingId]);
+
+    connectTrackSocket();
+
+    return () => {
+      isCancelled = true;
+      if (socket) {
+        socket.close();
+      }
+    };
+  }, [parcel?.id, item?.parcelId, item?.id, parcel?.deliveryStatus, item?.deliveryStatus]);
 
   // Route for polyline: driver → pickup (or driver → dropoff). If origin ≈ destination, show full route pickup → dropoff so polyline always draws.
   const routeDestination =
@@ -599,9 +641,9 @@ const CourierTrackingScreen = () => {
           )}
         </MapView>
 
-   
 
-      
+
+
       </View>
 
       <SafeAreaView style={styles.headerOverlay} edges={["top"]}>
@@ -619,7 +661,7 @@ const CourierTrackingScreen = () => {
           contentContainerStyle={styles.scrollContentContainer}
           showsVerticalScrollIndicator={false}
         >
-          
+
           <View style={styles.driverSection}>
             <View style={styles.driverCore}>
               <View style={styles.avatarWrap}>

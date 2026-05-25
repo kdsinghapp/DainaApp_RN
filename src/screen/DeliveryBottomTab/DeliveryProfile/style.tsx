@@ -1,13 +1,8 @@
-import { StyleSheet, Dimensions, Platform } from "react-native";
+import { StyleSheet, Platform } from "react-native";
 import { color } from "../../../constant";
 import font from "../../../theme/font";
-
-const { width, height } = Dimensions.get('window');
-
-const YELLOW_DARK = "#FDB400";
 const TEXT = "#0F172A";
 const SUBTLE = "#64748B";
-const BORDER = "#F1F5F9";
 const BG = "#FFFFFF";
 
 export const styles = StyleSheet.create({

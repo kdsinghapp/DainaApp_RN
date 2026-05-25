@@ -11,8 +11,6 @@ import font from '../../theme/font';
 import { Termsconditions } from '../../Api/apiRequest';
 import LoadingModal from '../../utils/Loader';
 import strings from '../../localization/Localization';
-
-
 const LegalPoliciesScreen = () => {
     const [isLoading, setLoading] = useState(false);
     const [content, setContent] = useState<string>('');

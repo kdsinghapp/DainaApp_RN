@@ -66,14 +66,13 @@ const MAP_STYLE = [
   }
 ];
 
+
 const TripMap = () => {
   const [loading, setLoading] = useState(false)
   const route: any = useRoute()
   const { item, event } = route?.params || ""
   // console.log("pickupLon", event?.parcel?.pickupLat)
   // console.log("pickupLon", event?.parcel?.pickupLon)
-
-
   const parcelId = item?.parcelId
   const [actionLoading, setActionLoading] = useState(true);
   useEffect(() => {
@@ -173,11 +172,58 @@ const TripMap = () => {
     });
   };
 
+  // New function: Send driver location via /driver-location WebSocket
+  const sendDriverLocationViaSocket = async (lat: number, lon: number) => {
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
+        console.warn('No token found for driver-location socket');
+        return;
+      }
+
+      const ws = new WebSocket(
+        `${WebSocket_Url}/driver-location?token=${encodeURIComponent(token)}`
+      );
+
+      ws.onopen = () => {
+        const payload = {
+          parcelId: item?.parcelId || item?.id,
+          lat: lat,
+          lon: lon,
+        };
+        ws.send(JSON.stringify(payload));
+        console.log('Driver location sent via socket:', payload);
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          console.log('Driver location socket response:', data);
+        } catch (e) {
+          console.warn('Failed to parse driver location response:', event.data);
+        }
+        ws.close();
+      };
+
+      ws.onerror = (error) => {
+        console.warn('Driver location socket error:', error);
+      };
+
+      ws.onclose = () => {
+        console.log('Driver location socket closed');
+      };
+    } catch (error) {
+      console.warn('sendDriverLocationViaSocket error:', error);
+    }
+  };
+
   // Fetch current location, sync it to server, and watch for updates.
   useEffect(() => {
     const watchId = Geolocation.watchPosition(
       (position) => {
-        syncDriverLocation(position.coords.latitude, position.coords.longitude);
+        const { latitude, longitude } = position.coords;
+        syncDriverLocation(latitude, longitude);
+        sendDriverLocationViaSocket(latitude, longitude);
       },
       (error) => {
         console.log('Location error:', error);

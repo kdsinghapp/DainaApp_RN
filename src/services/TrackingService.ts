@@ -1,5 +1,4 @@
 import Geolocation from '@react-native-community/geolocation';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { PostApi, GetApi } from '../Api/apiRequest';
 import { endpointCustomer } from '../Api/endpoints';
 import SocketService from './SocketService';

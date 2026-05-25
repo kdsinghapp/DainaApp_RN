@@ -80,10 +80,8 @@ const App: FunctionComponent<any> = () => {
       // Step 3: Android notification channel banao
       await NotificationService.createChannel();
 
-      // Step 4: FCM token lo
       await NotificationService.getFcmToken();
 
-      // Step 5: Foreground listeners setup karo
       const unsubscribe = NotificationService.setupListeners();
       unsubscribeRef.current = unsubscribe;
 

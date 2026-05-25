@@ -19,7 +19,6 @@ import imageIndex from "../../../../assets/imageIndex";
 import { useDeliveryContext } from "../../../../context/DeliveryContext";
 import { styles } from "./style";
 import CurrentLocation from "../../../../CurrentLocation";
-
 import ScreenNameEnum from "../../../../routes/screenName.enum";
 import useDashboard from "../../../BottomTab/DashBoard/useDashboard";
 import NewOrderNotificationModal from "../../../../compoent/NewOrderNotificationModal";
@@ -27,9 +26,7 @@ import OfferAcceptedModal from "../../../../compoent/OfferAcceptedModal";
 import { GetDashboardCounts, GetProfileApi } from "../../../../Api/apiRequest";
 import strings from "../../../../localization/Localization";
 import OnlineSlideRight from "../../../../compoent/OnlineSlideRight";
-import { successToast } from "../../../../utils/customToast";
 import font from "../../../../theme/font";
-import NetworkStatusModal from "../../../../compoent/NetworkStatusModal";
 
 const DeliveryHome = () => {
   const ctx = useDeliveryContext();

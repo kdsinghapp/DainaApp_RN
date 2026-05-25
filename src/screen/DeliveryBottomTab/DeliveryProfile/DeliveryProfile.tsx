@@ -4,7 +4,6 @@ import {
   View,
   Text,
   Image,
-  Pressable,
   ScrollView,
   TouchableOpacity,
 } from "react-native";
@@ -119,7 +118,6 @@ const DeliveryProfile: React.FC<Props> = ({
   const handleDeleteAccount = async () => {
     setDeleteModalVisible(false);
     const response = await DeleteAccountApi();
-    console.log("response", response)
     if (response && (response.status === 1 || response.status === "1")) {
       dispatch(logout());
       setTimeout(async () => {

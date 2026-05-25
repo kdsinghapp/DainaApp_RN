@@ -6,6 +6,8 @@ class SocketService {
   private reconnectInterval: any = null;
   private url: string = '';
 
+
+
   connect(type: 'driver' | 'user', token: string) {
     if (this.socket) {
       this.socket.close();
@@ -48,7 +50,7 @@ class SocketService {
 
   private startReconnecting(type: 'driver' | 'user', token: string) {
     if (this.reconnectInterval) return;
-    
+
     this.reconnectInterval = setInterval(() => {
       console.log(`Attempting to reconnect ${type} socket...`);
       this.connect(type, token);

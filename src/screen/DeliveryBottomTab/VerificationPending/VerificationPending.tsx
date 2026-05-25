@@ -8,7 +8,6 @@ import {
   RefreshControl,
   Platform,
   Dimensions,
-  Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';

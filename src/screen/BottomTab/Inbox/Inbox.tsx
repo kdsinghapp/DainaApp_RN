@@ -21,7 +21,6 @@ import strings from "../../../localization/Localization";
 import imageIndex from "../../../assets/imageIndex";
 import SearchBar from "../../../compoent/SearchBar";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
 
 type LastMessage = {
   text: string;
@@ -81,7 +80,6 @@ function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-// ─── Status Badge ─────────────────────────────────────────────────────────────
 
 const STATUS_COLORS: Record<string, { bg: string; text: string }> = {
   pending: { bg: "#FFF7ED", text: "#EA580C" },
