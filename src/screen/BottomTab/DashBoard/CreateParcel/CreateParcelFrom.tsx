@@ -386,10 +386,12 @@ const CreateParcelFrom = () => {
                 }
                 style={[styles.input, errors.pickupLocation ? styles.inputError : null]}
               >
-                <Image style={[styles.iconLocation, { tintColor: "#FFCC00", marginRight: 10 }]} source={imageIndex.location1} />
                 <Text style={[styles.placeholderText, { color: pickupLocation?.address ? "#0F172A" : "#94A3B8" }]}>
+
                   {pickupLocation ? pickupLocation?.address : strings.AddPickupLocation}
                 </Text>
+                <Image style={[styles.iconLocation, { tintColor: "#FFCC00", marginRight: 10 }]} source={imageIndex.location1} />
+
               </TouchableOpacity>
               {errors.pickupLocation ? <Text style={styles.errorText}>{errors.pickupLocation}</Text> : null}
             </View>
@@ -410,10 +412,11 @@ const CreateParcelFrom = () => {
                 }
                 style={[styles.input, errors.dropLocation ? styles.inputError : null]}
               >
-                <Image style={[styles.iconLocation, { tintColor: "#EF4444", marginRight: 10 }]} source={imageIndex.location1} />
                 <Text style={[styles.placeholderText, { color: dropLocation ? "#0F172A" : "#94A3B8" }]}>
                   {dropLocation ? dropLocation : strings.AddDropLocation}
                 </Text>
+                <Image style={[styles.iconLocation, { tintColor: "#EF4444", marginRight: 10 }]} source={imageIndex.location1} />
+
               </TouchableOpacity>
               {errors.dropLocation ? <Text style={styles.errorText}>{errors.dropLocation}</Text> : null}
             </View>

@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.04,
     shadowRadius: 8,
-    elevation: 2,
+
   },
   cardTitle: {
     fontSize: 17,
@@ -80,6 +80,7 @@ export const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: font.MonolithRegular,
     flex: 1,
+
   },
   row: {
     flexDirection: "row",
@@ -199,7 +200,6 @@ export const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3,
   },
   imageEditBadgeText: {
     fontSize: 12,
@@ -207,8 +207,7 @@ export const styles = StyleSheet.create({
     color: "#0F172A",
   },
   iconLocation: {
-    height: 24,
-    width: 24,
-    resizeMode: "contain",
+    height: 26,
+    width: 26,
   },
 });

@@ -84,8 +84,7 @@ const MenuItem = ({ icon, label, onPress, index, isLast }: any) => {
   };
 
   return (
-    <Animated.View
-      entering={FadeInRight.delay(600 + index * 50).duration(500)}
+    <View
       style={[animatedStyle, styles.menuItemContainer]}
     >
       <TouchableOpacity
@@ -106,7 +105,7 @@ const MenuItem = ({ icon, label, onPress, index, isLast }: any) => {
           style={styles.menuArrow}
         />
       </TouchableOpacity>
-    </Animated.View>
+    </View>
   );
 };
 
@@ -150,7 +149,7 @@ const ProfileScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBarComponent />
 
       <ScrollView
@@ -159,14 +158,14 @@ const ProfileScreen: React.FC = () => {
       >
         <View style={styles.profileCard}>
           <View style={styles.profileHeader}>
-            <Animated.View entering={FadeInDown.delay(300)} style={styles.avatarWrap}>
+            <View style={styles.avatarWrap}>
               <View style={styles.avatarGlow} />
               <Image
                 source={userData?.image ? { uri: userData?.image } : imageIndex.prfile}
                 style={styles.avatar}
               />
 
-            </Animated.View>
+            </View>
 
             <View style={styles.nameSection}>
               <Text style={styles.nameText}>{userData?.firstName || "User"}</Text>
@@ -183,7 +182,7 @@ const ProfileScreen: React.FC = () => {
 
         {/* Menu Sections */}
         <View style={styles.menuContainer}>
-          <Animated.View entering={FadeInDown.delay(700)} style={styles.sectionWrap}>
+          <View style={styles.sectionWrap}>
             <Text style={styles.sectionTitle}>{strings?.Account}. {userData?.type}</Text>
             <View style={styles.card}>
               <MenuItem
@@ -206,9 +205,9 @@ const ProfileScreen: React.FC = () => {
                 onPress={() => navigation.navigate(ScreenNameEnum.OrdersPrfile)}
               /> */}
             </View>
-          </Animated.View>
+          </View>
 
-          <Animated.View entering={FadeInDown.delay(850)} style={styles.sectionWrap}>
+          <View style={styles.sectionWrap}>
             <Text style={styles.sectionTitle}>{strings?.Support}</Text>
             <View style={styles.card}>
               <MenuItem
@@ -242,10 +241,10 @@ const ProfileScreen: React.FC = () => {
                 }}
               />
             </View>
-          </Animated.View>
+          </View>
 
           {/* Logout Button */}
-          <Animated.View entering={FadeInDown.delay(1000)}>
+          <View  >
             <TouchableOpacity
               activeOpacity={0.8}
               onPress={() => {
@@ -256,7 +255,7 @@ const ProfileScreen: React.FC = () => {
             >
               <Text style={styles.logoutText}>{strings.Logout}</Text>
             </TouchableOpacity>
-          </Animated.View>
+          </View>
 
         </View>
       </ScrollView>
@@ -278,7 +277,7 @@ const ProfileScreen: React.FC = () => {
         }}
         onCancel={() => setDeleteModalVisible(false)}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -289,7 +288,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: hp(20),
-    paddingTop: hp(8),
+    paddingTop: hp(2),
   },
   profileCard: {
     backgroundColor: "#FFF",
