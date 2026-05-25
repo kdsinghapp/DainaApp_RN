@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
 
   tabsWrap: {
     flexDirection: "row",
-    backgroundColor: "#E2E8F0",
+    backgroundColor: "white",
     borderRadius: 14,
     padding: 4,
     marginBottom: 16,
@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.08,
         shadowRadius: 4,
       },
-      
+
     }),
   },
   tabText: {
