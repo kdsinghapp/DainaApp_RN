@@ -7,13 +7,13 @@ const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
 
 const ResponsiveSize = {
-  width: (figmaWidth) => (figmaWidth / figmaScreenWidth) * screenWidth,
-  height: (figmaHeight) => (figmaHeight / figmaScreenHeight) * screenHeight,
-  top: (figmaTop) => (figmaTop / figmaScreenHeight) * screenHeight,
-  left: (figmaLeft) => (figmaLeft / figmaScreenWidth) * screenWidth,
-  margin: (figmaMargin) => (figmaMargin / figmaScreenWidth) * screenWidth,
-  padding: (figmaPadding) => (figmaPadding / figmaScreenWidth) * screenWidth,
-  marginTop: (figmaMarginTop) => (figmaMarginTop / figmaScreenHeight) * screenHeight, // Added marginTop
+  width: (figmaWidth: any) => (figmaWidth / figmaScreenWidth) * screenWidth,
+  height: (figmaHeight: any) => (figmaHeight / figmaScreenHeight) * screenHeight,
+  top: (figmaTop: any) => (figmaTop / figmaScreenHeight) * screenHeight,
+  left: (figmaLeft: any) => (figmaLeft / figmaScreenWidth) * screenWidth,
+  margin: (figmaMargin: any) => (figmaMargin / figmaScreenWidth) * screenWidth,
+  padding: (figmaPadding: any) => (figmaPadding / figmaScreenWidth) * screenWidth,
+  marginTop: (figmaMarginTop: any) => (figmaMarginTop / figmaScreenHeight) * screenHeight, // Added marginTop
 };
 
 export default ResponsiveSize;

@@ -13,10 +13,7 @@ const defaultOptions = {
 
 export type OpenCameraResult = { asset: Asset } | { cancelled: true } | { error: string };
 
-/**
- * Request camera permission (Android), then open camera after a short delay
- * so any visible modal can close first. Handles cancel and errors.
- */
+
 export async function openCamera(
   onResult: (result: OpenCameraResult) => void
 ): Promise<void> {

@@ -27,7 +27,7 @@ export const playNotificationSound = () => {
     return;
   }
 
-  const soundFile = Platform.OS === 'android' ? 'ringtone_notification' : 'ringtone_notification.mp3';
+  const soundFile = Platform.OS === 'android' ? 'ringtone_notification' : 'ringtone_notification.caf';
 
   console.log('[SoundPlayer] Attempting to play:', soundFile);
 

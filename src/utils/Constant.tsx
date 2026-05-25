@@ -10,7 +10,7 @@ import moment from 'moment';
 
 const { height, width, fontScale, scale } = Dimensions.get('screen');
 
-export const restrictInput = (val, type = '') => {
+export const restrictInput = (val: any, type = '') => {
     switch (type) {
         case 'Number':
             return val?.replace(/[^0-9]/g, '');
@@ -85,10 +85,10 @@ const Countdown = ({ eventTime = 1683526848, interval = 1000 }) => {
         </Text>
     );
 };
-const getCloser = (value, checkOne, checkTwo) =>
+const getCloser = (value: any, checkOne: any, checkTwo: any) =>
     Math.abs(value - checkOne) < Math.abs(value - checkTwo) ? checkOne : checkTwo;
 
-const openDialer = (phoneNumber) => {
+const openDialer = (phoneNumber: any) => {
     const cleanedNumber = phoneNumber.replace(/\s+/g, '');
 
     const phoneUrl = `tel:${cleanedNumber}`;
@@ -100,6 +100,7 @@ const openDialer = (phoneNumber) => {
 
 
 import strings from '../localization/Localization';
+import { errorToast } from './customToast';
 
 // constants/statusConstants.js
 export const STATUS = {

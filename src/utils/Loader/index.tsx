@@ -92,7 +92,7 @@ const LoadingModal = ({ visible, message = "Loading..." }: any) => {
     }
   }, [visible]);
 
-  const createPulseAnimation = (animatedValue, delay) => {
+  const createPulseAnimation = (animatedValue: any, delay: any) => {
     return Animated.sequence([
       Animated.delay(delay),
       Animated.timing(animatedValue, {
@@ -136,10 +136,6 @@ const LoadingModal = ({ visible, message = "Loading..." }: any) => {
     outputRange: [1, 1.5],
   });
 
-  const dot3Scale = pulse3.interpolate({
-    inputRange: [0, 1],
-    outputRange: [1, 1.5],
-  });
 
   if (!visible) return null;
 

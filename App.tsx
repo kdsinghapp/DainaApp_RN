@@ -67,24 +67,16 @@ const App: FunctionComponent<any> = () => {
   };
   const initNotifications = async () => {
     try {
-      // Step 1: iOS ke liye register
       await NotificationService.registerAppWithFCM();
-
-      // Step 2: Permission maango
       const granted = await NotificationService.requestPermission();
       if (!granted) {
         console.log('Notification permission denied — stopping init');
         return;
       }
-
-      // Step 3: Android notification channel banao
       await NotificationService.createChannel();
-
       await NotificationService.getFcmToken();
-
       const unsubscribe = NotificationService.setupListeners();
       unsubscribeRef.current = unsubscribe;
-
       console.log('Notifications initialized successfully');
     } catch (error) {
       console.log('Notification init error:', error);

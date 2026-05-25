@@ -272,7 +272,6 @@ const ChatScreen = () => {
       rawDatesRef.current = dates;
       setMessages(mapped);
 
-      // Only mark as read on initial load, not every poll
       if (showLoading) markMessagesAsRead();
     } catch (error) {
       console.error("Fetch Messages Error:", error);
