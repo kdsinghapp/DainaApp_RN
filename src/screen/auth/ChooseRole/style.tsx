@@ -41,6 +41,7 @@ export const styles = StyleSheet.create({
     fontFamily: font.MonolithRegular,
     color: '#64748B',
     textAlign: 'center',
+
   },
   optionsWrap: {
     width: '100%',

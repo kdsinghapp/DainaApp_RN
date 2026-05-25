@@ -11,10 +11,7 @@ import OtpScreen from "../screen/auth/OTPScreen/OtpScreen";
 import ProfileSetup from "../screen/auth/ProfileSetup/ProfileSetup";
 import OfferOR from "../screen/BottomTab/OfferOR/OfferOR";
 import ViewDetails from "../screen/BottomTab/Orders/ViewDetails";
-import LegalPoliciesScreen from "../screen/Profile/LegalPoliciesScreen";
-import PrivacyPolicy from "../screen/Profile/PrivacyPolicy";
 import EditProfile from "../screen/Profile/EditProfile/EditProfile";
-import AddressScreen from "../screen/BottomTab/AddressScreen/AddressScreen";
 import ChatScreen from "../screen/BottomTab/ChatScreen/ChatScreen";
 import OrdersPrfile from "../screen/Profile/OrdersPrfile/OrdersPrfile";
 import CourierTrackingScreen from "../screen/BottomTab/CourierTracking/CourierTracking";
@@ -22,7 +19,6 @@ import DeliveryTabNavigator from "../navigators/DeliveryTabNavigator";
 import TripMap from "../screen/DeliveryBottomTab/TripMap/TripMap";
 import WalletScreen from "../screen/DeliveryBottomTab/WalletScreen/WalletScreen";
 import EarningsScreen from "../screen/DeliveryBottomTab/EarningsScreen/EarningsScreen";
-import HelpSupport from "../screen/DeliveryBottomTab/HelpSupport/HelpSupport";
 import NotificationsSetting from "../screen/DeliveryBottomTab/NotificationsSetting/NotificationsSetting";
 import ParcelDetails from "../screen/DeliveryBottomTab/ParcelDetails/ParcelDetails";
 import VehicleSetupScreen from "../screen/auth/VehicleSetup/VehicleSetupScreen";
@@ -70,10 +66,7 @@ const _routes: any = {
       name: ScreenNameEnum.VehicleSetupScreen,
       Component: VehicleSetupScreen,
     },
-    {
-      name: ScreenNameEnum.HelpSupport,
-      Component: HelpSupport,
-    },
+
     {
       name: ScreenNameEnum.EarningsScreen,
       Component: EarningsScreen,
@@ -110,10 +103,7 @@ const _routes: any = {
       name: ScreenNameEnum.CourierTrackingScreen,
       Component: CourierTrackingScreen,
     },
-    {
-      name: ScreenNameEnum.AddressScreen,
-      Component: AddressScreen,
-    },
+
     {
       name: ScreenNameEnum.OrdersPrfile,
       Component: OrdersPrfile,
@@ -150,14 +140,7 @@ const _routes: any = {
       Component: TabNavigator,
     },
 
-    {
-      name: ScreenNameEnum.PrivacyPolicy,
-      Component: PrivacyPolicy,
-    },
-    {
-      name: ScreenNameEnum.LegalPoliciesScreen,
-      Component: LegalPoliciesScreen,
-    },
+
     {
       name: ScreenNameEnum.PickupLocationRapido,
       Component: PickupLocationRapido,
