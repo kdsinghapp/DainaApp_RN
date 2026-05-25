@@ -100,12 +100,7 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
           stopNotificationSound();
         }
       } else {
-        navigation.navigate(ScreenNameEnum.ParcelDetails as never, {
-          item: {
-            ...data,
-            deliveryStatus: STATUS.PENDING,
-          },
-        } as never);
+        navigation.navigate(ScreenNameEnum.AllOrder as never);
         setNewOrderNotification?.(null);
         stopNotificationSound();
       }
@@ -144,13 +139,13 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
             <Text style={styles.headerTitle}>
               {isCounterOffer ? strings.CounterOfferReceived : strings.NewDeliveryRequest}
             </Text>
-            <View style={styles.badgeRow}>
-              {(data?.trackingId || data?.id) && (
-                <View style={styles.trackingBadge}>
-                  <Text style={styles.trackingIdText}>#{data.trackingId || data.id}</Text>
-                </View>
-              )}
-            </View>
+            {/* <View style={styles.badgeRow}>
+                {(data?.trackingId || data?.id) && (
+                  <View style={styles.trackingBadge}>
+                    <Text style={styles.trackingIdText}>#{data.trackingId || data.id}</Text>
+                  </View>
+                )}
+              </View> */}
           </View>
 
           <TouchableOpacity
@@ -167,68 +162,60 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
           bounces={false}
         >
           {/* Price/Amount Section */}
-          {(data?.price || data?.amount || data?.total_amount) && (
-            <View style={styles.priceContainer}>
-              <View style={styles.priceIndicator} />
-              <View style={styles.priceInfo}>
-                <Text style={styles.priceLabel}>{isCounterOffer ? strings.OfferPrice : strings.EstimatedEarnings}</Text>
-                <Text style={styles.priceValue}>$ {data?.price || data?.amount || data?.total_amount}</Text>
+          {/* {(data?.price || data?.amount || data?.total_amount) && (
+              <View style={styles.priceContainer}>
+                <View style={styles.priceIndicator} />
+                <View style={styles.priceInfo}>
+                  <Text style={styles.priceLabel}>{isCounterOffer ? strings.OfferPrice : strings.EstimatedEarnings}</Text>
+                  <Text style={styles.priceValue}>$ {data?.price || data?.amount || data?.total_amount}</Text>
+                </View>
               </View>
-            </View>
-          )}
+            )} */}
 
-          {/* Location Path (Timeline) */}
-          {(pickupAddress || dropAddress) ? (
-            <View style={styles.pathContainer}>
-              {/* Row 1: Pickup */}
-              <View style={styles.timelineRow}>
-                {/* Left Col: Dot & Line */}
-                <View style={styles.leftCol}>
-                  <View style={[styles.iconCircle, { borderColor: '#10B981', backgroundColor: '#ECFDF5' }]}>
-                    <Icon name="ellipse" size={wp(2.2)} color="#10B981" />
+
+          {/* {(pickupAddress || dropAddress) ? (
+              <View style={styles.pathContainer}>
+                <View style={styles.timelineRow}>
+                  <View style={styles.leftCol}>
+                    <View style={[styles.iconCircle, { borderColor: '#10B981', backgroundColor: '#ECFDF5' }]}>
+                      <Icon name="ellipse" size={wp(2.2)} color="#10B981" />
+                    </View>
+                    <View style={styles.verticalLine} />
                   </View>
-                  <View style={styles.verticalLine} />
-                </View>
 
-                {/* Right Col: Label & Address */}
-                <View style={styles.rightCol}>
-                  <Text style={styles.pathLabel}>{strings.Pickup || 'Pickup'}</Text>
-                  <Text style={styles.pathAddress}>{pickupAddress || 'N/A'}</Text>
-                </View>
-              </View>
-
-              {/* Row 2: Drop-off */}
-              <View style={[styles.timelineRow, { marginBottom: 0 }]}>
-                {/* Left Col: Dot */}
-                <View style={styles.leftCol}>
-                  <View style={[styles.iconCircle, { borderColor: '#EF4444', backgroundColor: '#FEF2F2' }]}>
-                    <Icon name="location" size={wp(3.8)} color="#EF4444" />
+                  <View style={styles.rightCol}>
+                    <Text style={styles.pathLabel}>{strings.Pickup || 'Pickup'}</Text>
+                    <Text style={styles.pathAddress}>{pickupAddress || 'N/A'}</Text>
                   </View>
                 </View>
 
-                {/* Right Col: Label & Address */}
-                <View style={[styles.rightCol, { paddingBottom: 0 }]}>
-                  <Text style={styles.pathLabel}>{strings.Drop || 'Drop-off'}</Text>
-                  <Text style={styles.pathAddress}>{dropAddress || 'N/A'}</Text>
+                <View style={[styles.timelineRow, { marginBottom: 0 }]}>
+                  <View style={styles.leftCol}>
+                    <View style={[styles.iconCircle, { borderColor: '#EF4444', backgroundColor: '#FEF2F2' }]}>
+                      <Icon name="location" size={wp(3.8)} color="#EF4444" />
+                    </View>
+                  </View>
+
+                  <View style={[styles.rightCol, { paddingBottom: 0 }]}>
+                    <Text style={styles.pathLabel}>{strings.Drop || 'Drop-off'}</Text>
+                    <Text style={styles.pathAddress}>{dropAddress || 'N/A'}</Text>
+                  </View>
                 </View>
               </View>
-            </View>
-          ) : null}
-
-          {/* Customer / Receiver Info */}
-          {(data?.receiver_name || data?.receiverName) && (
-            <View style={styles.infoGrid}>
-              <View style={styles.infoBox}>
-                <Icon name="person-outline" size={wp(4.5)} color="#64748B" />
-                <View>
-                  <Text style={styles.infoBoxLabel}>{strings.ReceiverName || 'Receiver'}</Text>
-                  <Text style={styles.infoBoxValue}>{data.receiver_name || data.receiverName}</Text>
+            ) : null} */}
+          {/* 
+            {(data?.receiver_name || data?.receiverName) && (
+              <View style={styles.infoGrid}>
+                <View style={styles.infoBox}>
+                  <Icon name="person-outline" size={wp(4.5)} color="#64748B" />
+                  <View>
+                    <Text style={styles.infoBoxLabel}>{strings.ReceiverName || 'Receiver'}</Text>
+                    <Text style={styles.infoBoxValue}>{data.receiver_name || data.receiverName}</Text>
+                  </View>
                 </View>
               </View>
-            </View>
-          )}
+            )} */}
 
-          {/* Additional Info Grid */}
           {(data?.weight || data?.package_size || data?.packageSize) && (
             <View style={styles.infoGrid}>
               {(data?.weight || data?.package_size || data?.packageSize) && (

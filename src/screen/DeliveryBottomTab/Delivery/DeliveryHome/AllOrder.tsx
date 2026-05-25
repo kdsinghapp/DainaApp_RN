@@ -1,50 +1,72 @@
-import React, { useMemo, useRef, useState, useEffect } from "react";
+import React, { useMemo, useRef, useState, useEffect, useCallback } from "react";
 import {
   View,
   Text,
   Image,
-  FlatList,
-  Pressable,
-  Animated,
-  Easing,
   TouchableOpacity,
+  Easing,
+  FlatList,
+  ScrollView,
+  RefreshControl,
+  Animated,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
+import ReAnimated, { FadeInDown, FadeIn, Layout } from "react-native-reanimated";
+import { SafeAreaView, } from "react-native-safe-area-context";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import StatusBarComponent from "../../../../compoent/StatusBarCompoent";
+import HomeHeaderBar from "../../../../compoent/HomeHeaderBar";
 import imageIndex from "../../../../assets/imageIndex";
-import ScreenNameEnum from "../../../../routes/screenName.enum";
-import { useDeliveryHome } from "./useDeliveryHome";
-import LoadingModal from "../../../../utils/Loader";
-import CustomHeader from "../../../../compoent/CustomHeader";
+import { useDeliveryContext } from "../../../../context/DeliveryContext";
 import { styles } from "./style";
+import CurrentLocation from "../../../../CurrentLocation";
+
+import ScreenNameEnum from "../../../../routes/screenName.enum";
+import useDashboard from "../../../BottomTab/DashBoard/useDashboard";
 import NewOrderNotificationModal from "../../../../compoent/NewOrderNotificationModal";
 import OfferAcceptedModal from "../../../../compoent/OfferAcceptedModal";
+import { GetDashboardCounts, GetProfileApi } from "../../../../Api/apiRequest";
 import strings from "../../../../localization/Localization";
-const TABS = ["Pending", "Complete", "Canceled"] as const;
+import OnlineSlideRight from "../../../../compoent/OnlineSlideRight";
+import font from "../../../../theme/font";
+import CustomHeader from "../../../../compoent/CustomHeader";
+
 const AllOrder = () => {
-  const {
-    isLoading,
-    requests,
-  } = useDeliveryHome()
-  // ---------- STATE ----------
-  const [activeTab, setActiveTab] = useState<(typeof TABS)[number]>("Pending");
-  const [isOnline, setIsOnline] = useState(false);
+  const ctx = useDeliveryContext();
+  if (!ctx) return null;
+  const { isLoading, requests, coords, newOrderNotification, fetchAvailableRequests, isOnline, setIsOnline, isConnected } = ctx;
+  // console.log("newOrderNotification",newOrderNotification?.data?.user?.name)
+
+  const [counts, setCounts] = useState<any>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
 
-  const pillX = useRef(new Animated.Value(0)).current;
+  const fetchCounts = async () => {
+    const res = await GetDashboardCounts(() => { });
+    if (res && (res.status === 1 || res.status === "1")) {
+      setCounts(res);
+    }
+  };
 
-  useEffect(() => {
-    Animated.timing(pillX, {
-      toValue: isOnline ? 1 : 0,
-      duration: 260,
-      easing: Easing.out(Easing.quad),
-      useNativeDriver: true,
-    }).start();
-  }, [isOnline]);
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await Promise.all([
+      fetchCounts(),
+      fetchAvailableRequests()
+    ]);
+    setRefreshing(false);
+  };
 
-  // list slide when changing tab
+  // useEffect(() => {
+  //   Animated.timing(pillX, {
+  //     toValue: isOnline ? 1 : 0,
+  //     duration: 260,
+  //     easing: Easing.out(Easing.quad),
+  //     useNativeDriver: true,
+  //   }).start();
+  // }, [isOnline]);
+
   const listSlide = useRef(new Animated.Value(0)).current;
+
   useEffect(() => {
     listSlide.setValue(0);
     Animated.timing(listSlide, {
@@ -53,7 +75,7 @@ const AllOrder = () => {
       easing: Easing.out(Easing.quad),
       useNativeDriver: true,
     }).start();
-  }, [activeTab]);
+  }, []);
 
   const translateX = listSlide.interpolate({
     inputRange: [0, 1],
@@ -63,160 +85,155 @@ const AllOrder = () => {
     inputRange: [0, 1],
     outputRange: [0.2, 1],
   });
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const filteredRequests = useMemo(() => {
     if (!requests || requests?.length === 0) return [];
+    return requests.filter(
+      (item: any) => item.deliveryStatus?.toLowerCase() === "pending",
+    );
+  }, [requests]);
+  useFocusEffect(
+    useCallback(() => {
+      const fetchCounts = async () => {
+        const res = await GetDashboardCounts(() => { });
+        if (res && (res?.status === 1 || res.status === "1")) {
+          setCounts(res);
+        }
+      };
 
-    switch (activeTab) {
-      case "Pending":
-        return requests.filter(
-          (item: any) => item.status?.toLowerCase() === "pending"
-        );
-      case "Complete":
-        return requests.filter(
-          (item: any) =>
-            item.status?.toLowerCase() === "completed" ||
-            item.status?.toLowerCase() === "delivered"
-        );
-      case "Canceled":
-        return requests.filter(
-          (item: any) => item.status?.toLowerCase() === "canceled"
-        );
-      default:
-        return requests;
-    }
-  }, [activeTab, requests]);
+      fetchCounts();
 
+      return () => {
+        // optional cleanup if needed
+      };
+    }, [])
+  );
+  const { locationRef, address, currentlocation } = useDashboard()
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
-      <LoadingModal visible={isLoading} />
 
-      <CustomHeader label="All Orders" />
-      <NewOrderNotificationModal />
-      <OfferAcceptedModal />
-      <View style={styles.tabs}>
-        {TABS?.map((tab) => {
-          const active = tab === activeTab;
-          return (
-            <Pressable
-              key={tab}
-              onPress={() => setActiveTab(tab)}
-              style={[styles.tab, active && styles.tabActive]}
-            >
-              <Text style={[styles.tabText, active && styles.tabTextActive]}>
-                {tab}
-              </Text>
-            </Pressable>
-          );
-        })}
-      </View>
 
-      {/* List */}
-      <Animated.View
-        style={{ flex: 1, transform: [{ translateX }], opacity: fade }}
+      {/* 
+      <HomeHeaderBar
+        location={ "Wallace, Australia"}
+        onLocationPress={() => console.log("Change location")}
+        onNotificationPress={() => console.log("Notifications clicked")}
+        hasNotification={true}
+        style1={{
+        
+        }}
+      /> */}
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{
+          marginBottom: 70,
+
+        }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       >
-        <FlatList
-          data={filteredRequests}
+
+
+
+        <CustomHeader label={strings.Order} />
+
+
+
+
+        <View style={styles.ordersHeader}>
+          <Text style={styles.sectionTitle1}> Nearby {strings.Order}</Text>
+
+        </View>
+
+
+
+
+
+        <Animated.View
           style={{
-            marginTop: 12
+            flex: 1, transform: [{ translateX }], opacity: fade,
           }}
-          keyExtractor={(item: any) => item.id}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 20 }}
-          renderItem={({ item, index }: any) => {
-            return (
-              <Animated.View entering={FadeInDown.delay(index * 100).duration(600)}>
-                <TouchableOpacity style={styles.card}
-                  onPress={() => {
-                    //                    if (item.deliveryStatus === STATUS.DELIVERED) {
-                    //                             } else if(item.deliveryStatus === STATUS.ASSIGNED) {
-                    // navigation.navigate(ScreenNameEnum.TripMap, {
-                    //                     item: item,
-                    //                   });
-                    //                             }else{
+        >
+          <FlatList
+            data={filteredRequests}
 
-                    navigation.navigate(ScreenNameEnum.ParcelDetails, {
-                      item: item,
-                    });
 
-                  }}
-                >
-                  <View style={styles.cardTop}>
-                    <View
-                      style={[
-                        styles.iconBox,
-                      ]}
-                    >
-                      <Image
-                        source={imageIndex?.icons || { uri: "" }}
-                        style={{ height: 24, width: 24 }}
-                        resizeMode="contain"
-                      />
+            style={{
+              marginTop: 12,
+            }}
+            keyExtractor={(item: any) => item.id}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 20 }}
+            renderItem={({ item, index }) => {
+              return (
+                <ReAnimated.View entering={FadeInDown.delay(index * 100)}>
+                  <TouchableOpacity
+                    style={styles.card}
+                    activeOpacity={0.85}
+                    onPress={() => {
+                      navigation.navigate(ScreenNameEnum.ParcelDetails, {
+                        item: item,
+                      });
+                    }}
+                  >
+                    <View style={styles.cardTop}>
+                      <View style={styles.iconBox}>
+                        <Image
+                          source={imageIndex?.icons || { uri: "" }}
+                          style={{ height: 20, width: 20 }}
+                          resizeMode="contain"
+                        />
+                      </View>
+
+                      <Text style={[styles.cardId, styles.bold]}>
+                        #{item?.trackingId}
+                      </Text>
+                      <Text style={styles.bulletSeparator}>•</Text>
+                      <Text style={styles.cardDate}>
+                        {item?.date}
+                      </Text>
+
+                      <View style={{ flex: 1 }} />
                     </View>
 
-                    <Text style={[styles.cardId, styles.bold]}>{item.trackingId}</Text>
-                    <View
-                      style={{
-                        borderWidth: 3,
-                        borderColor: "#D2D6DB",
-                        borderRadius: 20
-
-                      }}
-                    />
-                    <Text style={[styles.cardDate, {
-                      marginLeft: 5
-                    }]}>{item?.date}</Text>
-
-                    <View style={{ flex: 1 }} />
-                    <Image source={imageIndex.more_vert}
-
-                      style={{
-                        height: 22,
-                        width: 22
-                      }}
-                    />
-                  </View>
-
-                  <View style={styles.routeRow}>
-                    <Image
-                      source={imageIndex?.Vector || { uri: "" }}
-                      style={{ height: 88, width: 10 }}
-                      resizeMode="contain"
-                    />
-                    <View style={{ flex: 1, marginLeft: 10 }}>
-                      <Text style={styles.label}>{strings.From}</Text>
-                      <Text style={[styles.value, { marginTop: 6 }]}>
-                        {item?.pickupLocation}
-                      </Text>
-                      <Text style={[styles.label, { marginTop: 10 }]}>{strings.To}</Text>
-                      <Text style={[styles.value, { marginTop: 6 }]}>{item?.dropLocation}</Text>
-                      {/* <View style={styles.statusRow}>
-                      <Text style={styles.statusText}>Delivery Status :</Text>
-                      <Text
-                        style={[
-                          styles.statusValue,
-                          { color: item.statusColor || "#555" },
-                        ]}
-                      >
-                        {item.status}
-                      </Text>
-                    </View> */}
+                    <View style={styles.routeRow}>
+                      <View style={styles.timelineContainer}>
+                        <View style={styles.timelineDotStart} />
+                        <View style={styles.timelineLine} />
+                        <View style={styles.timelineDotEnd} />
+                      </View>
+                      <View style={{ flex: 1, marginLeft: 12 }}>
+                        <Text style={styles.label}>{strings?.From}</Text>
+                        <Text style={styles.value}  >
+                          {item?.pickupLocation || item?.pickup?.location}
+                        </Text>
+                        <Text style={[styles.label, { marginTop: 12 }]}>{strings?.To}</Text>
+                        <Text style={styles.value} >
+                          {item?.dropLocation || item?.drop?.location}
+                        </Text>
+                      </View>
                     </View>
-                  </View>
-                </TouchableOpacity>
-              </Animated.View>
-            )
-          }}
-          ListEmptyComponent={
-            <Text style={styles.emptyText}>{strings.NoOrdersHereYet}</Text>
-          }
-        />
-      </Animated.View>
+                  </TouchableOpacity>
+                </ReAnimated.View>
+              );
+            }}
+            ListEmptyComponent={
+              <View style={styles.emptyWrap}>
+                <View style={styles.illustrationWrap}>
+                  <View style={styles.illustrationBg} />
+                  <Image source={imageIndex.ordePracle} style={styles.emptyIcon} />
+                </View>
+                <Text style={styles.emptyTitle}>{strings.NoOrder}</Text>
+              </View>
+            }
+          />
+        </Animated.View>
+
+      </ScrollView>
     </SafeAreaView>
   );
 };
 
 export default AllOrder;
-
-// ---------------- STYLES ----------------
