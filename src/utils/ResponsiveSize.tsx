@@ -5,6 +5,7 @@ const figmaScreenHeight = 932; // Figma design height
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
+
 const ResponsiveSize = {
   width: (figmaWidth) => (figmaWidth / figmaScreenWidth) * screenWidth,
   height: (figmaHeight) => (figmaHeight / figmaScreenHeight) * screenHeight,

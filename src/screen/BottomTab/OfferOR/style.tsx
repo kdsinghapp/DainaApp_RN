@@ -120,4 +120,5 @@ export const styles = StyleSheet.create({
     color: color.primary,
     marginLeft: 4,
   },
+
 });

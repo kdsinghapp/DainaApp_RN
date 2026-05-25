@@ -92,7 +92,7 @@ export default function TabNavigator() {
             borderTopLeftRadius: 10,
             borderTopRightRadius: 10,
 
-            // Borders
+
 
             borderTopColor: 'rgba(125, 154, 155, 0.15)',
             borderLeftColor: 'rgba(125, 154, 155, 0.15)',

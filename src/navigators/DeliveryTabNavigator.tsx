@@ -119,6 +119,7 @@ export default function DeliveryTabNavigator() {
               shadowRadius: 4,
             },
           };
+
         }}
       >
         <Tab.Screen name="Home" component={DeliveryHome} />

@@ -7,13 +7,13 @@ interface BaseUrl {
 
 // Base URL object
 export const base_url: BaseUrl = {
-    url: 'https://server-php-8-3.technorizen.com/chewbe/api',
+    url: 'https://api.daina.tech/api',
 };
 
 // Axios instance with base URL
 export const API = axios.create({
-    baseURL: 'https://server-php-8-3.technorizen.com/chewbe/api',
+    baseURL: 'https://api.daina.tech/api',
 });
 
 // export const MapApiKey = "AIzaSyA3t_cd32IuYTxlCkPMN4TNVJQXlsBjS1Y" ; 
-export const MapApiKey = "AIzaSyCACEpHIFamZW5vjr4yg9Qn6ifZbvPdMDI" ;  
+export const MapApiKey = "AIzaSyCACEpHIFamZW5vjr4yg9Qn6ifZbvPdMDI";  

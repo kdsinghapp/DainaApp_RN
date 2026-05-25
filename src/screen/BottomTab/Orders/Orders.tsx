@@ -46,7 +46,6 @@ type Order = {
 //   "inTransit",
 //   "delivered",
 // ];
-// Full progress order: all statuses so Pending tab shows correct step for every order
 const STATUS_STEPS = [
   STATUS.PENDING,
   STATUS.ASSIGNED,

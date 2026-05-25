@@ -1,4 +1,3 @@
-// localeStorage.js
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LANGUAGE_KEY = 'appLanguage';

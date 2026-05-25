@@ -9,9 +9,9 @@ import NetworkStatusModal from '../compoent/NetworkStatusModal';
 import Toast from 'react-native-toast-message';
 import toastConfig from '../utils/customToast';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import strings from '../localization/Localization';
 import 'react-native-reanimated';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import strings from '../localization/Localization';
 const AppNavigator: React.FC = () => {
   const [isConnected, setIsConnected] = useState<boolean>(true);
 
@@ -29,10 +29,10 @@ const AppNavigator: React.FC = () => {
       <PersistGate loading={null} persistor={persistor}>
         <GestureHandlerRootView  >
           <NavigationContainer>
-            {/* <NetworkStatusModal
+            <NetworkStatusModal
               modalVisible={!isConnected}
               offlineText={strings.NoInternetConnection}
-            /> */}
+            />
             <SafeAreaView style={{ flex: 1 }} edges={['bottom']} >
               <RegistrationRoutes />
             </SafeAreaView>

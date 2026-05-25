@@ -3,7 +3,6 @@ import OnboardingScreen from "../screen/auth/Onboarding/Onboarding";
 import ScreenNameEnum from "./screenName.enum";
 import TabNavigator from "../navigators/TabNavigation";
 import NotificationsScreen from "../screen/Notification/Notification";
-import HelpScreen from "../screen/Profile/Help/Helps";
 import Splash from "../screen/auth/Splash/Splash";
 import UploadDocumentsScreen from "../screen/auth/UploadDocumentsScreen/UploadDocumentsScreen";
 import PhoneLogin from "../screen/auth/PhoneLogin/PhoneLogin";
@@ -131,10 +130,7 @@ const _routes: any = {
     },
 
 
-    {
-      name: ScreenNameEnum.Help,
-      Component: HelpScreen,
-    },
+
     {
       name: ScreenNameEnum.TabNavigator,
       Component: TabNavigator,

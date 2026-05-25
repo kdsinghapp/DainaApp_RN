@@ -23,7 +23,7 @@ Geocoder.init(GOOGLE_MAPS_APIKEY);
 const PickupLocationRapido = () => {
   const navigation = useNavigation();
   const mapRef = useRef<MapView>(null);
-  const searchRef = useRef<any>(null); // To clear search bar if needed
+  const searchRef = useRef<any>(null);
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   const [region, setRegion] = useState({
@@ -125,7 +125,6 @@ const PickupLocationRapido = () => {
         const json = await Geocoder.from(newRegion.latitude, newRegion.longitude);
         const addressComponent = json?.results?.[0]?.formatted_address || 'Unknown Location';
         setAddress(addressComponent);
-        // Sync search bar text with map movement
         searchRef.current?.setAddressText(addressComponent);
       } catch (error) {
         setAddress(strings?.UnknownLocation);

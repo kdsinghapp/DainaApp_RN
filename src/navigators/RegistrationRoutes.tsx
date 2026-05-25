@@ -97,7 +97,7 @@ const RegistrationRoutes: React.FC = () => {
 
           <NewOrderNotificationModal />
           <OfferAcceptedModal />
-          <AppAlert />
+          {/* <AppAlert /> */}
         </View>
 
       </DashboardProvider>
