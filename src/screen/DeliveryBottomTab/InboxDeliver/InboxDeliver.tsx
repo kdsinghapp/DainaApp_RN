@@ -165,7 +165,7 @@ export default function InboxDeliver() {
     const lastMsgText = item.lastMessage?.text ?? strings.NoMessagesYet;
     const msgTime = formatTime(item.lastMessage?.time);
     const hasUnread = (item.unreadCount ?? 0) > 0;
-
+    console.log("item.deliveryStatus", item)
     return (
       <TouchableOpacity
         style={[styles.chatRow]}
@@ -184,9 +184,7 @@ export default function InboxDeliver() {
           ) : (
             <Image source={imageIndex.prfile} style={styles.avatar} />
           )}
-          {item.deliveryStatus?.toLowerCase() === "assigned" && (
-            <View style={styles.onlineDot} />
-          )}
+
         </View>
 
         {/* Right Side: Info Column */}

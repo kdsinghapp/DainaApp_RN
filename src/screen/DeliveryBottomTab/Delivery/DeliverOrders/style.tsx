@@ -164,7 +164,6 @@ export const styles = StyleSheet.create({
   statusText: {
     fontFamily: font.MonolithRegular,
     fontSize: 11,
-    textTransform: "uppercase",
     letterSpacing: 0.4,
   },
   splitter: {

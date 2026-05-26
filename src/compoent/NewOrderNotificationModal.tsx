@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
     marginBottom: hp(0.4),
   },
   pathAddress: {
-    fontSize: wp(3.5),
+    fontSize: wp(4),
     color: color.textMain,
     fontFamily: font.MonolithRegular,
   },
@@ -444,7 +444,7 @@ const styles = StyleSheet.create({
   },
   btnLater: {
     flex: 1,
-    height: hp(6.9),
+    height: hp(6),
     borderRadius: wp(2.9),
     backgroundColor: '#F1F5F9',
     justifyContent: 'center',
@@ -457,7 +457,8 @@ const styles = StyleSheet.create({
   },
   btnAction: {
     flex: 2,
-    height: hp(6.9),
+    height: hp(6),
+
     borderRadius: wp(2.9),
     backgroundColor: '#FFCC00',
     justifyContent: 'center',

@@ -205,7 +205,8 @@ const DeliveryHome = () => {
 
           <View style={[styles.statusChip, { backgroundColor: statusBg, borderColor: statusBg }]}>
             <Text style={[styles.statusText, { color: statusColor }]}>
-              {statusLabel}
+              {statusLabel.charAt(0).toUpperCase() + statusLabel.slice(1).toLowerCase()}
+
             </Text>
           </View>
         </View>
