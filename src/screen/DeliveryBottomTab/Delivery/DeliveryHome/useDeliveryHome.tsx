@@ -244,10 +244,7 @@ export const useDeliveryHome = () => {
     }
 
     // Only connect if the user is a Delivery person
-    if (userData?.type !== 'Delivery') {
-      console.log('🚫 [WebSocket] Skipping driver socket: user is not a Delivery role');
-      return Promise.resolve();
-    }
+    // Redundant check removed since useEffect handles the fallback to AsyncStorage
 
     return new Promise<void>((resolve, reject) => {
       try {
@@ -414,10 +411,7 @@ export const useDeliveryHome = () => {
     }
 
     // Only connect if the user is a Delivery person
-    if (userData?.type !== 'Delivery') {
-      console.log('🚫 [WebSocket] Skipping live location socket: user is not a Delivery role');
-      return Promise.resolve();
-    }
+    // Redundant check removed since useEffect handles the fallback to AsyncStorage
 
     return new Promise<void>((resolve, reject) => {
       try {
@@ -594,7 +588,9 @@ export const useDeliveryHome = () => {
       return;
     }
 
-    if (userData?.type !== 'Delivery') {
+    const actualUserData = userData?.user || userData?.data || userData;
+    const userType = String(actualUserData?.type || userData?.type || '').trim().toLowerCase();
+    if (userType !== 'delivery') {
       console.log('🚫 [WebSocket] Reconnect skipped: not a Delivery user');
       return;
     }
@@ -636,27 +632,47 @@ export const useDeliveryHome = () => {
   useEffect(() => {
     cancelledRef.current = false;
 
-    if (!token || userData?.type !== 'Delivery') {
-      console.log('🚫 [WebSocket] Init skipped: No token or not a Delivery user');
-      // Ensure sockets are closed if user is no longer a driver (e.g. logout or role switch)
-      if (socketRef.current) {
-        socketRef.current.close();
-        socketRef.current = null;
-      }
-      if (socketLiveRef.current) {
-        socketLiveRef.current.close();
-        socketLiveRef.current = null;
-      }
-      return;
-    }
-
     const init = async () => {
       try {
+        // Fallback to AsyncStorage in case Redux is out of sync or empty
+        const storedToken = await AsyncStorage.getItem('token');
+        const activeToken = token || storedToken;
+
+        let activeUserData = userData;
+        if (!activeUserData) {
+          const authDataRaw = await AsyncStorage.getItem('authData');
+          if (authDataRaw) {
+            try {
+              const parsed = JSON.parse(authDataRaw);
+              activeUserData = parsed?.userData;
+            } catch (e) { }
+          }
+        }
+
+        const actualUserData = activeUserData?.user || activeUserData?.data || activeUserData;
+        const userType = String(actualUserData?.type || activeUserData?.type || '').trim().toLowerCase();
+
+        console.log(`[WebSocket Debug] Token present: ${!!activeToken}, UserType: '${userType}', RawUserData:`, activeUserData);
+
+        if (!activeToken || userType !== 'delivery') {
+          console.log('🚫 [WebSocket] Init skipped: No token or not a Delivery user');
+          cancelledRef.current = true;
+          if (socketRef.current) {
+            socketRef.current.close();
+            socketRef.current = null;
+          }
+          if (socketLiveRef.current) {
+            socketLiveRef.current.close();
+            socketLiveRef.current = null;
+          }
+          return;
+        }
+
         handleGetLocation();
-        await connectSocket(token);
+        await connectSocket(activeToken);
         if (cancelledRef.current) return;
         try {
-          await connectLiveLocationSocket(token);
+          await connectLiveLocationSocket(activeToken);
         } catch (liveErr) {
           console.warn('🔌 Live/nearby socket failed (app continues):', liveErr);
         }
