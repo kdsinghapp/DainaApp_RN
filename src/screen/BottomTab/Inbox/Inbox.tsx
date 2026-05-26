@@ -212,11 +212,12 @@ export default function ChatInboxScreen() {
 
   const renderItem = ({ item }: { item: ChatItem }) => {
     const avatarUri = item.driver?.image;
-    const driverName = item.driver?.name ?? strings.Unknown;
-    const lastMsgText = item.lastMessage?.text ?? strings.NoMessagesYet;
+    const driverName =
+      item?.driver?.name ||
+      item?.driver?.email ||
+      strings.Unknown; const lastMsgText = item.lastMessage?.text ?? strings.NoMessagesYet;
     const msgTime = formatTime(item.lastMessage?.time);
     const hasUnread = (item.unreadCount ?? 0) > 0;
-
     return (
       <TouchableOpacity
         style={[styles.chatRow,]}
