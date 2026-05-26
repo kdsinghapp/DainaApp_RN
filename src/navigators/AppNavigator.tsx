@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from '../redux/store';
 import NetInfo, { NetInfoState } from '@react-native-community/netinfo';
-import NetworkStatusModal from '../compoent/NetworkStatusModal';
+import NetworkStatusBanner from '../compoent/NetworkStatusModal';
 import Toast from 'react-native-toast-message';
 import toastConfig from '../utils/customToast';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -27,13 +27,13 @@ const AppNavigator: React.FC = () => {
       <PersistGate loading={null} persistor={persistor}>
         <GestureHandlerRootView  >
           <NavigationContainer>
-            <NetworkStatusModal
-              modalVisible={!isConnected}
-              offlineText={strings.NoInternetConnection}
-            />
             <SafeAreaView style={{ flex: 1 }} edges={['bottom']} >
               <RegistrationRoutes />
             </SafeAreaView>
+            <NetworkStatusBanner
+              isConnected={isConnected}
+              offlineText={strings.NoInternetConnection}
+            />
             <Toast config={toastConfig} />
           </NavigationContainer>
         </GestureHandlerRootView>
