@@ -9,11 +9,11 @@ import {
   ScrollView,
   Animated,
   RefreshControl,
-
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import imageIndex from '../../../assets/imageIndex';
 import { base_url } from '../../../Api';
+import { color } from '../../../constant';
 import StatusBarComponent from '../../../compoent/StatusBarCompoent';
 import CustomHeader from '../../../compoent/CustomHeader';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -254,7 +254,7 @@ export default function DocumentShow() {
       {buttonText && onPress && (
         <TouchableOpacity
           style={{
-            backgroundColor: '#FFCC00',
+            backgroundColor: color.primary,
             paddingVertical: 12,
             paddingHorizontal: 24,
             borderRadius: 12,
