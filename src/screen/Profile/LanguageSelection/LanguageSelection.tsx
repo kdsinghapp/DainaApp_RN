@@ -336,14 +336,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 2,
     height: 7,
-    backgroundColor: '#000',
+    backgroundColor: 'white',
     transform: [{ rotate: '45deg' }, { translateX: 2 }, { translateY: -1 }],
   },
   checkKick: {
     position: 'absolute',
     width: 2,
     height: 3,
-    backgroundColor: '#000',
+    backgroundColor: 'white',
     transform: [{ rotate: '-45deg' }, { translateX: -2 }, { translateY: 1 }],
   },
   footer: {
