@@ -255,10 +255,7 @@ export default function ChatInboxScreen() {
           </View>
 
           {/* Subheader: Tracking ID & Status */}
-          {/* <View style={styles.subHeaderRow}>
 
-            <StatusBadge status={item.deliveryStatus} />
-          </View> */}
 
           {/* Footer Row: Last Message & Unread Badge */}
           <View style={styles.messageFooterRow}>
@@ -269,6 +266,10 @@ export default function ChatInboxScreen() {
               {lastMsgText}
             </Text>
             <UnreadBadge count={item.unreadCount} />
+          </View>
+          <View style={styles.subHeaderRow}>
+
+            <StatusBadge status={item.deliveryStatus} />
           </View>
         </View>
       </TouchableOpacity>
