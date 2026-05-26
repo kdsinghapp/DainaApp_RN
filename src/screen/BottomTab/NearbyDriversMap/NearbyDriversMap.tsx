@@ -1692,13 +1692,13 @@ const s = StyleSheet.create({
   },
   scanTrack: {
     height: 4,
-    backgroundColor: T.border,
+    backgroundColor: "#76889A",
     borderRadius: 4,
     overflow: "hidden",
   },
   scanFill: {
     height: "100%",
-    backgroundColor: T.primary,
+    backgroundColor: "#FFCC00",
     borderRadius: 4,
     shadowColor: T.primary,
     shadowOpacity: 0.7,
@@ -1712,7 +1712,7 @@ const s = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: T.border,
+    borderColor: "#FFCC00",
     backgroundColor: T.bgCard,
     alignItems: "center",
   },
@@ -1721,5 +1721,6 @@ const s = StyleSheet.create({
     color: T.textMid,
     letterSpacing: 2.5,
     fontFamily: font.MonolithRegular,
+    textTransform: "uppercase"
   },
 });
