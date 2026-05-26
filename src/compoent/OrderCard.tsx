@@ -91,9 +91,8 @@ const OrderCard = ({ order, onPress }: { order: any; onPress: () => void }) => {
       </View>
       <View style={{
         backgroundColor: color.primary,
-        padding: 6,
-        height: 40,
-        borderRadius: 10,
+        height: 55,
+        borderRadius: 40,
         marginTop: 15,
         alignItems: "center",
         justifyContent: "center",
