@@ -237,6 +237,12 @@ export const useDeliveryHome = () => {
     if (reconnectTimerRef.current) clearTimeout(reconnectTimerRef.current);
     if (heartbeatIntervalRef.current) clearInterval(heartbeatIntervalRef.current);
 
+    // Properly close any existing socket before reconnecting
+    if (socketRef.current) {
+      socketRef.current.close();
+      socketRef.current = null;
+    }
+
     // Only connect if the user is a Delivery person
     if (userData?.type !== 'Delivery') {
       console.log('🚫 [WebSocket] Skipping driver socket: user is not a Delivery role');
@@ -400,6 +406,12 @@ export const useDeliveryHome = () => {
   const connectLiveLocationSocket = (token: string) => {
     if (liveReconnectTimerRef.current) clearTimeout(liveReconnectTimerRef.current);
     if (liveHeartbeatIntervalRef.current) clearInterval(liveHeartbeatIntervalRef.current);
+
+    // Properly close any existing socket before reconnecting
+    if (socketLiveRef.current) {
+      socketLiveRef.current.close();
+      socketLiveRef.current = null;
+    }
 
     // Only connect if the user is a Delivery person
     if (userData?.type !== 'Delivery') {

@@ -36,7 +36,7 @@ const Splash: React.FC = () => {
         const storedAuth = await getAuthData();
         console.log(storedAuth, "storedAuth")
         if (storedAuth?.token) {
-          // dispatch(restoreLogin(storedAuth));
+          dispatch(restoreLogin(storedAuth));
           if (storedAuth.userData?.type == "Delivery") {
             navigation.replace(ScreenNameEnum.DeliveryTabNavigator);
           } else {

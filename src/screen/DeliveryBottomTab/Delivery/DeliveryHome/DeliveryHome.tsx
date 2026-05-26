@@ -131,155 +131,12 @@ const DeliveryHome = () => {
         
         }}
       /> */}
-      <ScrollView
-        showsVerticalScrollIndicator={false}
+      <View
         style={{
+          flex: 1,
           marginBottom: 70,
-
         }}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
       >
-
-        <OnlineSlideRight
-          coords={coords}
-          onSlideSuccess={(newStatus: boolean) => {
-            // successToast(newStatus ? "You are now Online" : "You are now Offline");
-          }}
-          isOnline={isOnline}
-          setIsOnline={setIsOnline}
-        />
-
-
-        <View style={styles.container1}>
-          {/* Earnings */}
-          <ReAnimated.View
-            entering={FadeInDown.delay(100).duration(500)}
-            style={styles.card1}
-          >
-            <Image
-              source={imageIndex.cars}
-              style={{
-                height: 35,
-                tintColor: "#7B3F00",
-                // tintColor: "#D2B48C",
-                width: 35,
-              }}
-              resizeMode="contain"
-            />
-            <Text style={styles.title}>{strings.PendingRides}</Text>
-            <Text
-              style={{
-                color: "black",
-                fontSize: 18,
-                fontFamily: font.MonolithRegular
-                ,
-                marginTop: 5,
-              }}
-            >
-              {counts?.pendingRides || "0"}
-            </Text>
-          </ReAnimated.View>
-
-          {/* Rides */}
-          <ReAnimated.View
-            entering={FadeInDown.delay(200).duration(500)}
-            style={styles.card1}
-          >
-            <Image
-              source={imageIndex.cars}
-              style={{
-                height: 35,
-                width: 35,
-                tintColor: "#7B3F00",
-
-              }}
-              resizeMode="contain"
-            />
-            <Text style={styles.title}>{strings.TodaysRides}</Text>
-            <Text
-              style={{
-                color: "black",
-                fontSize: 18,
-                fontFamily: font.MonolithRegular
-                ,
-                marginTop: 5,
-              }}
-            >
-              {counts?.todayRides || "0"}
-            </Text>
-          </ReAnimated.View>
-        </View>
-        <View style={styles.container1}>
-          {/* Earnings */}
-          <ReAnimated.View
-            entering={FadeInDown.delay(300).duration(500)}
-            style={styles.card1}
-          >
-            <Image
-              source={imageIndex.earing}
-              style={{
-                height: 35,
-                width: 35,
-                tintColor: "#7B3F00",
-
-              }}
-              resizeMode="contain"
-            />
-            <Text style={styles.title}>{strings.TotalEarnings}</Text>
-            <Text
-              style={{
-                color: "black",
-
-                fontSize: 18, fontFamily: font.MonolithRegular
-                ,
-                marginTop: 5,
-              }}
-            >
-              {counts?.totalEarnings || "0.00"} ₮
-            </Text>
-          </ReAnimated.View>
-
-          {/* Rides */}
-          <ReAnimated.View
-            entering={FadeInDown.delay(400).duration(500)}
-            style={styles.card1}
-          >
-            <Image
-              source={imageIndex.cars}
-              style={{
-                height: 35,
-                tintColor: "#7B3F00",
-
-                width: 35,
-              }}
-              resizeMode="contain"
-            />
-            <Text style={styles.title}>{strings.WeeklyRides}</Text>
-            <Text
-              style={{
-                color: "black",
-
-                fontSize: 18,
-                fontFamily: font.MonolithRegular
-                ,
-                marginTop: 5,
-              }}
-            >
-              {counts?.weeklyRides || "0"}
-            </Text>
-          </ReAnimated.View>
-        </View>
-
-        <View style={styles.ordersHeader}>
-          <Text style={styles.sectionTitle1}> Nearby {strings.Order}</Text>
-
-        </View>
-
-
-
-
 
         <Animated.View
           style={{
@@ -287,6 +144,146 @@ const DeliveryHome = () => {
           }}
         >
           <FlatList
+            ListHeaderComponent={
+              <>
+                <OnlineSlideRight
+                  coords={coords}
+                  onSlideSuccess={(newStatus: boolean) => {
+                    // successToast(newStatus ? "You are now Online" : "You are now Offline");
+                  }}
+                  isOnline={isOnline}
+                  setIsOnline={setIsOnline}
+                />
+
+
+                <View style={styles.container1}>
+                  {/* Earnings */}
+                  <ReAnimated.View
+                    entering={FadeInDown.delay(100).duration(500)}
+                    style={styles.card1}
+                  >
+                    <Image
+                      source={imageIndex.cars}
+                      style={{
+                        height: 35,
+                        tintColor: "#7B3F00",
+                        // tintColor: "#D2B48C",
+                        width: 35,
+                      }}
+                      resizeMode="contain"
+                    />
+                    <Text style={styles.title}>{strings.PendingRides}</Text>
+                    <Text
+                      style={{
+                        color: "black",
+                        fontSize: 18,
+                        fontFamily: font.MonolithRegular
+                        ,
+                        marginTop: 5,
+                      }}
+                    >
+                      {counts?.pendingRides || "0"}
+                    </Text>
+                  </ReAnimated.View>
+
+                  {/* Rides */}
+                  <ReAnimated.View
+                    entering={FadeInDown.delay(200).duration(500)}
+                    style={styles.card1}
+                  >
+                    <Image
+                      source={imageIndex.cars}
+                      style={{
+                        height: 35,
+                        width: 35,
+                        tintColor: "#7B3F00",
+
+                      }}
+                      resizeMode="contain"
+                    />
+                    <Text style={styles.title}>{strings.TodaysRides}</Text>
+                    <Text
+                      style={{
+                        color: "black",
+                        fontSize: 18,
+                        fontFamily: font.MonolithRegular
+                        ,
+                        marginTop: 5,
+                      }}
+                    >
+                      {counts?.todayRides || "0"}
+                    </Text>
+                  </ReAnimated.View>
+                </View>
+                <View style={styles.container1}>
+                  {/* Earnings */}
+                  <ReAnimated.View
+                    entering={FadeInDown.delay(300).duration(500)}
+                    style={styles.card1}
+                  >
+                    <Image
+                      source={imageIndex.earing}
+                      style={{
+                        height: 35,
+                        width: 35,
+                        tintColor: "#7B3F00",
+
+                      }}
+                      resizeMode="contain"
+                    />
+                    <Text style={styles.title}>{strings.TotalEarnings}</Text>
+                    <Text
+                      style={{
+                        color: "black",
+
+                        fontSize: 18, fontFamily: font.MonolithRegular
+                        ,
+                        marginTop: 5,
+                      }}
+                    >
+                      {counts?.totalEarnings || "0.00"} ₮
+                    </Text>
+                  </ReAnimated.View>
+
+                  {/* Rides */}
+                  <ReAnimated.View
+                    entering={FadeInDown.delay(400).duration(500)}
+                    style={styles.card1}
+                  >
+                    <Image
+                      source={imageIndex.cars}
+                      style={{
+                        height: 35,
+                        tintColor: "#7B3F00",
+
+                        width: 35,
+                      }}
+                      resizeMode="contain"
+                    />
+                    <Text style={styles.title}>{strings.WeeklyRides}</Text>
+                    <Text
+                      style={{
+                        color: "black",
+
+                        fontSize: 18,
+                        fontFamily: font.MonolithRegular
+                        ,
+                        marginTop: 5,
+                      }}
+                    >
+                      {counts?.weeklyRides || "0"}
+                    </Text>
+                  </ReAnimated.View>
+                </View>
+
+                <View style={styles.ordersHeader}>
+                  <Text style={styles.sectionTitle1}> Nearby {strings.Order}</Text>
+                </View>
+              </>
+            }
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
             data={filteredRequests}
 
 
@@ -360,8 +357,7 @@ const DeliveryHome = () => {
             }
           />
         </Animated.View>
-
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };

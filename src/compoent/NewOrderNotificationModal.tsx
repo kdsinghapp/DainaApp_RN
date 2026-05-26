@@ -100,7 +100,13 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
           stopNotificationSound();
         }
       } else {
-        navigation.navigate(ScreenNameEnum.AllOrder as never);
+        // navigation.navigate(ScreenNameEnum.AllOrder as never);
+        navigation.navigate(ScreenNameEnum.ParcelDetails as never, {
+          item: {
+            data: data,
+            deliveryStatus: STATUS.PENDING,
+          },
+        } as never);
         setNewOrderNotification?.(null);
         stopNotificationSound();
       }
