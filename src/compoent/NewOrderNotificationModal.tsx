@@ -122,9 +122,9 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
           <View style={styles.headerIconWrapper}>
             <View style={styles.headerIconCircle}>
               <Icon
-                name={isCounterOffer ? "cash-outline" : "cube"}
-                size={wp(7)}
-                color={color.black}
+                name={isCounterOffer ? "cash-outline" : "cube-outline"}
+                size={wp(6)}
+                color={color.primary || '#FFCC00'}
               />
             </View>
           </View>
@@ -158,16 +158,16 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
               <View style={styles.timelineRow}>
                 {/* Left Col: Dot & Line */}
                 <View style={styles.leftCol}>
-                  <View style={[styles.iconCircle, { borderColor: '#10B981', backgroundColor: '#ECFDF5' }]}>
-                    <Icon name="ellipse" size={wp(2.2)} color="#10B981" />
+                  <View style={[styles.iconCircle, { borderColor: color.success, backgroundColor: '#ECFDF5' }]}>
+                    <View style={styles.pickupDot} />
                   </View>
                   <View style={styles.verticalLine} />
                 </View>
 
                 {/* Right Col: Label & Address */}
                 <View style={styles.rightCol}>
-                  <Text style={styles.pathLabel}>{strings.Pickup || 'Pickup'}</Text>
-                  <Text style={styles.pathAddress}>{pickupAddress || 'N/A'}</Text>
+                  <Text style={styles.pathLabel}>{strings.Pickup || 'Pickup Location'}</Text>
+                  <Text style={styles.pathAddress}  >{pickupAddress || 'N/A'}</Text>
                 </View>
               </View>
 
@@ -175,15 +175,15 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
               <View style={[styles.timelineRow, { marginBottom: 0 }]}>
                 {/* Left Col: Dot */}
                 <View style={styles.leftCol}>
-                  <View style={[styles.iconCircle, { borderColor: '#EF4444', backgroundColor: '#FEF2F2' }]}>
-                    <Icon name="location" size={wp(3.8)} color="#EF4444" />
+                  <View style={[styles.iconCircle, { borderColor: color.error, backgroundColor: '#FEF2F2' }]}>
+                    <Icon name="location-sharp" size={wp(3.5)} color={color.error} />
                   </View>
                 </View>
 
                 {/* Right Col: Label & Address */}
                 <View style={[styles.rightCol, { paddingBottom: 0 }]}>
-                  <Text style={styles.pathLabel}>{strings.Drop || 'Drop-off'}</Text>
-                  <Text style={styles.pathAddress}>{dropAddress || 'N/A'}</Text>
+                  <Text style={styles.pathLabel}>{strings.Drop || 'Drop-off Location'}</Text>
+                  <Text style={styles.pathAddress}  >{dropAddress || 'N/A'}</Text>
                 </View>
               </View>
             </View>
@@ -252,31 +252,36 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: hp(3),
-
+    marginBottom: hp(2.5),
+    paddingBottom: hp(2),
+    borderBottomWidth: 1,
+    borderBottomColor: '#F1F5F9', // subtle separator line
   },
   headerIconWrapper: {
-    width: wp(15),
-    height: wp(15),
     justifyContent: 'center',
     alignItems: 'center',
   },
   headerIconCircle: {
-    width: wp(14),
-    height: wp(14),
-    borderRadius: wp(4.5),
-    backgroundColor: '#FFCC00',
+    width: wp(12),
+    height: wp(12),
+    borderRadius: wp(6),
+    backgroundColor: color.primaryLight || '#FFFBEB',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: color.primary || '#FFCC00',
   },
   headerTitleContainer: {
     flex: 1,
-    marginLeft: wp(4),
+    marginLeft: wp(3.5),
+    justifyContent: 'center',
   },
   headerTitle: {
-    fontSize: wp(5.5),
-    color: '#0F172A',
+    fontSize: wp(4.5),
+    color: color.textMain,
     fontFamily: font.MonolithRegular,
+    lineHeight: wp(6),
+    letterSpacing: 0.3,
   },
   badgeRow: {
     flexDirection: 'row',
@@ -294,9 +299,11 @@ const styles = StyleSheet.create({
     fontFamily: font.MonolithRegular,
   },
   closeIconButton: {
-    padding: wp(2.5),
+    padding: wp(2),
     backgroundColor: '#F8FAFC',
-    borderRadius: wp(3.5),
+    borderRadius: wp(4),
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
   },
   scrollContent: {
     paddingBottom: hp(2),
@@ -370,12 +377,18 @@ const styles = StyleSheet.create({
     fontFamily: font.MonolithRegular,
   },
   pathContainer: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: wp(5),
-    padding: wp(5),
+    backgroundColor: "#F4F6F9",
+    borderRadius: wp(4),
+    paddingVertical: wp(4.5),
+    paddingHorizontal: wp(4),
     borderWidth: 1,
-    borderColor: '#F1F5F9',
+    borderColor: color.borderLight,
     marginBottom: hp(2.5),
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.03,
+    shadowRadius: 5,
+
   },
   timelineRow: {
     flexDirection: 'row',
@@ -385,45 +398,48 @@ const styles = StyleSheet.create({
     width: wp(8),
   },
   iconCircle: {
-    width: wp(7),
-    height: wp(7),
-    borderRadius: wp(3.5),
-    backgroundColor: '#FFFFFF',
+    width: wp(7.5),
+    height: wp(7.5),
+    borderRadius: wp(3.75),
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderWidth: 1.5,
+  },
+  pickupDot: {
+    width: wp(2.8),
+    height: wp(2.8),
+    borderRadius: wp(1.4),
+    backgroundColor: color.success,
   },
   verticalLine: {
     width: 2,
     flex: 1,
-    minHeight: hp(4),
-    backgroundColor: '#E2E8F0',
-    marginVertical: 4,
+    minHeight: hp(3.5),
+    backgroundColor: '#CBD5E1', // Slightly darker border for better visibility
+    marginVertical: hp(0.5),
   },
   rightCol: {
     flex: 1,
     marginLeft: wp(3),
-    paddingBottom: hp(2.5),
+    paddingBottom: hp(3),
+    justifyContent: 'center',
   },
   pathLabel: {
-    fontSize: wp(3),
-    color: '#94A3B8',
+    fontSize: wp(3.2),
+    color: color.textMuted,
     fontFamily: font.MonolithRegular,
     textTransform: 'uppercase',
-    letterSpacing: 0.8,
-    marginBottom: 2,
+    letterSpacing: 1,
+    marginBottom: hp(0.4),
   },
   pathAddress: {
     fontSize: wp(3.5),
-    color: '#334155',
+    color: color.textMain,
     fontFamily: font.MonolithRegular,
-    lineHeight: wp(4.8),
   },
   footer: {
     flexDirection: 'row',
     gap: wp(4),
-    paddingTop: hp(2),
 
   },
   btnLater: {
