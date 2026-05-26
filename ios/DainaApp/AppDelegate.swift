@@ -48,7 +48,7 @@ class AppDelegate: RCTAppDelegate, UNUserNotificationCenterDelegate, MessagingDe
     Messaging.messaging().delegate = self
     application.registerForRemoteNotifications()
 
-    self.moduleName = "ChewbeApp"
+    self.moduleName = "DainaApp"
     self.initialProps = [:]
 
     NSLog("🏁 AppDelegate: Calling super.application")

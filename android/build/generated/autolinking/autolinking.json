@@ -1103,9 +1103,9 @@
     "ios": {
       "sourceDir": "/Users/technorizen/Desktop/aman/DainaApp/ios",
       "xcodeProject": {
-        "name": "ChewbeApp.xcodeproj",
+        "name": "ChewbeApp.xcworkspace",
         "path": ".",
-        "isWorkspace": false
+        "isWorkspace": true
       },
       "automaticPodsInstallation": false,
       "assets": []

@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "ChewbeApp.app"
-               BlueprintName = "ChewbeApp"
-               ReferencedContainer = "container:ChewbeApp.xcodeproj">
+               BuildableName = "DainaApp.app"
+               BlueprintName = "DainaApp"
+               ReferencedContainer = "container:DainaApp.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "ChewbeAppTests.xctest"
-               BlueprintName = "ChewbeAppTests"
-               ReferencedContainer = "container:ChewbeApp.xcodeproj">
+               BuildableName = "DainaAppTests.xctest"
+               BlueprintName = "DainaAppTests"
+               ReferencedContainer = "container:DainaApp.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "ChewbeApp.app"
-            BlueprintName = "ChewbeApp"
-            ReferencedContainer = "container:ChewbeApp.xcodeproj">
+            BuildableName = "DainaApp.app"
+            BlueprintName = "DainaApp"
+            ReferencedContainer = "container:DainaApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "ChewbeApp.app"
-            BlueprintName = "ChewbeApp"
-            ReferencedContainer = "container:ChewbeApp.xcodeproj">
+            BuildableName = "DainaApp.app"
+            BlueprintName = "DainaApp"
+            ReferencedContainer = "container:DainaApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

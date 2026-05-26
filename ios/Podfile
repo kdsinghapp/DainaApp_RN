@@ -16,7 +16,7 @@ prepare_react_native_project!
 # ✅ Target block se BAHAR - yahi fix hai
 $RNFirebaseAsStaticFramework = true
 
-target 'ChewbeApp' do
+target 'DainaApp' do
   setup_permissions([
     'Camera',
     'PhotoLibrary',

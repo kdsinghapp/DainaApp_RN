@@ -1789,6 +1789,6 @@ __d(function(g,r,i,a,m,e,d){Object.defineProperty(e,"__esModule",{value:!0}),e.u
 __d(function(g,r,i,a,m,e,d){Object.defineProperty(e,"__esModule",{value:!0}),e.useSuspenseQuery=function(u,n){return(0,r(d[0]).useBaseQuery)(Object.assign({},u,{enabled:!0,suspense:!0,throwOnError:r(d[1]).defaultThrowOnError,placeholderData:void 0}),r(d[2]).QueryObserver,n)}},1687,[1675,1676,1645]);
 __d(function(g,r,i,a,m,e,d){Object.defineProperty(e,"__esModule",{value:!0})},1688,[]);
 __d(function(g,r,i,a,m,e,d){Object.defineProperty(e,"__esModule",{value:!0}),e.queryClient=void 0;e.queryClient=new(r(d[0]).QueryClient)({defaultOptions:{queries:{retry:2,staleTime:6e4,cacheTime:3e5,refetchOnWindowFocus:!1}}})},1689,[1642]);
-__d(function(e,p,a,n,b,d,h){b.exports={name:"ChewbeApp",displayName:"ChewbeApp"}},1690,[]);
+__d(function(e,p,a,n,b,d,h){b.exports={name:"DainaApp",displayName:"DainaApp"}},1690,[]);
 __r(69);
 __r(0);
