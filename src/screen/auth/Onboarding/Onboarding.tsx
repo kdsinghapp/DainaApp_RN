@@ -76,19 +76,32 @@ const OnboardingScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
       {/* Dots */}
       <View style={styles.dotsContainer}>
         {slides.map((_, index) => {
-          const isActive = currentIndex === index;
+          // Calculate input range based on scrollX for smooth animation
+          const inputRange = [(index - 1) * width, index * width, (index + 1) * width];
+
+          const dotWidth = scrollX.interpolate({
+            inputRange,
+            outputRange: [8, 25, 8],
+            extrapolate: 'clamp',
+          });
+
+          const dotColor = scrollX.interpolate({
+            inputRange,
+            outputRange: [color.primary, '#FFCC00', color.primary],
+            extrapolate: 'clamp',
+          });
+
           return (
-            <View
+            <Animated.View
               key={index}
               style={[
                 styles.dot,
                 {
-                  backgroundColor: isActive ? '#FFCC00' : color.primary,
-                  width: isActive ? 13 : 8,
-                  height: isActive ? 5 : 8,
-                  justifyContent: "center",
+                  backgroundColor: dotColor,
+                  width: dotWidth,
+                  height: 6,
                   marginHorizontal: 5,
-                  borderRadius: isActive ? 8 : 5,
+                  borderRadius: 6,
                 },
               ]}
             />

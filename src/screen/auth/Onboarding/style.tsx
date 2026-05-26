@@ -33,7 +33,7 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     color: '#76889A',
     textAlign: 'center',
-    marginTop: 8,
+    marginTop: 2,
     lineHeight: 28,
     fontFamily: font.MonolithRegular,
 
@@ -46,7 +46,7 @@ export const styles = StyleSheet.create({
   },
   skipText: {
     fontSize: 16,
-    color: '#FFCC00',
+    color: '#2A1F1F',
     fontFamily: font.MonolithRegular,
   },
   dotsContainer: {
