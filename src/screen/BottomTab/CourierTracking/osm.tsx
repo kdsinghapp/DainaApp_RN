@@ -469,7 +469,6 @@ const styles = StyleSheet.create({
   markerText: {
     color: 'white',
     fontSize: 12,
-    fontWeight: 'bold',
   },
 
   // Courier Marker
@@ -526,7 +525,6 @@ const styles = StyleSheet.create({
   },
   distanceText: {
     fontSize: 16,
-    fontWeight: 'bold',
     color: '#333',
     marginBottom: 5,
   },
@@ -571,7 +569,6 @@ const styles = StyleSheet.create({
   },
   controlText: {
     fontSize: 24,
-    fontWeight: 'bold',
     color: '#333',
   },
 
@@ -614,7 +611,6 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 22,
-    fontWeight: 'bold',
     color: '#333',
     marginBottom: 20,
   },
@@ -642,12 +638,10 @@ const styles = StyleSheet.create({
   infoLabel: {
     fontSize: 16,
     color: '#666',
-    fontWeight: '500',
   },
   infoValue: {
     fontSize: 16,
     color: '#333',
-    fontWeight: '600',
   },
   statusBadge: {
     flexDirection: 'row',
@@ -667,7 +661,6 @@ const styles = StyleSheet.create({
   statusText: {
     fontSize: 14,
     color: '#2196F3',
-    fontWeight: '600',
   },
 
   // Route Info
@@ -687,7 +680,6 @@ const styles = StyleSheet.create({
   },
   routeTitle: {
     fontSize: 16,
-    fontWeight: '600',
     color: '#333',
     marginBottom: 2,
   },

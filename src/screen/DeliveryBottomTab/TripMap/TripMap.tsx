@@ -869,7 +869,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#0F172A',
     fontFamily: font.MonolithRegular,
-    fontWeight: '700',
   },
   locationRow: {
     flexDirection: 'row',
@@ -901,7 +900,6 @@ const styles = StyleSheet.create({
     color: '#94A3B8',
     marginBottom: 2,
     fontFamily: font.MonolithRegular,
-    fontWeight: '700',
   },
   locationText: {
     flex: 1,
@@ -1078,7 +1076,6 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 15,
     fontFamily: font.MonolithRegular,
-    fontWeight: '700',
     flex: 1,
     lineHeight: 20,
   },
@@ -1105,6 +1102,5 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 13,
     fontFamily: font.MonolithRegular,
-    fontWeight: '700',
   },
 });

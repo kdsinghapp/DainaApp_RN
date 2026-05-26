@@ -205,6 +205,7 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: font.MonolithRegular,
     color: "#0F172A",
+
   },
   iconLocation: {
     height: 26,

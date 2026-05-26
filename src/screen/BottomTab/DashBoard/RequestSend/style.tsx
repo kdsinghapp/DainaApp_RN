@@ -69,5 +69,5 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(0, 0, 0, 0.2)',
   },
-  statusText: { fontSize: 15, color: 'black', fontWeight: '600', letterSpacing: 0.3 },
+  statusText: { fontSize: 15, color: 'black', letterSpacing: 0.3 },
 });

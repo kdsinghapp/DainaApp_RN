@@ -88,7 +88,6 @@ const styles = StyleSheet.create({
   textNormal: { color: '#334155' },
   iconText: {
     fontSize: 14,
-    fontWeight: '700',
     color: '#FFF',
   },
   iconBadgeSuccess: {

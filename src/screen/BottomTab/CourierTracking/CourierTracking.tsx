@@ -812,7 +812,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#0F172A",
     fontFamily: font.MonolithRegular,
-    fontWeight: "700",
   },
   routeSummaryEta: {
     fontSize: 11,
