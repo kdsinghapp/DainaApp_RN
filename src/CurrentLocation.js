@@ -6,7 +6,6 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Geocoder from 'react-native-geocoding';
 import font from './theme/font';
 
-// Initialize Geocoder with your API Key
 const GOOGLE_API_KEY = "AIzaSyDgFGS91BvviXh_f-nmvtEggUHJcaGyUwA";
 Geocoder.init(GOOGLE_API_KEY);
 

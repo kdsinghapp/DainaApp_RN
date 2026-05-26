@@ -8,7 +8,7 @@ import Geolocation from '@react-native-community/geolocation';
 import { successToast, errorToast } from '../../../../utils/customToast';
 import ScreenNameEnum from '../../../../routes/screenName.enum';
 import { STATUS } from '../../../../utils/Constant';
-import { AppState, AppStateStatus, DeviceEventEmitter } from "react-native";
+import { View, Text, TouchableOpacity, FlatList, AppState, AppStateStatus } from "react-native";
 import NetInfo, { NetInfoState } from "@react-native-community/netinfo";
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '../../../../redux/feature/authSlice';
@@ -68,18 +68,6 @@ export const useDeliveryHome = () => {
   useEffect(() => {
     coordsRef.current = coords;
   }, [coords]);
-
-  // Listen for FCM foreground/background clicks to trigger the new order modal
-  useEffect(() => {
-    const subscription = DeviceEventEmitter.addListener('NEW_ORDER_FCM', (data) => {
-      console.log("📨 [FCM] Triggering Modal from push event:", data);
-      setNewOrderNotification({ visible: true, data });
-    });
-
-    return () => {
-      subscription.remove();
-    };
-  }, []);
 
   const fetchAvailableRequests = useCallback(async () => {
     try {
@@ -819,7 +807,6 @@ export const useDeliveryHome = () => {
     isOnline,
     setIsOnline,
     getProfileApi,
-    userData,
-    isConnected
+    userData
   };
 };

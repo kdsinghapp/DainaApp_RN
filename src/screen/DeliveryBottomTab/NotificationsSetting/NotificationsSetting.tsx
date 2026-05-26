@@ -7,7 +7,6 @@ import { color } from '../../../constant';
 import font from '../../../theme/font';
 import strings from '../../../localization/Localization';
 const NotificationsSetting = () => {
-  // State for toggles
   const [generalNotification, setGeneralNotification] = useState(true);
   const [sound, setSound] = useState(false);
   const [vibrate, setVibrate] = useState(false);
