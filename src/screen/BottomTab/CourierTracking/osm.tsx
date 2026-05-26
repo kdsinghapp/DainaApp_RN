@@ -464,7 +464,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
-    elevation: 3,
   },
   markerText: {
     color: 'white',
@@ -490,7 +489,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.4,
     shadowRadius: 5,
-    elevation: 8,
   },
   courierImage: {
     width: 32,
@@ -505,7 +503,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 107, 53, 0.2)',
     borderWidth: 2,
     borderColor: 'rgba(255, 107, 53, 0.5)',
-    animation: 'pulse 2s infinite',
   },
 
   // Distance Overlay
@@ -521,7 +518,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
     shadowRadius: 5,
-    elevation: 5,
   },
   distanceText: {
     fontSize: 16,
@@ -556,7 +552,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.3,
     shadowRadius: 5,
-    elevation: 8,
     overflow: 'hidden',
   },
   controlButton: {
@@ -585,7 +580,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: -5 },
     shadowOpacity: 0.1,
     shadowRadius: 10,
-    elevation: 20,
   },
   panelHandleContainer: {
     alignItems: 'center',
@@ -624,7 +618,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 3,
-    elevation: 2,
   },
   infoRow: {
     flexDirection: 'row',

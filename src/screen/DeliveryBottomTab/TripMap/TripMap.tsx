@@ -1059,7 +1059,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
     shadowRadius: 20,
-    elevation: 10,
     zIndex: 1000,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.2)',
@@ -1095,7 +1094,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.25,
     shadowRadius: 16,
-    elevation: 8,
     zIndex: 1000,
   },
   sameLocationText: {

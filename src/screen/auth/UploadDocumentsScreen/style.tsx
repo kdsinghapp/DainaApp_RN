@@ -55,7 +55,6 @@ export const styles = StyleSheet.create({
     backgroundColor: "#FFB800",
     borderRadius: 15,
     padding: 6,
-    elevation: 3,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,

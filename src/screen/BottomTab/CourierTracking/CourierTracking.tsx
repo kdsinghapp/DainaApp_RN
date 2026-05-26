@@ -778,7 +778,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.12,
     shadowRadius: 16,
-    elevation: 8,
     zIndex: 4,
   },
   routeSummaryIcon: {
@@ -842,7 +841,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFCC00',
     borderWidth: 2,
     borderColor: '#FFF',
-    elevation: 3,
   },
   dropoffMarkerContainer: {
     alignItems: 'center',
@@ -862,7 +860,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
-    elevation: 5,
     zIndex: 2,
   },
   dropoffPinInner: {
@@ -948,7 +945,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
-    elevation: 2,
   },
   timelineConnector: {
     width: 2,
@@ -1080,7 +1076,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.3,
     shadowRadius: 20,
-    elevation: 10,
     zIndex: 1000,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.2)',
