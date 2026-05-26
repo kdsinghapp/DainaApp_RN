@@ -205,15 +205,14 @@ export const styles = StyleSheet.create({
     fontSize: 11,
     color: "#64748B",
     fontFamily: font.MonolithRegular,
-    textTransform: "uppercase",
     letterSpacing: 0.5,
   },
   stopValue: {
     fontSize: 14,
     color: "#0F172A",
+    fontFamily: font.MonolithRegular,
     marginTop: 2,
     lineHeight: 18,
-    fontFamily: font.MonolithRegular,
   },
 
   emptyWrap: {

@@ -644,7 +644,10 @@ const styles = StyleSheet.create({
   },
   locationValue: {
     fontSize: 12,
-    color: "#808080",
+    color: "#0F172A",
+    fontFamily: font.MonolithRegular,
+    marginTop: 2,
+    lineHeight: 18,
   },
   sectionContainer: {
     marginBottom: 20,
