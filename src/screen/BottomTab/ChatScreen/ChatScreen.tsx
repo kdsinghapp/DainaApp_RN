@@ -14,6 +14,7 @@ import {
   Linking,
   LayoutAnimation,
   UIManager,
+  Modal,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -125,7 +126,7 @@ const ChatScreen = () => {
   const [counterModalVisible, setCounterModalVisible] = useState(false);
   const [offerModalVisible, setOfferModalVisible] = useState(false);
   const [isOfferAvailable, setIsOfferAvailable] = useState(true);
-
+  console.log("item", item)
   const userData: any = useSelector((state: any) => state?.auth?.userData);
   const [messages, setMessages] = useState<Message[]>([]);
   const rawDatesRef = useRef<Record<string, string>>({});
@@ -142,8 +143,9 @@ const ChatScreen = () => {
     try {
       const storedToken = await AsyncStorage.getItem("token");
       if (!storedToken) return;
+      // const response = await fetch(`${base_url}/delivery/offers/${offerId}/accept-counter`, {
 
-      const response = await fetch(`${base_url}/offers/${id}/accept`, {
+      const response = await fetch(`${base_url}/delivery/offers/${id}/accept-counter`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${storedToken}`,
@@ -153,7 +155,10 @@ const ChatScreen = () => {
       });
 
       const result = await response.json();
+      console.log("result 666 ", result)
       if (response.ok) {
+        setOfferModalVisible(false);
+
         successToast(strings.OfferAcceptedSuccess);
         (navigation as any).navigate(ScreenNameEnum.TabNavigator);
       } else {
@@ -189,7 +194,7 @@ const ChatScreen = () => {
 
       const result = await response.json();
       if (response.ok && (result.status == 1 || result.success === true)) {
-        // successToast(strings.CounterOfferSentSuccess);
+        successToast("Counter offer sent successfully");
         setCounterModalVisible(false);
         navigation.goBack();
       } else {
@@ -433,6 +438,7 @@ const ChatScreen = () => {
   // ── Derive agent info ─────────────────────────────────────────────────────
   // ✅ FIX 4: Use chattingWith from API response (passed via route params)
   const chattingWith = item?.chattingWith;
+
   const agentName =
     chattingWith?.name ??
     item?.carrierName ??
@@ -517,7 +523,7 @@ const ChatScreen = () => {
       </View>
     );
   };
-
+  console.log("item")
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
@@ -547,17 +553,18 @@ const ChatScreen = () => {
           <Text style={styles.trackingId}>{item?.trackingId}</Text>
         </View>
 
-        {/* Offer button — only show for non-delivery users */}
-        {item?.offerAmount && userData?.type !== "Delivery" && isOfferAvailable && (
+        {/* Offer button — only show for Delivery users */}
+        {item?.offerAmount && userData?.type == "Delivery" && isOfferAvailable && (
 
           <>
-
-            {item?.offerStatus != "assigned" ? <TouchableOpacity
-              onPress={() => onAcceptOffer(item?.id || item?.offerId)}
-              style={styles.headerOfferBtn}
-            >
-              <Text style={styles.headerOfferText}>{strings.OrderOpen}</Text>
-            </TouchableOpacity> : null}
+            {item?.offerStatus === "counter_offered" ? (
+              <TouchableOpacity
+                onPress={() => setOfferModalVisible(true)}
+                style={[styles.headerOfferBtn, { backgroundColor: '#FFF7ED', borderColor: '#FDBA74' }]}
+              >
+                <Text style={[styles.headerOfferText, { color: '#EA580C' }]}>View Offer</Text>
+              </TouchableOpacity>
+            ) : null}
           </>
 
         )}
@@ -627,30 +634,143 @@ const ChatScreen = () => {
         </View>
       </KeyboardAvoidingView>
 
-      {/* ── Modals ── */}
-      <AcceptOfferModal
+      {/* ── Counter Offered Detail Modal ── */}
+      <Modal
         visible={offerModalVisible}
-        offerAmount={item?.offerAmount}
-        message={""}
-        onCancel={() => setOfferModalVisible(false)}
-        onAccept={() => {
-          setOfferModalVisible(false);
-          onAcceptOffer(item?.id || item?.offerId);
-        }}
-        onCounterPress={() => {
-          setOfferModalVisible(false);
-        }}
-      />
+        animationType="slide"
+        transparent
+        statusBarTranslucent
+        onRequestClose={() => setOfferModalVisible(false)}
+      >
+        <View style={{
+          flex: 1,
+          backgroundColor: 'rgba(0,0,0,0.55)',
+          justifyContent: 'flex-end',
+        }}>
+          <View style={{
+            backgroundColor: '#FFF',
+            borderTopLeftRadius: 28,
+            borderTopRightRadius: 28,
+            padding: 24,
+            paddingBottom: Platform.OS === 'ios' ? 40 : 24,
+          }}>
+            {/* Header */}
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+              <Text style={{ fontSize: 20, fontFamily: font.MonolithRegular, color: '#0F172A' }}>
+                Counter Offer Details
+              </Text>
+              <TouchableOpacity onPress={() => setOfferModalVisible(false)}>
+                <Ionicons name="close-circle" size={28} color="#94A3B8" />
+              </TouchableOpacity>
+            </View>
 
+            <View style={{
+              backgroundColor: '#FFFBEB',
+              borderRadius: 16,
+              padding: 8,
+              alignItems: 'center',
+              marginBottom: 20,
+              borderWidth: 1,
+              borderColor: '#FDE68A',
+            }}>
+              <Text style={{ fontSize: 13, fontFamily: font.MonolithRegular, color: '#92400E' }}>
+                Offer Amount
+              </Text>
+              <Text style={{ fontSize: 32, fontFamily: font.MonolithRegular, color: '#D97706', marginTop: 4 }}>
+                ${item?.offerAmount}
+              </Text>
+            </View>
+
+            {/* Delivery Price */}
+
+
+            {/* Pickup Location */}
+            {item?.parcel?.pickupLocation && (
+              <View style={{ flexDirection: 'row', marginBottom: 14, alignItems: 'flex-start' }}>
+                <Ionicons name="location" size={20} color="#22C55E" style={{ marginTop: 2, marginRight: 10 }} />
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 11, fontFamily: font.MonolithRegular, color: '#94A3B8', marginBottom: 2 }}>
+                    PICKUP
+                  </Text>
+                  <Text style={{ fontSize: 13, fontFamily: font.MonolithRegular, color: '#334155', lineHeight: 18 }} numberOfLines={2}>
+                    {item?.parcel?.pickupLocation}
+                  </Text>
+                </View>
+              </View>
+            )}
+
+            {/* Drop Location */}
+            {item?.parcel?.dropLocation && (
+              <View style={{ flexDirection: 'row', marginBottom: 20, alignItems: 'flex-start' }}>
+                <Ionicons name="location" size={20} color="#EF4444" style={{ marginTop: 2, marginRight: 10 }} />
+                <View style={{ flex: 1 }}>
+                  <Text style={{ fontSize: 11, fontFamily: font.MonolithRegular, color: '#94A3B8', marginBottom: 2 }}>
+                    DROP-OFF
+                  </Text>
+                  <Text style={{ fontSize: 13, fontFamily: font.MonolithRegular, color: '#334155', lineHeight: 18 }} numberOfLines={2}>
+                    {item?.parcel?.dropLocation}
+                  </Text>
+                </View>
+              </View>
+            )}
+
+
+
+            {/* Action Buttons */}
+            <View style={{ flexDirection: 'row', gap: 12 }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setOfferModalVisible(false);
+                  setCounterModalVisible(true);
+                }}
+                style={{
+                  flex: 1,
+                  height: 52,
+                  borderRadius: 26,
+                  backgroundColor: '#F1F5F9',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                activeOpacity={0.8}
+              >
+                <Text style={{ fontSize: 15, fontFamily: font.MonolithRegular, color: '#334155' }}>
+                  Counter
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => {
+                  onAcceptOffer(item?.offerId);
+                }}
+                style={{
+                  flex: 1,
+                  height: 52,
+                  borderRadius: 26,
+                  backgroundColor: '#FFCC00',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+                activeOpacity={0.8}
+              >
+                <Text style={{ fontSize: 15, fontFamily: font.MonolithRegular, color: '#000' }}>
+                  Accept Offer
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* ── Counter Offer Input Modal ── */}
       <CounterOfferModal
         visible={counterModalVisible}
-        defaultValue={"1"}
+        defaultValue={item?.offerAmount || "1"}
         currency="$"
         min={1}
         max={50000}
         onCancel={() => setCounterModalVisible(false)}
         onSubmit={(amount: any) => {
-          const id = item?.id || item?.offerId;
+          const id = item?.offerId;
           if (id) {
             onCounterOffer(id, amount);
           } else {
