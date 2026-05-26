@@ -190,7 +190,7 @@ const NetworkStatusBanner: React.FC<Props> = ({
             </TouchableOpacity>
           )}
         </View>
-        
+
         {/* Accent Bar */}
         <View
           style={[
@@ -230,9 +230,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.12,
         shadowRadius: 20,
       },
-      android: {
-        elevation: 12,
-      },
+
     }),
   },
   offlineBanner: {
@@ -295,6 +293,7 @@ const styles = StyleSheet.create({
     fontFamily: font.MonolithRegular,
     color: '#64748B',
     marginTop: 3,
+
   },
   settingsBtn: {
     paddingHorizontal: 16,

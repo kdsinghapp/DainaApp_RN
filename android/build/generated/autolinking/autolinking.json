@@ -334,6 +334,30 @@
         }
       }
     },
+    "react-native-otp-verify": {
+      "root": "/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-otp-verify",
+      "name": "react-native-otp-verify",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-otp-verify/react-native-otp-verify.podspec",
+          "version": "1.2.0",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-otp-verify/android",
+          "packageImportPath": "import com.faizal.OtpVerify.OtpVerifyPackage;",
+          "packageInstance": "new OtpVerifyPackage()",
+          "buildTypes": [],
+          "componentDescriptors": [],
+          "cmakeListsPath": "/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-otp-verify/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
     "react-native-permissions": {
       "root": "/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-permissions",
       "name": "react-native-permissions",
@@ -1103,7 +1127,7 @@
     "ios": {
       "sourceDir": "/Users/technorizen/Desktop/aman/DainaApp/ios",
       "xcodeProject": {
-        "name": "ChewbeApp.xcworkspace",
+        "name": "DainaApp.xcworkspace",
         "path": ".",
         "isWorkspace": true
       },

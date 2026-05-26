@@ -36,6 +36,8 @@ import com.imagepicker.ImagePickerPackage;
 import com.babisoft.ReactNativeLocalization.ReactNativeLocalizationPackage;
 // react-native-maps
 import com.rnmaps.maps.MapsPackage;
+// react-native-otp-verify
+import com.faizal.OtpVerify.OtpVerifyPackage;
 // react-native-permissions
 import com.zoontek.rnpermissions.RNPermissionsPackage;
 // react-native-reanimated
@@ -114,6 +116,7 @@ public class PackageList {
       new ImagePickerPackage(),
       new ReactNativeLocalizationPackage(),
       new MapsPackage(),
+      new OtpVerifyPackage(),
       new RNPermissionsPackage(),
       new ReanimatedPackage(),
       new SafeAreaContextPackage(),
