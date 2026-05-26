@@ -4,6 +4,7 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
+  Platform,
   Dimensions,
   ScrollView,
 } from 'react-native';
@@ -39,8 +40,13 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
   const ctx = useDeliveryContext();
   const navigation = useNavigation();
   const userData = useSelector((state: any) => state.auth.userData);
+
+  // If props are provided, we use them. 
+  // Otherwise, we fallback to context (Delivery flow).
   const isFromProps = propsVisible !== undefined;
-  if (!isFromProps && (!ctx || String(userData?.type || '').trim().toLowerCase() !== 'delivery')) return null;
+
+  if (!isFromProps && (!ctx || userData?.type !== 'Delivery')) return null;
+
   const {
     newOrderNotification,
     setNewOrderNotification,
@@ -53,28 +59,9 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
   const rawData = isFromProps ? propsData : newOrderNotification?.data;
 
   // Robustly merge parcel data if it exists nested
-  // Robustly merge parcel data if it exists nested
-  let parsedParcel = rawData?.parcel;
-  if (typeof parsedParcel === 'string') {
-    try { parsedParcel = JSON.parse(parsedParcel); } catch (e) { }
-  }
-  let parsedDataObj = rawData?.data;
-  if (typeof parsedDataObj === 'string') {
-    try { parsedDataObj = JSON.parse(parsedDataObj); } catch (e) { }
-  }
-
-  const data = {
-    ...rawData,
-    ...(parsedParcel ?? {}),
-    ...(parsedDataObj ?? {})
-  };
-
-  // Normalize fields that might come in snake_case from FCM
-  if (!data.id && data.parcel_id) data.id = data.parcel_id;
-  if (!data.parcelId && data.parcel_id) data.parcelId = data.parcel_id;
-
-  const pickupAddress = data?.pickup?.location || data?.sender?.address || data?.pickupLocation || data?.pickup_address || data?.pickup_location;
-  const dropAddress = data?.drop?.location || data?.receiver?.address || data?.dropLocation || data?.drop_address || data?.drop_location;
+  const data = { ...rawData, ...(rawData?.parcel ?? {}), ...(rawData?.data ?? {}) };
+  const pickupAddress = data?.pickup?.location || data?.sender?.address || data?.pickupLocation || data?.pickup_address;
+  const dropAddress = data?.drop?.location || data?.receiver?.address || data?.dropLocation || data?.drop_address;
 
   if (!visible) return null;
 
@@ -101,6 +88,7 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
         }
       } else {
         // navigation.navigate(ScreenNameEnum.AllOrder as never);
+
         navigation.navigate(ScreenNameEnum.ParcelDetails as never, {
           item: {
             data: data,
@@ -145,13 +133,7 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
             <Text style={styles.headerTitle}>
               {isCounterOffer ? strings.CounterOfferReceived : strings.NewDeliveryRequest}
             </Text>
-            {/* <View style={styles.badgeRow}>
-                {(data?.trackingId || data?.id) && (
-                  <View style={styles.trackingBadge}>
-                    <Text style={styles.trackingIdText}>#{data.trackingId || data.id}</Text>
-                  </View>
-                )}
-              </View> */}
+
           </View>
 
           <TouchableOpacity
@@ -168,73 +150,50 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
           bounces={false}
         >
           {/* Price/Amount Section */}
-          {/* {(data?.price || data?.amount || data?.total_amount) && (
-              <View style={styles.priceContainer}>
-                <View style={styles.priceIndicator} />
-                <View style={styles.priceInfo}>
-                  <Text style={styles.priceLabel}>{isCounterOffer ? strings.OfferPrice : strings.EstimatedEarnings}</Text>
-                  <Text style={styles.priceValue}>$ {data?.price || data?.amount || data?.total_amount}</Text>
+
+          {/* Location Path (Timeline) */}
+          {(pickupAddress || dropAddress) ? (
+            <View style={styles.pathContainer}>
+              {/* Row 1: Pickup */}
+              <View style={styles.timelineRow}>
+                {/* Left Col: Dot & Line */}
+                <View style={styles.leftCol}>
+                  <View style={[styles.iconCircle, { borderColor: '#10B981', backgroundColor: '#ECFDF5' }]}>
+                    <Icon name="ellipse" size={wp(2.2)} color="#10B981" />
+                  </View>
+                  <View style={styles.verticalLine} />
+                </View>
+
+                {/* Right Col: Label & Address */}
+                <View style={styles.rightCol}>
+                  <Text style={styles.pathLabel}>{strings.Pickup || 'Pickup'}</Text>
+                  <Text style={styles.pathAddress}>{pickupAddress || 'N/A'}</Text>
                 </View>
               </View>
-            )} */}
 
-
-          {/* {(pickupAddress || dropAddress) ? (
-              <View style={styles.pathContainer}>
-                <View style={styles.timelineRow}>
-                  <View style={styles.leftCol}>
-                    <View style={[styles.iconCircle, { borderColor: '#10B981', backgroundColor: '#ECFDF5' }]}>
-                      <Icon name="ellipse" size={wp(2.2)} color="#10B981" />
-                    </View>
-                    <View style={styles.verticalLine} />
-                  </View>
-
-                  <View style={styles.rightCol}>
-                    <Text style={styles.pathLabel}>{strings.Pickup || 'Pickup'}</Text>
-                    <Text style={styles.pathAddress}>{pickupAddress || 'N/A'}</Text>
+              {/* Row 2: Drop-off */}
+              <View style={[styles.timelineRow, { marginBottom: 0 }]}>
+                {/* Left Col: Dot */}
+                <View style={styles.leftCol}>
+                  <View style={[styles.iconCircle, { borderColor: '#EF4444', backgroundColor: '#FEF2F2' }]}>
+                    <Icon name="location" size={wp(3.8)} color="#EF4444" />
                   </View>
                 </View>
 
-                <View style={[styles.timelineRow, { marginBottom: 0 }]}>
-                  <View style={styles.leftCol}>
-                    <View style={[styles.iconCircle, { borderColor: '#EF4444', backgroundColor: '#FEF2F2' }]}>
-                      <Icon name="location" size={wp(3.8)} color="#EF4444" />
-                    </View>
-                  </View>
-
-                  <View style={[styles.rightCol, { paddingBottom: 0 }]}>
-                    <Text style={styles.pathLabel}>{strings.Drop || 'Drop-off'}</Text>
-                    <Text style={styles.pathAddress}>{dropAddress || 'N/A'}</Text>
-                  </View>
+                {/* Right Col: Label & Address */}
+                <View style={[styles.rightCol, { paddingBottom: 0 }]}>
+                  <Text style={styles.pathLabel}>{strings.Drop || 'Drop-off'}</Text>
+                  <Text style={styles.pathAddress}>{dropAddress || 'N/A'}</Text>
                 </View>
               </View>
-            ) : null} */}
-          {/* 
-            {(data?.receiver_name || data?.receiverName) && (
-              <View style={styles.infoGrid}>
-                <View style={styles.infoBox}>
-                  <Icon name="person-outline" size={wp(4.5)} color="#64748B" />
-                  <View>
-                    <Text style={styles.infoBoxLabel}>{strings.ReceiverName || 'Receiver'}</Text>
-                    <Text style={styles.infoBoxValue}>{data.receiver_name || data.receiverName}</Text>
-                  </View>
-                </View>
-              </View>
-            )} */}
-
-          {(data?.weight || data?.package_size || data?.packageSize) && (
-            <View style={styles.infoGrid}>
-              {(data?.weight || data?.package_size || data?.packageSize) && (
-                <View style={styles.infoBox}>
-                  <Icon name="scale-outline" size={wp(4.5)} color="#64748B" />
-                  <View>
-                    <Text style={styles.infoBoxLabel}>{strings.Weight || 'Weight'}</Text>
-                    <Text style={styles.infoBoxValue}>{data.weight || data.package_size || data.packageSize}</Text>
-                  </View>
-                </View>
-              )}
             </View>
-          )}
+          ) : null}
+
+          {/* Customer / Receiver Info */}
+
+
+          {/* Additional Info Grid */}
+
 
         </ScrollView>
 
