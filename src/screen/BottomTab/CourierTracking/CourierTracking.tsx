@@ -29,7 +29,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { successToast } from "../../../utils/customToast";
 import RatingModal from "../../../compoent/RatingModal";
 import strings from "../../../localization/Localization";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 const { width, height } = Dimensions.get("window");
@@ -340,9 +339,9 @@ const CourierTrackingScreen = () => {
         }
       },
     }),
+
   ).current;
 
-  // When item/pickup is available, sync driver position to pickup so route draws correctly
   useEffect(() => {
     setCurrentCoords(pickup);
     (driverLocation as any).timing({
