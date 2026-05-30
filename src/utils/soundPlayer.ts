@@ -5,7 +5,7 @@ import { Platform } from 'react-native';
 if (Platform.OS === 'ios') {
   try {
     // Use enableInSilenceMode instead of setCategory to avoid the NSNumber nullability crash
-    Sound.enableInSilenceMode(true);
+    (Sound as unknown as { enableInSilenceMode?: (enabled: boolean) => void }).enableInSilenceMode?.(true);
   } catch (e) {
     console.log('[SoundPlayer] enableInSilenceMode error:', e);
   }
@@ -18,7 +18,7 @@ let isSoundPlaying = false;
 /**
  * Plays the notification sound.
  * On Android, it looks for 'ringtone_notification' in res/raw.
- * On iOS, it looks for 'ringtone_notification.mp3' in the app bundle.
+ * On iOS, it looks for the bundled caf/mp3 ringtone files.
  */
 export const playNotificationSound = () => {
   // If already playing or loading, don't start another one
@@ -27,28 +27,33 @@ export const playNotificationSound = () => {
     return;
   }
 
-  const soundFile = Platform.OS === 'android' ? 'ringtone_notification' : 'ringtone_notification.caf';
+  const soundFiles = Platform.OS === 'android'
+    ? ['ringtone_notification']
+    : ['ringtone-.caf', 'ringtone_notification.caf', 'ringtone-.mp3'];
 
-  console.log('[SoundPlayer] Attempting to play:', soundFile);
+  console.log('[SoundPlayer] Attempting to play:', soundFiles[0]);
 
   isSoundLoading = true;
+
+  loadNotificationSound(soundFiles);
+};
+
+const loadNotificationSound = (soundFiles: string[], index = 0) => {
+  const soundFile = soundFiles[index];
 
   notificationSound = new Sound(soundFile, Sound.MAIN_BUNDLE, (error) => {
     isSoundLoading = false;
 
     if (error) {
       console.log('[SoundPlayer] ❌ Failed to load sound:', error);
-      // Try loading without Sound.MAIN_BUNDLE (fallback)
-      isSoundLoading = true;
-      notificationSound = new Sound(soundFile, '', (err) => {
-        isSoundLoading = false;
-        if (err) {
-          console.log('[SoundPlayer] ❌ Fallback load failed:', err);
-          isSoundPlaying = false;
-          return;
-        }
-        startPlayback();
-      });
+      if (index + 1 < soundFiles.length) {
+        console.log('[SoundPlayer] Trying fallback sound:', soundFiles[index + 1]);
+        isSoundLoading = true;
+        loadNotificationSound(soundFiles, index + 1);
+        return;
+      }
+
+      isSoundPlaying = false;
       return;
     }
 

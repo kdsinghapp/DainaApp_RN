@@ -16,6 +16,7 @@
 		47EBA2556F904A989E817C1A /* TT Neoris Trial ExtraLight Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7633AB502DB44FCA959AF883 /* TT Neoris Trial ExtraLight Italic.ttf */; };
 		600AA01E33514953BDA3327A /* TT Neoris Trial Variable.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 23BE6E31B5B8471C95577D4E /* TT Neoris Trial Variable.ttf */; };
 		6D56BC0A46294F81A4BD9F6D /* TT Neoris Trial ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AA7C69F740E34F30A614668C /* TT Neoris Trial ExtraBold.ttf */; };
+		6F2A94B4E8C34969A1B32D01 /* ringtone-.caf in Resources */ = {isa = PBXBuildFile; fileRef = 6F2A94B3E8C34969A1B32D01 /* ringtone-.caf */; };
 		6FB07E71758057BE5C9BDF05 /* ringtone_notification.caf in Resources */ = {isa = PBXBuildFile; fileRef = C440BB1CED5BDB11C2D8155C /* ringtone_notification.caf */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		7CEF12DAC235479AAA908887 /* TT Neoris Trial ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FE5DCC8FD35747639E3BFEB5 /* TT Neoris Trial ExtraLight.ttf */; };
@@ -55,6 +56,7 @@
 		54BA20C35C584592B4882FCE /* TT Neoris Trial Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Black.ttf"; path = "../assets/fonts/TT Neoris Trial Black.ttf"; sourceTree = "<group>"; };
 		726D45B3B7B841BA9A3625E6 /* TT Neoris Trial Thin Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Thin Italic.ttf"; path = "../assets/fonts/TT Neoris Trial Thin Italic.ttf"; sourceTree = "<group>"; };
 		72D1A480DE5C4502911C23A5 /* TT Neoris Trial Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial Italic.ttf"; path = "../assets/fonts/TT Neoris Trial Italic.ttf"; sourceTree = "<group>"; };
+		6F2A94B3E8C34969A1B32D01 /* ringtone-.caf */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file; name = "ringtone-.caf"; path = "DainaApp/ringtone-.caf"; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = DainaApp/AppDelegate.swift; sourceTree = "<group>"; };
 		7633AB502DB44FCA959AF883 /* TT Neoris Trial ExtraLight Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "TT Neoris Trial ExtraLight Italic.ttf"; path = "../assets/fonts/TT Neoris Trial ExtraLight Italic.ttf"; sourceTree = "<group>"; };
 		7D29A2232F7678DA008AD21C /* DainaAppRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = DainaAppRelease.entitlements; path = DainaApp/DainaAppRelease.entitlements; sourceTree = "<group>"; };
@@ -128,6 +130,7 @@
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
 				FB46AD8632EB403CBCC8EE27 /* Resources */,
+				6F2A94B3E8C34969A1B32D01 /* ringtone-.caf */,
 				C440BB1CED5BDB11C2D8155C /* ringtone_notification.caf */,
 			);
 			indentWidth = 2;
@@ -269,6 +272,7 @@
 				E2C86E292A16421CA9B93DB5 /* Panton-Trial-SemiBold.ttf in Resources */,
 				FB7BFF0C4DDD83A78F262120 /* PrivacyInfo.xcprivacy in Resources */,
 				AC78BB58482A4C488BDE9816 /* Monolith Regular.otf in Resources */,
+				6F2A94B4E8C34969A1B32D01 /* ringtone-.caf in Resources */,
 				6FB07E71758057BE5C9BDF05 /* ringtone_notification.caf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
