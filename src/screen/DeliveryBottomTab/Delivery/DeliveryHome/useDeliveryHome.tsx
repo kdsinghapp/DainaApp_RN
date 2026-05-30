@@ -132,7 +132,7 @@ export const useDeliveryHome = () => {
       if (response?.data?.status == 1) {
         const list = response?.data?.parcels || response?.data?.requests || [];
         const validRequests = list
-          ?.filter((item: any) => item?.trackingId !== null && item?.trackingId !== "")
+          ?.filter((item: any) => (item?.trackingId != null && item?.trackingId !== "") || item?.id != null || item?.parcelId != null)
           ?.map((item: any) => ({
             ...item,
             deliveryStatus: item?.deliveryStatus || item?.status,
@@ -308,7 +308,7 @@ export const useDeliveryHome = () => {
                   const x = r as { id?: string; parcelId?: string };
                   return String(x?.id ?? x?.parcelId) === String(item?.id ?? item?.parcelId);
                 });
-                const trackingId = item?.trackingId;
+                const trackingId = item?.trackingId || item?.id || item?.parcelId;
                 if (!exists && trackingId != null && String(trackingId) !== '') {
                   arr.unshift({ ...item, status: STATUS.PENDING });
                 }
@@ -508,7 +508,7 @@ export const useDeliveryHome = () => {
                   const x = r as { id?: string; parcelId?: string };
                   return String(x?.id ?? x?.parcelId) === String(item?.id ?? item?.parcelId);
                 });
-                const trackingId = item?.trackingId;
+                const trackingId = item?.trackingId || item?.id || item?.parcelId;
                 if (!exists && trackingId != null && String(trackingId) !== '') {
                   arr.unshift({ ...item, status: STATUS.PENDING });
                 }
@@ -540,7 +540,7 @@ export const useDeliveryHome = () => {
             const list = data?.requests ?? data?.parcels ?? data?.data ?? data?.result;
             if (Array.isArray(list) && !cancelledRef.current) {
               const validRequests = list
-                .filter((item: { trackingId?: string | null }) => item?.trackingId != null && item?.trackingId !== '')
+                .filter((item: { trackingId?: string | null, id?: any, parcelId?: any }) => (item?.trackingId != null && item?.trackingId !== '') || item?.id != null || item?.parcelId != null)
                 .map((item: Record<string, unknown> & { status?: string }) => ({
                   ...item,
                   deliveryStatus: item?.status,

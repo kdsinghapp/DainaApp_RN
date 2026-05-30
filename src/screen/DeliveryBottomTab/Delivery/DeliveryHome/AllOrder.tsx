@@ -162,7 +162,7 @@ const AllOrder = () => {
                   </View>
 
                   <Text style={[styles.cardId, styles.bold]}>
-                    #{item?.trackingId}
+                    #{item?.trackingId || item?.id}
                   </Text>
                   <Text style={styles.bulletSeparator}>•</Text>
                   <Text style={styles.cardDate}>
