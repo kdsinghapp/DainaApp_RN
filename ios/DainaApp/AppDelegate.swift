@@ -26,8 +26,8 @@ class AppDelegate: RCTAppDelegate, UNUserNotificationCenterDelegate, MessagingDe
     }
 
 
-    // ✅ Initialize Google Maps
-    GMSServices.provideAPIKey("YCsdio8xRsUmoYht2WQ9jeRvF4U_tT4")
+    // ✅ Initialize Google Maps with the same key used by JS map/geocoding APIs.
+    GMSServices.provideAPIKey("AIzaSyDgFGS91BvviXh_f-nmvtEggUHJcaGyUwA")
 
     // ✅ Configure Firebase (Manual initialization as fallback for missing plist bundle resource)
     if FirebaseApp.app() == nil {
