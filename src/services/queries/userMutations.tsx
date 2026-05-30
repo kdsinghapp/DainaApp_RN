@@ -12,7 +12,7 @@ export const useCreateUser = () => {
       }),
 
     onSuccess: () => {
-      queryClient.invalidateQueries(['users']);
+      queryClient.invalidateQueries({ queryKey: ['users'] });
     },
   });
 };

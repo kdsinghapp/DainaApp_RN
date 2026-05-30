@@ -83,7 +83,7 @@ const DeliveryHome = () => {
     inputRange: [0, 1],
     outputRange: [0.2, 1],
   });
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const filteredRequests = useMemo(() => {
     if (!requests || requests?.length === 0) return [];
     return requests.filter(
@@ -147,7 +147,7 @@ const DeliveryHome = () => {
             ListHeaderComponent={
               <>
                 <OnlineSlideRight
-                  coords={coords}
+                  coords={coords || undefined}
                   onSlideSuccess={(newStatus: boolean) => {
                     // successToast(newStatus ? "You are now Online" : "You are now Offline");
                   }}
@@ -290,12 +290,15 @@ const DeliveryHome = () => {
             style={{
               marginTop: 12,
             }}
-            keyExtractor={(item: any) => item.id}
+            keyExtractor={(item: any) => String(item.id ?? item.parcelId ?? item.trackingId)}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 20 }}
+            initialNumToRender={8}
+            maxToRenderPerBatch={8}
+            windowSize={7}
             renderItem={({ item, index }) => {
               return (
-                <ReAnimated.View entering={FadeInDown.delay(index * 100)}>
+                <ReAnimated.View entering={FadeInDown.delay(Math.min(index, 8) * 60)}>
                   <TouchableOpacity
                     style={styles.card}
                     activeOpacity={0.85}

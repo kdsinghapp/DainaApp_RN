@@ -3,7 +3,6 @@ import { View } from 'react-native';
 import { createNativeStackNavigator, NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import _routes from '../routes/routes';
 import ScreenNameEnum from '../routes/screenName.enum';
-import { DeliveryProvider } from '../context/DeliveryContext';
 import { DashboardProvider } from '../context/DashboardContext';
 import NewOrderNotificationModal from '../compoent/NewOrderNotificationModal';
 import OfferAcceptedModal from '../compoent/OfferAcceptedModal';
@@ -79,29 +78,27 @@ const RegistrationRoutes: React.FC = () => {
   }, []);
 
   return (
-    <DeliveryProvider>
-      <DashboardProvider>
-        <View style={{ flex: 1 }} key={language}>
-          <Stack.Navigator screenOptions={screenOptions}>
-            {_routes.REGISTRATION_ROUTE.map((screen: RegistrationRouteType) => (
-              <Stack.Screen
-                key={screen.name}
-                name={screen.name}
-                component={screen.Component}
-                options={{
-                  animation: screen?.name === ScreenNameEnum.SuccessScreen ? 'fade' : 'slide_from_right',
-                }}
-              />
-            ))}
-          </Stack.Navigator>
+    <DashboardProvider>
+      <View style={{ flex: 1 }} key={language}>
+        <Stack.Navigator screenOptions={screenOptions}>
+          {_routes.REGISTRATION_ROUTE.map((screen: RegistrationRouteType) => (
+            <Stack.Screen
+              key={screen.name}
+              name={screen.name}
+              component={screen.Component}
+              options={{
+                animation: screen?.name === ScreenNameEnum.SuccessScreen ? 'fade' : 'slide_from_right',
+              }}
+            />
+          ))}
+        </Stack.Navigator>
 
-          <NewOrderNotificationModal />
-          <OfferAcceptedModal />
-          {/* <AppAlert /> */}
-        </View>
+        <NewOrderNotificationModal />
+        <OfferAcceptedModal />
+        {/* <AppAlert /> */}
+      </View>
 
-      </DashboardProvider>
-    </DeliveryProvider>
+    </DashboardProvider>
   );
 };
 

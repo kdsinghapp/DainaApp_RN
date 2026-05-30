@@ -1,3 +1,4 @@
+import React from "react";
 import SocialLogin from "../screen/auth/SocialLogin/SocialLogin";
 import OnboardingScreen from "../screen/auth/Onboarding/Onboarding";
 import ScreenNameEnum from "./screenName.enum";
@@ -15,6 +16,7 @@ import ChatScreen from "../screen/BottomTab/ChatScreen/ChatScreen";
 import OrdersPrfile from "../screen/Profile/OrdersPrfile/OrdersPrfile";
 import CourierTrackingScreen from "../screen/BottomTab/CourierTracking/CourierTracking";
 import DeliveryTabNavigator from "../navigators/DeliveryTabNavigator";
+import { DeliveryProvider } from "../context/DeliveryContext";
 import TripMap from "../screen/DeliveryBottomTab/TripMap/TripMap";
 import WalletScreen from "../screen/DeliveryBottomTab/WalletScreen/WalletScreen";
 import EarningsScreen from "../screen/DeliveryBottomTab/EarningsScreen/EarningsScreen";
@@ -34,6 +36,15 @@ import BankSetupScreen from "../screen/auth/BankSetup/BankSetupScreen";
 import EditProfileDeliver from "../screen/DeliveryBottomTab/EditProfileDeliver/EditProfileDeliver";
 import VerificationPending from "../screen/DeliveryBottomTab/VerificationPending/VerificationPending";
 import WebViewScreen from "../screen/Profile/WebViewScreen";
+
+const AllOrderWithDeliveryProvider = () => (
+  React.createElement(
+    DeliveryProvider,
+    null,
+    React.createElement(AllOrder)
+  )
+);
+
 const _routes: any = {
   REGISTRATION_ROUTE: [
     {
@@ -191,7 +202,7 @@ const _routes: any = {
     },
     {
       name: ScreenNameEnum.AllOrder,
-      Component: AllOrder,
+      Component: AllOrderWithDeliveryProvider,
     },
     {
       name: ScreenNameEnum.RequestLoading,

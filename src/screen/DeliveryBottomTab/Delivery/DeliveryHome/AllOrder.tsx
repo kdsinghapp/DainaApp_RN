@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Easing,
   FlatList,
-  ScrollView,
   RefreshControl,
   Animated,
 } from "react-native";
@@ -84,7 +83,7 @@ const AllOrder = () => {
     inputRange: [0, 1],
     outputRange: [0.2, 1],
   });
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   const filteredRequests = useMemo(() => {
     if (!requests || requests?.length === 0) return [];
     return requests.filter(
@@ -111,96 +110,98 @@ const AllOrder = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
+      <Animated.View
         style={{
+          flex: 1,
+          transform: [{ translateX }],
+          opacity: fade,
+        }}
+      >
+        <FlatList
+        data={filteredRequests}
+        style={{
+          marginTop: 12,
           marginBottom: 70,
-
         }}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-      >
-        <CustomHeader label={strings.Order} />
-        <View style={styles.ordersHeader}>
-          <Text style={styles.sectionTitle1}> Nearby {strings.Order}</Text>
-        </View>
-        <Animated.View
-          style={{
-            flex: 1, transform: [{ translateX }], opacity: fade,
-          }}
-        >
-          <FlatList
-            data={filteredRequests}
-            style={{
-              marginTop: 12,
-            }}
-            keyExtractor={(item: any) => item.id}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ paddingBottom: 20 }}
-            renderItem={({ item, index }) => {
-              return (
-                <ReAnimated.View entering={FadeInDown.delay(index * 100)}>
-                  <TouchableOpacity
-                    style={styles.card}
-                    activeOpacity={0.85}
-                    onPress={() => {
-                      navigation.navigate(ScreenNameEnum.ParcelDetails, {
-                        item: item,
-                      });
-                    }}
-                  >
-                    <View style={styles.cardTop}>
-                      <View style={styles.iconBox}>
-                        <Image
-                          source={imageIndex?.icons || { uri: "" }}
-                          style={{ height: 20, width: 20 }}
-                          resizeMode="contain"
-                        />
-                      </View>
+        keyExtractor={(item: any) => String(item.id ?? item.parcelId ?? item.trackingId)}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: 20 }}
+        initialNumToRender={8}
+        maxToRenderPerBatch={8}
+        windowSize={7}
+        ListHeaderComponent={
+          <>
+            <CustomHeader label={strings.Order} />
+            <View style={styles.ordersHeader}>
+              <Text style={styles.sectionTitle1}> Nearby {strings.Order}</Text>
+            </View>
+          </>
+        }
+        renderItem={({ item, index }) => {
+          return (
+            <ReAnimated.View entering={FadeInDown.delay(Math.min(index, 8) * 60)}>
+              <TouchableOpacity
+                style={styles.card}
+                activeOpacity={0.85}
+                onPress={() => {
+                  navigation.navigate(ScreenNameEnum.ParcelDetails, {
+                    item: item,
+                  });
+                }}
+              >
+                <View style={styles.cardTop}>
+                  <View style={styles.iconBox}>
+                    <Image
+                      source={imageIndex?.icons || { uri: "" }}
+                      style={{ height: 20, width: 20 }}
+                      resizeMode="contain"
+                    />
+                  </View>
 
-                      <Text style={[styles.cardId, styles.bold]}>
-                        #{item?.trackingId}
-                      </Text>
-                      <Text style={styles.bulletSeparator}>•</Text>
-                      <Text style={styles.cardDate}>
-                        {item?.date}
-                      </Text>
-                      <View style={{ flex: 1 }} />
-                    </View>
-                    <View style={styles.routeRow}>
-                      <View style={styles.timelineContainer}>
-                        <View style={styles.timelineDotStart} />
-                        <View style={styles.timelineLine} />
-                        <View style={styles.timelineDotEnd} />
-                      </View>
-                      <View style={{ flex: 1, marginLeft: 12 }}>
-                        <Text style={styles.label}>{strings?.From}</Text>
-                        <Text style={styles.value}  >
-                          {item?.pickupLocation || item?.pickup?.location}
-                        </Text>
-                        <Text style={[styles.label, { marginTop: 12 }]}>{strings?.To}</Text>
-                        <Text style={styles.value} >
-                          {item?.dropLocation || item?.drop?.location}
-                        </Text>
-                      </View>
-                    </View>
-                  </TouchableOpacity>
-                </ReAnimated.View>
-              );
-            }}
-            ListEmptyComponent={
-              <View style={styles.emptyWrap}>
-                <View style={styles.illustrationWrap}>
-                  <View style={styles.illustrationBg} />
-                  <Image source={imageIndex.ordePracle} style={styles.emptyIcon} />
+                  <Text style={[styles.cardId, styles.bold]}>
+                    #{item?.trackingId}
+                  </Text>
+                  <Text style={styles.bulletSeparator}>•</Text>
+                  <Text style={styles.cardDate}>
+                    {item?.date}
+                  </Text>
+                  <View style={{ flex: 1 }} />
                 </View>
-                <Text style={styles.emptyTitle}>{strings.NoOrder}</Text>
-              </View>
-            }
-          />
-        </Animated.View>
-      </ScrollView>
+                <View style={styles.routeRow}>
+                  <View style={styles.timelineContainer}>
+                    <View style={styles.timelineDotStart} />
+                    <View style={styles.timelineLine} />
+                    <View style={styles.timelineDotEnd} />
+                  </View>
+                  <View style={{ flex: 1, marginLeft: 12 }}>
+                    <Text style={styles.label}>{strings?.From}</Text>
+                    <Text style={styles.value}  >
+                      {item?.pickupLocation || item?.pickup?.location}
+                    </Text>
+                    <Text style={[styles.label, { marginTop: 12 }]}>{strings?.To}</Text>
+                    <Text style={styles.value} >
+                      {item?.dropLocation || item?.drop?.location}
+                    </Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            </ReAnimated.View>
+          );
+        }}
+        ListEmptyComponent={
+          <View style={styles.emptyWrap}>
+            <View style={styles.illustrationWrap}>
+              <View style={styles.illustrationBg} />
+              <Image source={imageIndex.ordePracle} style={styles.emptyIcon} />
+            </View>
+            <Text style={styles.emptyTitle}>{strings.NoOrder}</Text>
+          </View>
+        }
+      />
+      </Animated.View>
     </SafeAreaView>
   );
 };

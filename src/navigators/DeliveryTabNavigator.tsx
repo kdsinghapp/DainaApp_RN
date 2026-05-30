@@ -12,6 +12,7 @@ import InboxDeliver from '../screen/DeliveryBottomTab/InboxDeliver/InboxDeliver'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Platform, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { DeliveryProvider } from '../context/DeliveryContext';
 
 const Tab = createBottomTabNavigator();
 
@@ -44,7 +45,7 @@ export default function DeliveryTabNavigator() {
     },
   };
   return (
-    <>
+    <DeliveryProvider>
       <Tab.Navigator
         screenOptions={({ route }) => {
           const tab = TAB_CONFIG[route.name];
@@ -128,6 +129,6 @@ export default function DeliveryTabNavigator() {
         <Tab.Screen name="Profile" component={DeliveryProfile} />
       </Tab.Navigator>
 
-    </>
+    </DeliveryProvider>
   );
 }

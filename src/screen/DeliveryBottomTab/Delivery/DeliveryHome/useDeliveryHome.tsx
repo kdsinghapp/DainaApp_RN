@@ -22,12 +22,12 @@ const hapticOptions = {
 };
 export const useDeliveryHome = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const navigation = useNavigation()
-  const [requests, setRequests] = useState([]);
+  const navigation = useNavigation<any>()
+  const [requests, setRequests] = useState<any[]>([]);
   const [address, setAddress] = useState('');
   const [location, setLocation] = useState(null);
   const [locationModal, setlocationModal] = useState(false);
-  const [currentlocation, setCurrentLocation] = useState(null);
+  const [currentlocation, setCurrentLocation] = useState<any>(null);
   const [acceptModal, setAcceptModal] = useState(false);
   const [userInfromation, setuserInfromation] = useState([]);
   const [newOrderNotification, setNewOrderNotification] = useState<{
@@ -35,10 +35,13 @@ export const useDeliveryHome = () => {
     data: unknown;
   } | null>(null);
   const [acceptCounterOfferLoading] = useState(false);
-  const locationRef = useRef(null);
+  const locationRef = useRef<any>(null);
   const dispatch = useDispatch();
   const userData = useSelector((state: any) => state.auth.userData);
   const token = useSelector((state: any) => state.auth.token);
+  const actualUserData = userData?.user || userData?.data || userData;
+  const userType = String(actualUserData?.type || userData?.type || '').trim().toLowerCase();
+  const isDeliveryUser = userType === 'delivery';
 
   const [isConnected, setIsConnected] = useState(false);
   const [isOnline, setIsOnline] = useState(userData?.onlineStatus?.toLowerCase() === 'online');
@@ -141,7 +144,7 @@ export const useDeliveryHome = () => {
         setRequests([]);
         setIsLoading(false);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error(
         'Error fetching available requests:',
         error?.response?.data || error?.message,
@@ -177,6 +180,10 @@ export const useDeliveryHome = () => {
 
   // Watch position: update stored lat/long only when user moves ≥20 meters
   useEffect(() => {
+    if (!token || !isDeliveryUser || !isOnline) {
+      return;
+    }
+
     let watchId: number | null = null;
 
     const onPosition = (position: { coords: { latitude: number; longitude: number } }) => {
@@ -224,7 +231,7 @@ export const useDeliveryHome = () => {
         Geolocation.clearWatch(watchId);
       }
     };
-  }, [sendLiveLocation, nearbyparcels]);
+  }, [token, isDeliveryUser, isOnline, sendLiveLocation, nearbyparcels]);
 
   // Auto-fetch when screen is focused
   useFocusEffect(
@@ -588,8 +595,6 @@ export const useDeliveryHome = () => {
       return;
     }
 
-    const actualUserData = userData?.user || userData?.data || userData;
-    const userType = String(actualUserData?.type || userData?.type || '').trim().toLowerCase();
     if (userType !== 'delivery') {
       console.log('🚫 [WebSocket] Reconnect skipped: not a Delivery user');
       return;
@@ -604,7 +609,7 @@ export const useDeliveryHome = () => {
     if (!socketLiveRef.current || socketLiveRef.current.readyState !== WebSocket.OPEN) {
       connectLiveLocationSocket(token).catch(e => console.log('❌ Live socket reconnect failed:', e));
     }
-  }, [token, userData?.type]);
+  }, [token, userType]);
 
   useEffect(() => {
     const appStateListener = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
@@ -649,12 +654,12 @@ export const useDeliveryHome = () => {
           }
         }
 
-        const actualUserData = activeUserData?.user || activeUserData?.data || activeUserData;
-        const userType = String(actualUserData?.type || activeUserData?.type || '').trim().toLowerCase();
+        const activeActualUserData = activeUserData?.user || activeUserData?.data || activeUserData;
+        const activeUserType = String(activeActualUserData?.type || activeUserData?.type || '').trim().toLowerCase();
 
-        console.log(`[WebSocket Debug] Token present: ${!!activeToken}, UserType: '${userType}', RawUserData:`, activeUserData);
+        console.log(`[WebSocket Debug] Token present: ${!!activeToken}, UserType: '${activeUserType}', RawUserData:`, activeUserData);
 
-        if (!activeToken || userType !== 'delivery') {
+        if (!activeToken || activeUserType !== 'delivery') {
           console.log('🚫 [WebSocket] Init skipped: No token or not a Delivery user');
           cancelledRef.current = true;
           if (socketRef.current) {
@@ -703,15 +708,7 @@ export const useDeliveryHome = () => {
         stopNotificationSound();
       } catch (_) { }
     };
-  }, [token, userData?.type]);
-  useEffect(() => {
-    if (!coords) return;
-    const ws = socketLiveRef.current;
-    if (ws?.readyState === WebSocket.OPEN) {
-      sendLiveLocation(coords.lat, coords.lon);
-      nearbyparcels(coords.lat, coords.lon);
-    }
-  }, [coords, isConnected, sendLiveLocation, nearbyparcels]);
+  }, [token, userType]);
 
   const handleGetLocation = async () => {
     try {
@@ -834,6 +831,7 @@ export const useDeliveryHome = () => {
     RejectcounterOffer,
     isOnline,
     setIsOnline,
+    isConnected,
     getProfileApi,
     userData
   };

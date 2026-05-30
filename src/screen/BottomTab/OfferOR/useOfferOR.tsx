@@ -8,14 +8,14 @@ import ScreenNameEnum from '../../../routes/screenName.enum';
 export const useOfferOR = () => {
   const [location, setLocation] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [offerData, setOfferData] = useState([]);
+  const [offerData, setOfferData] = useState<any>({ offers: [] });
   const rou: any = useRoute()
   const [selectedOfferId, setSelectedOfferId] = useState<number | null>(null)
   const { Parcelid, id } = rou?.params || ""
   useEffect(() => {
     fetchOffers();
   }, []);
-  const navgation = useNavigation()
+  const navgation = useNavigation<any>()
   const fetchOffers = async () => {
     // setOfferData(Parcelid || []);
     try {

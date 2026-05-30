@@ -113,8 +113,6 @@ export const styles = StyleSheet.create({
     fontFamily: font.MonolithRegular
     ,
     fontSize: 15,
-
-
   },
   container1: {
     flexDirection: "row",
