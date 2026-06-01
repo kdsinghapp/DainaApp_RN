@@ -659,13 +659,6 @@ const AddParcelApi = async (param: any, setLoading: (loading: boolean) => void) 
     if (param.receiverMobile) formdata.append("receiverMobileNumber", param.receiverMobile);
     if (param.receiverAddress) formdata.append("receiverAddress", param.receiverAddress);
     if (param.extraMessage) formdata.append("message", param.extraMessage);
-
-    // if (param.pickupLat?.latitude) formdata.append("pickupLat", param.pickupLat.latitude.toString());
-    // if (param.pickupLat?.longitude) formdata.append("pickupLon", param.pickupLat.longitude.toString());
-    // if (param.droplat?.latitude) formdata.append("droplat", param.droplat.latitude.toString());
-    // if (param.droplat?.longitude) formdata.append("dropLon", param.droplat.longitude.toString());
-
-    console.log("FormData Lat/Lon:", formdata);
     const headers: any = {
       Accept: "application/json",
       Authorization: `Bearer ${token}`,
@@ -679,6 +672,7 @@ const AddParcelApi = async (param: any, setLoading: (loading: boolean) => void) 
 
     const textResponse = await response.text();
     console.log("textResponse -- 00000 ", textResponse)
+    console.log("formdata -- 00000 ", formdata)
 
     let parsedResponse;
     try {
@@ -690,6 +684,7 @@ const AddParcelApi = async (param: any, setLoading: (loading: boolean) => void) 
 
       throw new Error("Invalid server response");
     }
+    console.log("parsedResponse -- 00000 ", parsedResponse)
 
     if (parsedResponse.status == "1" || parsedResponse.status == 1) {
       setLoading(false);
