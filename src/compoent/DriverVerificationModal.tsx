@@ -119,7 +119,7 @@ const DriverVerificationModal = ({
                   source={driver?.image ? { uri: driver.image } : imageIndex.dpuser}
                   style={styles.avatar}
                 />
-                
+
               </View>
               <View style={styles.profileDetails}>
                 <Text style={styles.profileName} numberOfLines={1}>
@@ -130,7 +130,7 @@ const DriverVerificationModal = ({
                     {email}
                   </Text>
                 ) : null}
-               
+
               </View>
             </View>
 
@@ -141,25 +141,25 @@ const DriverVerificationModal = ({
                     <View style={styles.infoLabelWithIcon}>
                       <Icon name="call-outline" size={16} color="#64748B" style={styles.inlineIcon} />
                       <View>
-                                              <Text style={styles.infoLabel}>Phone</Text>
+                        <Text style={styles.infoLabel}>Phone</Text>
 
-                      <Text style={styles.callButtonText}>{phone}</Text>
+                        <Text style={styles.callButtonText}>{phone}</Text>
 
-                        </View>
-                      
+                      </View>
+
                     </View>
                     <TouchableOpacity
                       activeOpacity={0.8}
                       style={styles.callButton}
                       onPress={handleCall}
                     >
-                       <Image source={imageIndex.Calls} 
-                       
-                       style={{
-                        height:42,
-                        width:42
-                       }}
-                       />
+                      <Image source={imageIndex.Calls}
+
+                        style={{
+                          height: 42,
+                          width: 42
+                        }}
+                      />
                     </TouchableOpacity>
                   </View>
                 ) : null}
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 21,
-     alignItems: "center",
+    alignItems: "center",
     justifyContent: "center",
     marginRight: 10,
   },
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
     fontFamily: font.MonolithRegular,
     color: "#64748B",
     marginTop: 2,
-    
+
   },
   closeButton: {
     width: 34,
@@ -420,17 +420,17 @@ const styles = StyleSheet.create({
     color: "#64748B",
   },
   infoValue: {
-     fontSize: 13,
+    fontSize: 13,
     fontFamily: font.MonolithRegular,
     color: "#0F172A",
-    lineHeight: 18,flex:1
+    lineHeight: 18, flex: 1
   },
   callButton: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end",
-     borderRadius: 12,
+    borderRadius: 12,
     paddingHorizontal: 10,
     paddingVertical: 8,
     gap: 7,
@@ -454,7 +454,7 @@ const styles = StyleSheet.create({
     color: "#0F172A",
   },
   badge: {
-     borderRadius: 10,
+    borderRadius: 10,
     paddingHorizontal: 10,
     paddingVertical: 5,
   },
