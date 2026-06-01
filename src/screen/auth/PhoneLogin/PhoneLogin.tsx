@@ -100,98 +100,98 @@ const PhoneLogin = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
-      <StatusBarComponent />
+        <StatusBarComponent />
 
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-        style={styles.container}
-      >
-        <LoadingModal visible={loading} />
-        {/* Logo */}
-        <View style={styles.logoContainer}>
-          <Image
-            source={imageIndex.phonLogoapp}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-        </View>
-        <Text style={styles.title}>{strings?.PhoneQuestion}</Text>
-        <Text style={styles.subtitle}>{strings?.PhoneSubtitle}</Text>
-        {/* Phone Input */}
-        <Text style={{
-          fontSize: 15,
-          marginBottom: 15,
-          fontFamily: font.MonolithRegular,
-        }}>{strings.PhoneNumber}</Text>
-        <View style={styles.inputContainer}>
-          <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.countryPicker}>
-            <Text style={styles.callingCode}>{callingCode}</Text>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          style={styles.container}
+        >
+          <LoadingModal visible={loading} />
+          {/* Logo */}
+          <View style={styles.logoContainer}>
             <Image
-              source={imageIndex.dounArroww}
-              style={{ height: 22, width: 22, marginLeft: 5 }}
+              source={imageIndex.phonLogoapp}
+              style={styles.logo}
+              resizeMode="contain"
             />
-            <View style={styles.separator} />
-          </TouchableOpacity>
-
-          <TextInput
-            style={styles.input}
-            keyboardType="number-pad"
-            placeholder={strings.PhoneNumber}
-            value={phoneNumber}
-            onChangeText={setPhoneNumber}
-            placeholderTextColor={"black"}
-            returnKeyType="done"
-          />
-        </View>
-        {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-        {/* Continue Button */}
-        <View style={{ marginTop: 20 }}>
-          <CustomButton title={strings.Continue} onPress={handleContinue} />
-        </View>
-
-        {/* Custom Country Modal */}
-        <Modal visible={modalVisible} animationType="slide" transparent={true}>
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              {/* Header */}
-              <View style={styles.modalHeader}>
-                <Text style={styles.modalTitle}>{strings.SelectCountry}</Text>
-                <TouchableOpacity onPress={() => setModalVisible(false)}>
-                  <Text style={styles.modalCancel}>{strings.Cancel}</Text>
-                </TouchableOpacity>
-              </View>
-
-              {/* Search Input */}
-              <TextInput
-                placeholder={strings.SearchCountry}
-                value={searchText}
-                onChangeText={setSearchText}
-                style={styles.searchInput}
-                placeholderTextColor={"#999"}
-              />
-
-              {/* Country List */}
-              <FlatList
-                data={filteredCountries}
-                keyExtractor={(item) => item.code}
-                showsVerticalScrollIndicator={false}
-                style={{ marginTop: 10 }}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    style={styles.modalItem}
-                    onPress={() => handleSelectCountry(item)}
-                  >
-                    <Text style={styles.countryText}>
-                      {item.flag} {item.country} ({item.dial_code})
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              />
-            </View>
           </View>
-        </Modal>
-      </KeyboardAvoidingView>
+          <Text style={styles.title}>{strings?.PhoneQuestion}</Text>
+          <Text style={styles.subtitle}>{strings?.PhoneSubtitle}</Text>
+          {/* Phone Input */}
+          <Text style={{
+            fontSize: 15,
+            marginBottom: 15,
+            fontFamily: font.MonolithRegular,
+          }}>{strings.PhoneNumber}</Text>
+          <View style={styles.inputContainer}>
+            <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.countryPicker}>
+              <Text style={styles.callingCode}>{callingCode}</Text>
+              <Image
+                source={imageIndex.dounArroww}
+                style={{ height: 22, width: 22, marginLeft: 5 }}
+              />
+              <View style={styles.separator} />
+            </TouchableOpacity>
+
+            <TextInput
+              style={styles.input}
+              keyboardType="number-pad"
+              placeholder={strings.PhoneNumber}
+              value={phoneNumber}
+              onChangeText={setPhoneNumber}
+              placeholderTextColor={"black"}
+              returnKeyType="done"
+            />
+          </View>
+          {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+          {/* Continue Button */}
+          <View style={{ marginTop: 20 }}>
+            <CustomButton title={strings.Continue} onPress={handleContinue} />
+          </View>
+
+          {/* Custom Country Modal */}
+          <Modal visible={modalVisible} animationType="slide" transparent={true}>
+            <View style={styles.modalOverlay}>
+              <View style={styles.modalContent}>
+                {/* Header */}
+                <View style={styles.modalHeader}>
+                  <Text style={styles.modalTitle}>{strings.SelectCountry}</Text>
+                  <TouchableOpacity onPress={() => setModalVisible(false)}>
+                    <Text style={styles.modalCancel}>{strings.Cancel}</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Search Input */}
+                <TextInput
+                  placeholder={strings.SearchCountry}
+                  value={searchText}
+                  onChangeText={setSearchText}
+                  style={styles.searchInput}
+                  placeholderTextColor={"#999"}
+                />
+
+                {/* Country List */}
+                <FlatList
+                  data={filteredCountries}
+                  keyExtractor={(item) => item.code}
+                  showsVerticalScrollIndicator={false}
+                  style={{ marginTop: 10 }}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      style={styles.modalItem}
+                      onPress={() => handleSelectCountry(item)}
+                    >
+                      <Text style={styles.countryText}>
+                        {item.flag} {item.country} ({item.dial_code})
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            </View>
+          </Modal>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </TouchableWithoutFeedback>
   );
@@ -214,7 +214,18 @@ const styles = StyleSheet.create({
 
   /* Modal Styles */
   modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "center", alignItems: "center" },
-  modalContent: { backgroundColor: "#fff", width: "85%", borderRadius: 15, maxHeight: "45%", padding: 20, shadowColor: "#000", shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2, shadowRadius: 5, },
+  modalContent: {
+    backgroundColor: "#fff",
+    width: "88%",
+    borderRadius: 18,
+    maxHeight: "52%",
+    padding: 18,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
+    elevation: 6,
+  },
   modalHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 15 },
   modalTitle: { fontFamily: font.MonolithRegular, fontSize: 18, color: "#000" },
   modalCancel: { fontFamily: font.MonolithRegular, fontSize: 15, color: "#FFCC00" },
