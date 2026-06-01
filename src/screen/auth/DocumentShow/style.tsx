@@ -367,6 +367,7 @@ export const styles = StyleSheet.create({
     marginVertical: 28,
     textAlign: 'left',
     opacity: 0.9,
+    fontFamily: font.MonolithRegular,
   },
   bankFooter: {
     flexDirection: 'row',
