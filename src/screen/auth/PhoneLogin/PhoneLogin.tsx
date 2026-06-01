@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
   View, Text, Image, TextInput, TouchableOpacity, StyleSheet,
-  KeyboardAvoidingView, Platform, Modal, FlatList
+  KeyboardAvoidingView, Platform, Modal, FlatList,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import CustomButton from "../../../compoent/CustomButton";
 import imageIndex from "../../../assets/imageIndex";
@@ -96,7 +98,8 @@ const PhoneLogin = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView style={styles.container}>
       <StatusBarComponent />
 
       <KeyboardAvoidingView
@@ -137,6 +140,7 @@ const PhoneLogin = () => {
             value={phoneNumber}
             onChangeText={setPhoneNumber}
             placeholderTextColor={"black"}
+            returnKeyType="done"
           />
         </View>
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
@@ -188,7 +192,8 @@ const PhoneLogin = () => {
           </View>
         </Modal>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 };
 

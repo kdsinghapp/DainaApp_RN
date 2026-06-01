@@ -502,6 +502,7 @@ const CreateParcelFrom = () => {
                 style={[styles.textInput, errors.price ? styles.inputError : null]}
                 placeholder={strings.Price}
                 keyboardType="numeric"
+                returnKeyType="done"
               />
               {errors.price ? <Text style={styles.errorText}>{errors.price}</Text> : null}
             </View>
@@ -620,6 +621,8 @@ const CreateParcelFrom = () => {
                 onChangeText={(value) => handleInputChange("senderName", value)}
                 style={[styles.textInput, errors.senderName ? styles.inputError : null]}
                 placeholder={strings.SenderName}
+                returnKeyType="done"
+
               />
               {errors.senderName ? <Text style={styles.errorText}>{errors.senderName}</Text> : null}
             </View>
@@ -632,6 +635,8 @@ const CreateParcelFrom = () => {
                 keyboardType="phone-pad"
                 placeholderTextColor="#94A3B8"
                 value={senderMobile}
+                returnKeyType="done"
+
                 onChangeText={(value) => handleInputChange("senderMobile", value)}
               />
               {errors.senderMobile ? <Text style={styles.errorText}>{errors.senderMobile}</Text> : null}
@@ -643,6 +648,8 @@ const CreateParcelFrom = () => {
                 style={[styles.textInput, errors.receiverName ? styles.inputError : null]}
                 placeholderTextColor={"#94A3B8"}
                 value={receiverName}
+                returnKeyType="done"
+
                 onChangeText={(value) => handleInputChange("receiverName", value)}
                 placeholder={strings.ReceiverName}
               />
