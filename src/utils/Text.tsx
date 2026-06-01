@@ -40,7 +40,6 @@ const TextCompoent = ({
         {
           fontSize: size / fs,
           color: color,
-          fontWeight: fontWeight,
           lineHeight: lineHeight
             ? lineHeight
             : size && size > 0
