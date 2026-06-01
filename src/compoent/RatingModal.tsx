@@ -9,6 +9,8 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Animated,
+  KeyboardAvoidingView,
+  ScrollView,
 } from "react-native";
 import font from "../theme/font";
 import { color } from "../constant";
@@ -74,12 +76,21 @@ const RatingModal = ({
       animationType="fade"
       onRequestClose={onClose}
     >
-      <View style={styles.overlay}>
+      <KeyboardAvoidingView
+        style={styles.overlay}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 24 : 0}
+      >
         <TouchableWithoutFeedback onPress={onClose}>
           <View style={styles.backdrop} />
         </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback>
-          <View style={styles.content}>
+        <View style={styles.content}>
+          <ScrollView
+            bounces={false}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.scrollContent}
+          >
             <View style={styles.header}>
               <View style={styles.iconWrap}>
                 <Icon name="stars" size={32} color={color.primary} />
@@ -126,6 +137,10 @@ const RatingModal = ({
                 multiline
                 numberOfLines={3}
                 maxLength={200}
+                scrollEnabled
+                returnKeyType="done"
+                blurOnSubmit
+                autoCorrect
               />
               <Text style={styles.charCount}>{comment.length}/200</Text>
             </View>
@@ -157,9 +172,9 @@ const RatingModal = ({
                 </Text>
               </TouchableOpacity>
             </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </View>
+          </ScrollView>
+        </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
@@ -181,6 +196,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     borderRadius: 24,
     padding: 24,
+    maxHeight: "88%",
     ...Platform.select({
       ios: {
         shadowColor: "#000",
@@ -189,6 +205,9 @@ const styles = StyleSheet.create({
         shadowRadius: 12,
       },
     }),
+  },
+  scrollContent: {
+    flexGrow: 1,
   },
   header: {
     alignItems: "center",
@@ -305,4 +324,3 @@ const styles = StyleSheet.create({
 });
 
 export default memo(RatingModal);
-
