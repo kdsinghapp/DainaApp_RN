@@ -21,6 +21,7 @@ import LoadingModal from "../../../../utils/Loader";
 import { styles } from "./style";
 import { STATUS, STATUS_COLORS, STATUS_LABELS } from "../../../../utils/Constant";
 import strings from "../../../../localization/Localization";
+import { errorToast, successToast } from "../../../../utils/customToast";
 
 type OrderStatus = "Pending" | "Completed" | "Cancelled";
 type Order = {
@@ -46,10 +47,11 @@ const STATUS_STYLES: Record<
 };
 
 const DeliveryHome = () => {
-  const navigation = useNavigation();
-  const [ordersSeed, setordersSeed] = useState([]);
+  const navigation = useNavigation<any>();
+  const [ordersSeed, setordersSeed] = useState<any[]>([]);
   const [isOnline, setIsOnline] = useState(false);
   const [isLoading, setisLoading] = useState(false);
+  const [acceptingOfferId, setAcceptingOfferId] = useState<string | number | null>(null);
   const pillX = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     Animated.timing(pillX, {
@@ -142,11 +144,59 @@ const DeliveryHome = () => {
     }
   };
 
-  const renderItem = ({ item }: { item: Order }) => {
+  const acceptOffer = async (item: any) => {
+    const offerId = item?.offerId ?? item?.id;
+    if (!offerId || acceptingOfferId) return;
+
+    setAcceptingOfferId(offerId);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        errorToast("Token not found");
+        return;
+      }
+
+      const response = await fetch(`${base_url}/delivery/offers/${offerId}/accept-counter`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({}),
+      });
+
+      const result = await response.json();
+      if (response.ok && (result?.status == 1 || result?.success === true)) {
+        successToast(result?.message || strings.OfferAcceptedSuccess || "Offer accepted successfully");
+        await fetchAvailableRequests();
+      } else {
+        errorToast(result?.message || strings.OfferAcceptFailed || "Failed to accept offer");
+      }
+    } catch (error) {
+      console.error("Accept offer error:", error);
+      errorToast(strings.SomethingWentWrong || "Something went wrong");
+    } finally {
+      setAcceptingOfferId(null);
+    }
+  };
+
+  const renderItem = ({ item }: { item: any }) => {
+
     const st = item?.parcel?.deliveryStatus;
     const statusKey = item?.parcel?.deliveryStatus;
     const statusLabel = STATUS_LABELS[statusKey] || strings?.Unknown;
     const statusColor = STATUS_COLORS[statusKey] || "black";
+    const offerStatus = String(item?.offerStatus ?? item?.status ?? "").trim();
+    const offerAmount = item?.counterAmount ?? item?.offerAmount;
+    const offerId = item?.offerId ?? item?.id;
+    const showAcceptOfferButton = Boolean(
+      offerAmount &&
+      offerId &&
+      (!offerStatus || offerStatus === "counter_offered")
+    );
+    const isAcceptingThisOffer = acceptingOfferId === offerId;
+    const offerAmountText = offerAmount != null ? `$${offerAmount}` : "";
 
     // Dynamic Translucent Status Chip helper
     const getTranslucentColor = (hex: string) => {
@@ -166,6 +216,10 @@ const DeliveryHome = () => {
         style={styles.card}
         activeOpacity={0.85}
         onPress={() => {
+          if (offerStatus === "counter_offered") {
+            return;
+          }
+
           if (st === STATUS.PENDING) {
             navigation.navigate(ScreenNameEnum.ParcelDetails, {
               item: { ...item, ...item?.parcel }
@@ -184,6 +238,37 @@ const DeliveryHome = () => {
           }
         }}
       >
+
+        {showAcceptOfferButton && (
+          <View style={styles.offerBox}>
+            <View style={styles.offerAccent} />
+            <View style={styles.offerInfo}>
+              <View style={styles.offerHeaderRow}>
+                <Text style={styles.offerEyebrow}>{strings.CounterOfferReceived || "Counter Offer Received"}</Text>
+
+              </View>
+              <View style={styles.offerAmountPill}>
+                <Text style={styles.offerAmount}>{offerAmountText}</Text>
+              </View>
+              <Text style={styles.offerHint}>Review and accept to confirm this delivery offer.</Text>
+            </View>
+
+            <TouchableOpacity
+              style={[styles.acceptOfferBtn, isAcceptingThisOffer && styles.acceptOfferBtnDisabled]}
+              activeOpacity={0.85}
+              disabled={isAcceptingThisOffer}
+              onPress={(event) => {
+                event.stopPropagation();
+                acceptOffer(item);
+              }}
+            >
+              <Text style={styles.acceptOfferText}>
+                {isAcceptingThisOffer ? strings.Processing : strings.Accept}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
         <View style={styles.cardTop}>
           <Image
             source={
@@ -236,6 +321,8 @@ const DeliveryHome = () => {
             </Text>
           </View>
         </View>
+
+
       </TouchableOpacity>
     );
   };
@@ -285,7 +372,7 @@ const DeliveryHome = () => {
             marginTop: 10,
             marginBottom: 8
           }}
-          keyExtractor={(i) => i.id}
+          keyExtractor={(i) => String(i?.id ?? i?.offerId ?? i?.parcel?.id)}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 80 }}
           renderItem={renderItem}
