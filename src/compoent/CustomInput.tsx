@@ -55,7 +55,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
           style={styles.input}
           placeholderTextColor="#8F8F8F"
           secureTextEntry={hidePassword}
-
+          returnKeyType="done"
           {...rest}
         />
       }
