@@ -163,6 +163,11 @@ const strings = new LocalizedStrings({
     ResendFailed: "Failed to resend OTP. Please try again.",
     // Document Show
     MyDocuments: "My Documents",
+    DocumentShowSubtitle: "Review your identity, vehicle, and payout details in one place.",
+    DocumentUploaded: "Document uploaded",
+    UploadIdentityDocuments: "Upload Identity Documents",
+    SetUpVehicleDetails: "Set Up Vehicle Details",
+    SetUpBankDetails: "Set Up Bank Details",
     Identity: "Identity",
     Vehicle: "Vehicle",
     Banking: "Banking",
@@ -841,6 +846,11 @@ const strings = new LocalizedStrings({
     SelectLanguage: "Хэл сонгох",
     // Document Show
     MyDocuments: "Миний баримт бичиг",
+    DocumentShowSubtitle: "Бичиг баримт, тээврийн хэрэгсэл болон төлбөрийн мэдээллээ нэг дор шалгана уу.",
+    DocumentUploaded: "Баримт бичиг байршуулсан",
+    UploadIdentityDocuments: "Бичиг баримт байршуулах",
+    SetUpVehicleDetails: "Тээврийн хэрэгслийн мэдээлэл оруулах",
+    SetUpBankDetails: "Банкны мэдээлэл оруулах",
     Identity: "Хувь хүн",
     Vehicle: "Тээврийн хэрэгсэл",
     Banking: "Банк",
