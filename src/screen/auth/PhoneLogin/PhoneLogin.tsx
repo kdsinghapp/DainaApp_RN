@@ -18,6 +18,12 @@ import LoadingModal from "../../../utils/Loader";
 import { getMessaging } from "@react-native-firebase/messaging";
 import strings from "../../../localization/Localization";
 
+type CountryOption = {
+  country: string;
+  code: string;
+  dial_code: string;
+  flag: string;
+};
 
 
 const PhoneLogin = () => {
@@ -64,7 +70,7 @@ const PhoneLogin = () => {
       setFilteredCountries(filtered);
     }
   }, [searchText]);
-  const handleSelectCountry = (country) => {
+  const handleSelectCountry = (country: CountryOption) => {
     setCountryCode(country?.code);
     setCallingCode(country?.dial_code);
     setModalVisible(false);
@@ -152,44 +158,49 @@ const PhoneLogin = () => {
 
           {/* Custom Country Modal */}
           <Modal visible={modalVisible} animationType="slide" transparent={true}>
-            <View style={styles.modalOverlay}>
-              <View style={styles.modalContent}>
-                {/* Header */}
-                <View style={styles.modalHeader}>
-                  <Text style={styles.modalTitle}>{strings.SelectCountry}</Text>
-                  <TouchableOpacity onPress={() => setModalVisible(false)}>
-                    <Text style={styles.modalCancel}>{strings.Cancel}</Text>
-                  </TouchableOpacity>
-                </View>
+            <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+              <View style={styles.modalOverlay}>
+                <TouchableWithoutFeedback onPress={() => { }}>
+                  <View style={styles.modalContent}>
+                    {/* Header */}
+                    <View style={styles.modalHeader}>
+                      <Text style={styles.modalTitle}>{strings.SelectCountry}</Text>
+                      <TouchableOpacity onPress={() => setModalVisible(false)}>
+                        <Text style={styles.modalCancel}>{strings.Cancel}</Text>
+                      </TouchableOpacity>
+                    </View>
 
-                {/* Search Input */}
-                <TextInput
-                  placeholder={strings.SearchCountry}
-                  value={searchText}
-                  onChangeText={setSearchText}
-                  style={styles.searchInput}
-                  placeholderTextColor={"#999"}
-                />
+                    {/* Search Input */}
+                    <TextInput
+                      placeholder={strings.SearchCountry}
+                      value={searchText}
+                      onChangeText={setSearchText}
+                      style={styles.searchInput}
+                      placeholderTextColor={"#999"}
+                    />
 
-                {/* Country List */}
-                <FlatList
-                  data={filteredCountries}
-                  keyExtractor={(item) => item.code}
-                  showsVerticalScrollIndicator={false}
-                  style={{ marginTop: 10 }}
-                  renderItem={({ item }) => (
-                    <TouchableOpacity
-                      style={styles.modalItem}
-                      onPress={() => handleSelectCountry(item)}
-                    >
-                      <Text style={styles.countryText}>
-                        {item.flag} {item.country} ({item.dial_code})
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                />
+                    {/* Country List */}
+                    <FlatList
+                      data={filteredCountries}
+                      keyExtractor={(item) => item.code}
+                      showsVerticalScrollIndicator={false}
+                      style={{ marginTop: 10 }}
+                      keyboardShouldPersistTaps="handled"
+                      renderItem={({ item }) => (
+                        <TouchableOpacity
+                          style={styles.modalItem}
+                          onPress={() => handleSelectCountry(item)}
+                        >
+                          <Text style={styles.countryText}>
+                            {item.flag} {item.country} ({item.dial_code})
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+                    />
+                  </View>
+                </TouchableWithoutFeedback>
               </View>
-            </View>
+            </TouchableWithoutFeedback>
           </Modal>
         </KeyboardAvoidingView>
       </SafeAreaView>

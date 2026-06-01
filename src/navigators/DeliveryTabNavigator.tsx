@@ -16,7 +16,7 @@ import { DeliveryProvider } from '../context/DeliveryContext';
 
 const Tab = createBottomTabNavigator();
 
-const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 80 : 70;
+const TAB_BAR_HEIGHT = Platform.OS === 'ios' ? 70 : 70;
 const ICON_SIZE = 26;
 
 export default function DeliveryTabNavigator() {
