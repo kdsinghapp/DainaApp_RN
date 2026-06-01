@@ -275,7 +275,6 @@ export const styles = StyleSheet.create({
     alignSelf: "flex-start",
     paddingVertical: 7,
     borderRadius: 12,
-    marginBottom: 7,
   },
   offerAmount: {
     fontSize: 20,

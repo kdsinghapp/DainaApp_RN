@@ -446,6 +446,8 @@ const strings = new LocalizedStrings({
 
     CounterOfferReceived: "Counter Offer Received",
     CounterOfferMessage: "User sent a counter offer. Tap to view and respond.",
+    UserOfferedNewPrice: "User has offered a new price",
+    ReviewAcceptDeliveryOffer: "Review and accept to confirm this delivery offer.",
     NewDeliveryRequestMessage: "A parcel pickup is nearby. Tap below to see details and send your offer.",
     Later: "Later",
     ViewOrder: "View order",
@@ -943,6 +945,8 @@ const strings = new LocalizedStrings({
     CounterOfferReceived: "Эсрэг санал ирлээ",
     NewDeliveryRequest: "Хүргэлтийн шинэ хүсэлт",
     CounterOfferMessage: "Хэрэглэгч эсрэг санал ирүүлсэн байна. Үзэж, хариу өгөхийн тулд товшино уу.",
+    UserOfferedNewPrice: "Хэрэглэгч шинэ үнэ санал болголоо",
+    ReviewAcceptDeliveryOffer: "Энэ хүргэлтийн саналыг баталгаажуулахын тулд шалгаад зөвшөөрнө үү.",
     NewDeliveryRequestMessage: "Ойролцоо илгээмж авах газар байна. Дэлгэрэнгүйг үзэж, саналаа илгээхийн тулд доор товшино уу.",
     Later: "Дараа",
     Rating: "Үнэлгээ өгсөнд баярлалаа!",

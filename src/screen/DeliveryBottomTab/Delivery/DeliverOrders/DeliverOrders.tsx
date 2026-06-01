@@ -247,10 +247,10 @@ const DeliveryHome = () => {
                 <Text style={styles.offerEyebrow}>{strings.CounterOfferReceived || "Counter Offer Received"}</Text>
 
               </View>
+              <Text style={styles.offerTitle}>{strings.UserOfferedNewPrice}</Text>
               <View style={styles.offerAmountPill}>
                 <Text style={styles.offerAmount}>{offerAmountText}</Text>
               </View>
-              <Text style={styles.offerHint}>Review and accept to confirm this delivery offer.</Text>
             </View>
 
             <TouchableOpacity
