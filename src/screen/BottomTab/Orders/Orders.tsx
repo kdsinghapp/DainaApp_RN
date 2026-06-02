@@ -20,6 +20,8 @@ import ScreenNameEnum from "../../../routes/screenName.enum";
 import { STATUS, STATUS_COLORS, STATUS_LABELS } from "../../../utils/Constant";
 import useOrders from "./useOrders";
 import strings from "../../../localization/Localization";
+import { ActivityIndicator } from "react-native";
+import { color } from "../../../constant";
 
 type OrderStatus = "packaged" | "shipped" | "inTransit" | "delivered";
 
@@ -201,32 +203,46 @@ export default function OrdersScreen() {
           />
         </View>
 
-        <FlatList
-          contentContainerStyle={{ paddingBottom: 120, marginTop: 4 }}
-          data={data}
-          keyExtractor={(item: any) => item.id}
-          renderItem={({ item }) => <OrderCard order={item} />}
-          ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={() => (
-            <View style={styles.emptyWrap}>
-              <View style={styles.illustrationWrap}>
-                <View style={styles.illustrationBg} />
-                <Image source={imageIndex.ordePracle} style={styles.emptyIcon} />
+
+        {isLoading ? (
+
+          <ActivityIndicator
+            color={color.primary}
+            size="large"
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          />
+        ) : (
+          <FlatList
+            contentContainerStyle={{ paddingBottom: 120, marginTop: 4 }}
+            data={data}
+            keyExtractor={(item: any) => item.id}
+            renderItem={({ item }) => <OrderCard order={item} />}
+            ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+            showsVerticalScrollIndicator={false}
+            ListEmptyComponent={() => (
+              <View style={styles.emptyWrap}>
+                <View style={styles.illustrationWrap}>
+                  <View style={styles.illustrationBg} />
+                  <Image source={imageIndex.ordePracle} style={styles.emptyIcon} />
+                </View>
+                <Text style={styles.emptyTitle}>{strings.NoOrder}</Text>
+                <Text style={styles.emptySubtitle}>{strings.NoOrdersFound1}</Text>
               </View>
-              <Text style={styles.emptyTitle}>{strings.NoOrder}</Text>
-              <Text style={styles.emptySubtitle}>{strings.NoOrdersFound1}</Text>
-            </View>
-          )}
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={["#FFCC00"]}
-              tintColor="#FFCC00"
-            />
-          }
-        />
+            )}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={["#FFCC00"]}
+                tintColor="#FFCC00"
+              />
+            }
+          />
+        )}
       </View>
     </SafeAreaView>
   );
