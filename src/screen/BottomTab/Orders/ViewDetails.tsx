@@ -560,8 +560,13 @@ export default function ViewDetails() {
 
         {offers.length > 0 && (
           <>
-            <View style={styles.sectionTitleRow}>
-              <Text style={styles.sectionTitle}>{strings.OffersForYourAd || "Offers For Your Ad"}</Text>
+            <View style={styles.offersSectionHeader}>
+              <View>
+                <Text style={styles.sectionTitle}>{strings.OffersForYourAd || "Offers For Your Ad"}</Text>
+                <Text style={styles.offersSectionSubtitle}>
+                  {offers.length} {offers.length === 1 ? "offer" : "offers"} available
+                </Text>
+              </View>
             </View>
             <View style={styles.offersWrap}>
               {offers.map((offer, index) => {
@@ -588,7 +593,7 @@ export default function ViewDetails() {
                     <View style={styles.offerTopRow}>
                       <View style={styles.offerCarrierRow}>
                         <View style={styles.offerAvatar}>
-                          <Icon name="person" size={18} color="#111827" />
+                          <Icon name="person" size={19} color="#111827" />
                         </View>
                         <View style={styles.offerCarrierTextWrap}>
                           <Text style={styles.offerCarrier} numberOfLines={1}>{carrierName}</Text>
@@ -608,13 +613,23 @@ export default function ViewDetails() {
 
                     <View style={styles.offerPriceGrid}>
                       <View style={styles.pricePanel}>
-                        <Text style={styles.offerLabel}>{strings.OfferPrice || "Offer Price"}</Text>
-                        <Text style={styles.offerAmount}>{offerAmount}</Text>
+                        <View style={styles.priceIconWrap}>
+                          <Icon name="cash-outline" size={16} color="#64748B" />
+                        </View>
+                        <View style={styles.priceTextWrap}>
+                          <Text style={styles.offerLabel}>{strings.OfferPrice || "Offer Price"}</Text>
+                          <Text style={styles.offerAmount}>{offerAmount}</Text>
+                        </View>
                       </View>
                       {hasCounter && (
                         <View style={[styles.pricePanel, styles.counterPricePanel]}>
-                          <Text style={styles.counterLabel}>{strings.CounterOfferLabel || "Counter Offer"}</Text>
-                          <Text style={styles.counterAmount}>{offer?.counterAmount ?? "N/A"}</Text>
+                          <View style={[styles.priceIconWrap, styles.counterIconWrap]}>
+                            <Icon name="swap-horizontal" size={16} color="#8A6A00" />
+                          </View>
+                          <View style={styles.priceTextWrap}>
+                            <Text style={styles.counterLabel}>{strings.CounterOfferLabel || "Counter Offer"}</Text>
+                            <Text style={styles.counterAmount}>{offer?.counterAmount ?? "N/A"}</Text>
+                          </View>
                         </View>
                       )}
                     </View>
@@ -622,19 +637,26 @@ export default function ViewDetails() {
                     {(!!offer?.message || !!offer?.counterMessage) && (
                       <View style={styles.messageBox}>
                         {!!offer?.message && (
-                          <Text style={styles.offerMessage} numberOfLines={2}>
-                            {strings.MessageLabel || "Message"}: {offer.message}
-                          </Text>
+                          <View style={styles.messageRow}>
+                            <Text style={styles.messageLabel}>{strings.MessageLabel || "Message"}</Text>
+                            <Text style={styles.offerMessage} numberOfLines={2}>{offer.message}</Text>
+                          </View>
                         )}
                         {!!offer?.counterMessage && (
-                          <Text style={styles.counterMessage} numberOfLines={2}>
-                            {strings.MessageLabel || "Message"}: {offer.counterMessage}
-                          </Text>
+                          <View style={[styles.messageRow, !!offer?.message && styles.messageDivider]}>
+                            <Text style={styles.messageLabel}>{strings.CounterOfferLabel || "Counter Offer"}</Text>
+                            <Text style={styles.counterMessage} numberOfLines={2}>{offer.counterMessage}</Text>
+                          </View>
                         )}
                       </View>
                     )}
 
-                    {!isCounterOffered && (
+                    {isCounterOffered ? (
+                      <View style={styles.offerLockedFooter}>
+                        <Icon name="time-outline" size={16} color="#8A6A00" />
+                        <Text style={styles.offerLockedText}>Waiting for carrier response</Text>
+                      </View>
+                    ) : (
                       <View style={styles.offerActionRow}>
                         <Text style={styles.offerActionText}>{strings.ViewOffer || "View Offer"}</Text>
                         <Icon name="chevron-forward" size={18} color="#111827" />
@@ -901,24 +923,38 @@ const styles = StyleSheet.create({
     marginTop: 2,
 
   },
+  offersSectionHeader: {
+    marginHorizontal: 16,
+    marginTop: 18,
+    marginBottom: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  offersSectionSubtitle: {
+    marginTop: 4,
+    color: "#64748B",
+    fontFamily: font.MonolithRegular,
+    fontSize: 11,
+  },
   offersWrap: {
     marginHorizontal: 16,
     gap: 12,
   },
   offerCard: {
     backgroundColor: CARD,
-    borderRadius: 14,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: "#E5E7EB",
-    padding: 14,
+    padding: 15,
     shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
   },
   offerCardLocked: {
     borderColor: "#F4D45E",
-    backgroundColor: "#FFFEF7",
+    backgroundColor: "#FFFDF2",
   },
   offerTopRow: {
     flexDirection: "row",
@@ -933,12 +969,14 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   offerAvatar: {
-    width: 38,
-    height: 38,
-    borderRadius: 19,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     backgroundColor: YELLOW,
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#F2C200",
   },
   offerCarrierTextWrap: {
     flex: 1,
@@ -957,7 +995,7 @@ const styles = StyleSheet.create({
   offerStatusPill: {
     backgroundColor: "#FEF9E7",
     borderRadius: 999,
-    paddingHorizontal: 9,
+    paddingHorizontal: 10,
     paddingVertical: 6,
     borderWidth: 1,
     borderColor: "#F5E7A6",
@@ -975,41 +1013,72 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   offerPriceGrid: {
-    marginTop: 12,
+    marginTop: 14,
     flexDirection: "row",
     gap: 10,
   },
   pricePanel: {
     flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: "#F8FAFC",
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "#EEF2F7",
-    paddingHorizontal: 12,
-    paddingVertical: 11,
+    paddingHorizontal: 10,
+    paddingVertical: 12,
   },
   counterPricePanel: {
     backgroundColor: "#FFF8D9",
     borderColor: "#F4D45E",
   },
+  priceIconWrap: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 9,
+  },
+  counterIconWrap: {
+    backgroundColor: "#FFF2B8",
+  },
+  priceTextWrap: {
+    flex: 1,
+  },
   offerLabel: {
     color: MUTED,
     fontFamily: font.MonolithRegular,
-    fontSize: 11,
+    fontSize: 10,
   },
   offerAmount: {
     color: TEXT,
     fontFamily: font.MonolithRegular,
-    fontSize: 17,
+    fontSize: 16,
     marginTop: 5,
   },
   messageBox: {
-    marginTop: 12,
+    marginTop: 14,
     backgroundColor: "#FFFFFF",
     borderRadius: 12,
     borderWidth: 1,
     borderColor: "#F1F5F9",
-    padding: 12,
+    overflow: "hidden",
+  },
+  messageRow: {
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  messageDivider: {
+    borderTopWidth: 1,
+    borderTopColor: "#F1F5F9",
+  },
+  messageLabel: {
+    color: "#94A3B8",
+    fontFamily: font.MonolithRegular,
+    fontSize: 10,
+    marginBottom: 5,
   },
   offerMessage: {
     color: "#4B5563",
@@ -1020,31 +1089,48 @@ const styles = StyleSheet.create({
   counterLabel: {
     color: "#64748B",
     fontFamily: font.MonolithRegular,
-    fontSize: 11,
+    fontSize: 10,
   },
   counterAmount: {
     color: "#111827",
     fontFamily: font.MonolithRegular,
-    fontSize: 17,
+    fontSize: 16,
     marginTop: 5,
   },
   counterMessage: {
-    marginTop: 8,
     color: "#111827",
     fontFamily: font.MonolithRegular,
     fontSize: 12,
     lineHeight: 18,
   },
   offerActionRow: {
-    marginTop: 12,
+    marginTop: 14,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end",
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: "#F1F5F9",
   },
   offerActionText: {
     color: "#111827",
     fontFamily: font.MonolithRegular,
     fontSize: 12,
+  },
+  offerLockedFooter: {
+    marginTop: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 7,
+    backgroundColor: "#FFF8D9",
+    borderRadius: 12,
+    paddingVertical: 10,
+  },
+  offerLockedText: {
+    color: "#8A6A00",
+    fontFamily: font.MonolithRegular,
+    fontSize: 11,
   },
   noOffersCard: {
     backgroundColor: "#F8FAFC",

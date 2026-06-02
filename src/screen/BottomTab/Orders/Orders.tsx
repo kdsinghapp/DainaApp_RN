@@ -40,12 +40,6 @@ type Order = {
   [key: string]: any;
 };
 
-// const STATUS_STEPS: OrderStatus[] = [
-//   "packaged",
-//   "shipped",
-//   "inTransit",
-//   "delivered",
-// ];
 const STATUS_STEPS = [
   STATUS.PENDING,
   STATUS.ASSIGNED,

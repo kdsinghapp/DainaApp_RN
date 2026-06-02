@@ -168,8 +168,7 @@ export const styles = StyleSheet.create({
   },
   splitter: {
 
-    marginTop: 8,
-    marginBottom: 12,
+
   },
   stopsRow: {
     flexDirection: "row",
