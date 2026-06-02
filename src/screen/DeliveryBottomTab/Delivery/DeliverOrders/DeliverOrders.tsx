@@ -450,7 +450,7 @@ const DeliveryHome = () => {
       <CounterOfferModal
         visible={!!counterReplyOffer}
         defaultValue={counterReplyOffer?.counterAmount ?? counterReplyOffer?.offerAmount ?? ""}
-        currency="₮"
+
         min={1}
         max={50000}
         showMessage

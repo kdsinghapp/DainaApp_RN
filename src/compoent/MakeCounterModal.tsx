@@ -75,7 +75,7 @@ const AppModal = ({ visible, onRequestClose, children }: any) => {
 const CounterOfferModal = ({
   visible,
   defaultValue = '',
-  currency = '₹',
+  currency = '₮',
   min,
   max,
   onCancel,
