@@ -4,7 +4,6 @@ import {
   Text,
   TouchableOpacity,
   StyleSheet,
-  Platform,
   Dimensions,
   ScrollView,
 } from 'react-native';
@@ -87,7 +86,6 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
           stopNotificationSound();
         }
       } else {
-        // navigation.navigate(ScreenNameEnum.AllOrder as never);
 
         navigation.navigate(ScreenNameEnum.ParcelDetails as never, {
           item: {

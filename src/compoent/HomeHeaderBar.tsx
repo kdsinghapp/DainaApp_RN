@@ -6,7 +6,7 @@ import font from "../theme/font";
 import strings from "../localization/Localization";
 
 const HomeHeaderBar = ({
-  location = "Wallace, Australia",
+  location = "",
   style1,
   onLocationPress,
   onNotificationPress,

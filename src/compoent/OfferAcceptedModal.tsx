@@ -21,7 +21,6 @@ const OfferAcceptedModal: React.FC = () => {
   const closeModal = () => {
     setCounterOfferAcceptedModal({ visible: false, data: null });
   };
-  // if (!counterOfferAcceptedModal?.visible) return null; // Modal handles visibility
   const data = counterOfferAcceptedModal?.data;
   const driver = data?.driver as { name?: string; image?: string } | undefined;
 

@@ -63,16 +63,16 @@ const ShippingScreen = () => {
       />
 
       {/* <TouchableOpacity style={styles.inputBox} 
-      onPress={()=> navigation.navigate(ScreenNameEnum.PickupLocation)}
-      >
-        <Text style={{ color: "black" ,fontSize:14, fontFamily:font.MonolithRegular}}>Enter Pickup Location</Text>
-      <Image source={imageIndex.Next} 
-      style={{
-        height:20,
-        width:20
-      }}
-      />
-       </TouchableOpacity> */}
+        onPress={()=> navigation.navigate(ScreenNameEnum.PickupLocation)}
+        >
+          <Text style={{ color: "black" ,fontSize:14, fontFamily:font.MonolithRegular}}>Enter Pickup Location</Text>
+        <Image source={imageIndex.Next} 
+        style={{
+          height:20,
+          width:20
+        }}
+        />
+        </TouchableOpacity> */}
 
       <View style={{
         marginTop: 11, marginBottom: 5
@@ -177,26 +177,26 @@ const ShippingScreen = () => {
               )}
 
               {/* {(counterOfferAcceptedModal.data?.pickupOtp ||
-                counterOfferAcceptedModal.data?.deliveryOtp) && (
-                <View style={offerAcceptedStyles.otpRow}>
-                  {counterOfferAcceptedModal.data?.pickupOtp && (
-                    <View style={offerAcceptedStyles.otpBox}>
-                      <Text style={offerAcceptedStyles.otpLabel}>Pickup OTP</Text>
-                      <Text style={offerAcceptedStyles.otpValue}>
-                        {counterOfferAcceptedModal.data.pickupOtp}
-                      </Text>
-                    </View>
-                  )}
-                  {counterOfferAcceptedModal.data?.deliveryOtp && (
-                    <View style={offerAcceptedStyles.otpBox}>
-                      <Text style={offerAcceptedStyles.otpLabel}>Delivery OTP</Text>
-                      <Text style={offerAcceptedStyles.otpValue}>
-                        {counterOfferAcceptedModal.data.deliveryOtp}
-                      </Text>
-                    </View>
-                  )}
-                </View>
-              )} */}
+                  counterOfferAcceptedModal.data?.deliveryOtp) && (
+                  <View style={offerAcceptedStyles.otpRow}>
+                    {counterOfferAcceptedModal.data?.pickupOtp && (
+                      <View style={offerAcceptedStyles.otpBox}>
+                        <Text style={offerAcceptedStyles.otpLabel}>Pickup OTP</Text>
+                        <Text style={offerAcceptedStyles.otpValue}>
+                          {counterOfferAcceptedModal.data.pickupOtp}
+                        </Text>
+                      </View>
+                    )}
+                    {counterOfferAcceptedModal.data?.deliveryOtp && (
+                      <View style={offerAcceptedStyles.otpBox}>
+                        <Text style={offerAcceptedStyles.otpLabel}>Delivery OTP</Text>
+                        <Text style={offerAcceptedStyles.otpValue}>
+                          {counterOfferAcceptedModal.data.deliveryOtp}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                )} */}
               <View style={offerAcceptedStyles.buttonRow}>
                 <TouchableOpacity
                   style={offerAcceptedStyles.btnDismiss}
@@ -206,12 +206,12 @@ const ShippingScreen = () => {
                   <Text style={offerAcceptedStyles.btnDismissText}>{strings.OK}</Text>
                 </TouchableOpacity>
                 {/* <TouchableOpacity
-                  style={offerAcceptedStyles.btnView}
-                  onPress={handleViewOrder}
-                  activeOpacity={0.8}
-                >
-                  <Text style={offerAcceptedStyles.btnViewText}>View order</Text>
-                </TouchableOpacity> */}
+                    style={offerAcceptedStyles.btnView}
+                    onPress={handleViewOrder}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={offerAcceptedStyles.btnViewText}>View order</Text>
+                  </TouchableOpacity> */}
               </View>
             </View>
           </TouchableOpacity>
@@ -409,6 +409,7 @@ const offerAcceptedStyles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingBottom: 28,
     alignItems: "center",
+
     borderWidth: 1,
     borderColor: "rgba(0,0,0,0.06)",
     ...Platform.select({

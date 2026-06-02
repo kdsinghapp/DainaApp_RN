@@ -3,7 +3,6 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   TouchableOpacity,
   Animated,
   Dimensions,
@@ -20,7 +19,6 @@ import { useNavigation, useRoute } from "@react-navigation/native";
 const { width, height } = Dimensions.get("window");
 
 const CourierTrackingScreen = () => {
-  const nav = useNavigation();
   const rou: any = useRoute();
   const { item } = rou.params || "";
 

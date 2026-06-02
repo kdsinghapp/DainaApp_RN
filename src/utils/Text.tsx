@@ -20,7 +20,6 @@ const TextCompoent = ({
   lineBreakMode,
   style,
   size = 14,
-  fontWeight = '400',
   color = '#0B040F',
   ellipsizeMode,
   adjustsFontSizeToFit = false,
