@@ -13,7 +13,7 @@ import {
   Platform,
   Keyboard,
 } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import LoadingModal from '../../../utils/Loader';
@@ -397,6 +397,7 @@ const TripMap = () => {
   ) || { latitude: DEFAULT_LAT, longitude: DEFAULT_LNG };
   const [currentCoords, setCurrentCoords] = useState(driverCoords);
   const [routeDistanceKm, setRouteDistanceKm] = useState<number | null>(null);
+  const [directionsFailed, setDirectionsFailed] = useState(false);
 
   const pickupAddress = source?.pickupLocation || item?.pickup?.location || strings.PickupLocation;
   const dropoffAddress = source?.dropLocation || item?.drop?.location || strings.DropLocation;
@@ -458,6 +459,10 @@ const TripMap = () => {
   useEffect(() => {
     setCurrentCoords(driverCoords);
   }, [driverCoords.latitude, driverCoords.longitude]);
+
+  useEffect(() => {
+    setDirectionsFailed(false);
+  }, [pickup.latitude, pickup.longitude, dropoff.latitude, dropoff.longitude]);
 
   useEffect(() => {
     const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
@@ -577,6 +582,7 @@ const TripMap = () => {
                 mode="DRIVING"
                 optimizeWaypoints={true}
                 onReady={result => {
+                  setDirectionsFailed(false);
                   console.log('Route duration:', result.duration);
                   console.log('Route distance:', result.distance);
                   setRouteDistanceKm(result.distance);
@@ -590,23 +596,50 @@ const TripMap = () => {
                     animated: true,
                   });
                 }}
-                onError={(err) => console.warn('MapViewDirections error:', err)}
-              />
-            )}
-            <Marker coordinate={pickup} title={strings.Pickup} tracksViewChanges={false} anchor={{ x: 0.5, y: 0.5 }}>
-              <View style={styles.pickupPoint}>
-                <View style={styles.pickupPointInner} />
-              </View>
-            </Marker>
-            <Marker coordinate={dropoff} title={strings.Drop} tracksViewChanges={false} anchor={{ x: 0.5, y: 0.9 }}>
-              <Image source={imageIndex.locationpin}
-                resizeMode='contain'
-                style={{
-                  height: 40,
-                  width: 40,
-                  tintColor: "#FF3B30"
+                onError={(err) => {
+                  console.warn('MapViewDirections error:', err);
+                  setDirectionsFailed(true);
                 }}
               />
+            )}
+            {pickupToDropoffValid && directionsFailed && (
+              <Polyline
+                coordinates={[pickup, dropoff]}
+                strokeWidth={4}
+                strokeColor={color.primary}
+                lineCap="round"
+                lineJoin="round"
+              />
+            )}
+            <Marker coordinate={pickup} title={strings.Pickup} tracksViewChanges={false} anchor={{ x: 0.5, y: 1 }}>
+              <View style={styles.mapMarkerWrap}>
+
+
+                <View style={[styles.pinPointer, styles.pickupPointer]} />
+
+                <View style={{
+                  backgroundColor: "white",
+                  borderRadius: 200,
+                  padding: 10
+                }}>
+                  <Ionicons name="location-sharp" size={30}
+                    color="#10B981"
+                  />
+                </View>
+              </View>
+            </Marker>
+            <Marker coordinate={dropoff} title={strings.Drop} tracksViewChanges={false} anchor={{ x: 0.5, y: 1 }}>
+              <View style={{
+                backgroundColor: "white",
+                borderRadius: 200,
+                padding: 10
+              }}>
+                <Ionicons name="location-sharp" size={30}
+
+                  color="red"
+                />
+              </View>
+
             </Marker>
             <Marker
               key="driver-marker"
@@ -615,7 +648,10 @@ const TripMap = () => {
               tracksViewChanges={false}
             >
               <View style={styles.courierMarker}>
-                <Image source={imageIndex.deliver} style={styles.courierImage} />
+                <View style={styles.courierPulse} />
+                <View style={styles.courierMarkerInner}>
+                  <Image source={imageIndex.deliver} style={styles.courierImage} />
+                </View>
               </View>
             </Marker>
           </MapView>
@@ -830,10 +866,8 @@ const styles = StyleSheet.create({
     padding: 12,
     flexDirection: 'row',
     alignItems: 'flex-start',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.12,
-    shadowRadius: 16,
+
+
     zIndex: 100,
   },
   backButtonWrap: {
@@ -869,6 +903,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#0F172A',
     fontFamily: font.MonolithRegular,
+
   },
   locationRow: {
     flexDirection: 'row',
@@ -1007,16 +1042,33 @@ const styles = StyleSheet.create({
 
   },
   courierMarker: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+  },
+  courierPulse: {
+    position: "absolute",
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    backgroundColor: "rgba(255, 204, 0, 0.22)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 204, 0, 0.45)",
+  },
+  courierMarkerInner: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 2,
     borderColor: "#FFCC00",
   },
-  courierImage: { width: 30, height: 30, resizeMode: "contain" },
+  courierImage: { width: 29, height: 29, resizeMode: "contain" },
   mapWrap: {
     flex: 1,
     width: '100%',
@@ -1025,23 +1077,49 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
   },
-  pickupPoint: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: 'rgba(76, 175, 80, 0.2)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(76, 175, 80, 0.4)',
+  mapMarkerWrap: {
+    alignItems: "center",
+    justifyContent: "center",
   },
-  pickupPointInner: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: '#4CAF50',
-    borderWidth: 2,
-    borderColor: '#FFF',
+  pinHead: {
+    width: 40,
+    height: 40,
+    borderRadius: 22,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 3,
+    borderColor: "#FFFFFF",
+
+  },
+  pinIconCircle: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  pickupPin: {
+    backgroundColor: "#10B981",
+  },
+  dropPin: {
+    backgroundColor: "#EF4444",
+  },
+  pinPointer: {
+    width: 0,
+    height: 0,
+    borderLeftWidth: 9,
+    borderRightWidth: 9,
+    borderTopWidth: 12,
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
+    marginTop: -5,
+  },
+  pickupPointer: {
+    borderTopColor: "#10B981",
+  },
+  dropPointer: {
+    borderTopColor: "#EF4444",
   },
   arrivalBadge: {
     position: 'absolute',
@@ -1055,13 +1133,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 16,
     gap: 12,
-    shadowColor: '#059669',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
-    zIndex: 1000,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
+
   },
   arrivalBadgeIconWrap: {
     width: 36,
@@ -1090,10 +1162,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    shadowColor: '#F59E0B',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.25,
-    shadowRadius: 16,
+
     zIndex: 1000,
   },
   sameLocationText: {
