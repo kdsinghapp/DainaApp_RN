@@ -20,6 +20,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import strings from "../../../localization/Localization";
 import imageIndex from "../../../assets/imageIndex";
 import SearchBar from "../../../compoent/SearchBar";
+import Icon from "react-native-vector-icons/Ionicons";
 
 
 type LastMessage = {
@@ -134,7 +135,6 @@ const Avatar = ({ uri, name, isOnline = true }: { uri?: string; name?: string; i
           onError={() => setHasError(true)}
         />
       )}
-      {isOnline && <View style={styles.onlineDot} />}
     </View>
   );
 };
@@ -176,7 +176,6 @@ export default function ChatInboxScreen() {
       if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
       const json = await response.json();
-      console.log('json', json);
       setChats(Array.isArray(json?.chats) ? json.chats : []);
     } catch (err: any) {
       console.error("fetchChats error:", err);
@@ -215,12 +214,13 @@ export default function ChatInboxScreen() {
     const driverName =
       item?.driver?.name ||
       item?.driver?.email ||
-      strings.Unknown; const lastMsgText = item.lastMessage?.text ?? strings.NoMessagesYet;
+      strings.Unknown;
+    const lastMsgText = item.lastMessage?.text ?? strings.NoMessagesYet;
     const msgTime = formatTime(item.lastMessage?.time);
     const hasUnread = (item.unreadCount ?? 0) > 0;
     return (
       <TouchableOpacity
-        style={[styles.chatRow,]}
+        style={[styles.chatRow, hasUnread && styles.chatRowUnread]}
         activeOpacity={0.75}
         onPress={() =>
           navigation.navigate(ScreenNameEnum.ChatScreen, {
@@ -229,15 +229,7 @@ export default function ChatInboxScreen() {
           })
         }
       >
-        {/* Left Side: Avatar */}
-        <View style={styles.avatarContainer}>
-          {avatarUri ? (
-            <Image source={{ uri: avatarUri }} style={styles.avatar} />
-          ) : (
-            <Image source={imageIndex.prfile} style={styles.avatar} />
-          )}
-
-        </View>
+        <Avatar uri={avatarUri} name={driverName} isOnline={item.deliveryStatus !== "delivered"} />
 
         {/* Right Side: Info Column */}
         <View style={styles.infoCol}>
@@ -254,10 +246,6 @@ export default function ChatInboxScreen() {
             ) : null}
           </View>
 
-          {/* Subheader: Tracking ID & Status */}
-
-
-          {/* Footer Row: Last Message & Unread Badge */}
           <View style={styles.messageFooterRow}>
             <Text
               style={[styles.lastMessageText, hasUnread && styles.lastMessageTextUnread]}
@@ -268,7 +256,12 @@ export default function ChatInboxScreen() {
             <UnreadBadge count={item.unreadCount} />
           </View>
           <View style={styles.subHeaderRow}>
-
+            {!!item.trackingId && (
+              <View style={styles.trackingIdPill}>
+                <Icon name="cube-outline" size={12} color="#64748B" />
+                <Text style={styles.trackingIdText} numberOfLines={1}>#{item.trackingId}</Text>
+              </View>
+            )}
             <StatusBadge status={item.deliveryStatus} />
           </View>
         </View>
@@ -299,11 +292,13 @@ export default function ChatInboxScreen() {
 
       {/* Screen Title & Subheader */}
       <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>{strings.Inbox || "Messages"}</Text>
+        <View>
+          <Text style={styles.headerTitle}>{strings.Inbox || "Messages"}</Text>
+
+        </View>
 
       </View>
 
-      {/* Error banner 
       {error && (
         <View style={styles.errorBanner}>
           <Text style={styles.errorText}>{error}</Text>
@@ -358,35 +353,44 @@ const styles = StyleSheet.create({
   headerContainer: {
     paddingHorizontal: 20,
     paddingTop: 16,
-    paddingBottom: 8,
+    paddingBottom: 10,
     backgroundColor: "#F8FAFC",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   headerTitle: {
-    fontSize: 28,
+    fontSize: 25,
     fontFamily: font.MonolithRegular,
     color: "#0F172A",
-    letterSpacing: -0.5,
   },
   headerSubtitle: {
-    fontSize: 14,
+    fontSize: 12,
     fontFamily: font.MonolithRegular,
     color: "#64748B",
-    marginTop: 2,
+    marginTop: 4,
+  },
+  headerIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    alignItems: "center",
+    justifyContent: "center",
   },
   searchBox: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#FFFFFF", // Clear white search box
-    borderRadius: 14,
+    borderRadius: 16,
     paddingHorizontal: 16,
-    height: 60,
+    height: 56,
     borderWidth: 1,
     borderColor: "#E2E8F0",
-    marginBottom: 16,
-    marginTop: 8,
-
-
-
+    marginBottom: 14,
+    marginTop: 10,
   },
   searchInput: {
     flex: 1,
@@ -406,27 +410,25 @@ const styles = StyleSheet.create({
   chatRow: {
     flexDirection: "row",
     backgroundColor: "#FFFFFF", // Premium solid white card
-    borderRadius: 11,
+    borderRadius: 16,
     padding: 14,
     marginBottom: 12,
     alignItems: "center",
-
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
     ...Platform.select({
       ios: {
         shadowColor: "#0F172A",
-        shadowOffset: { width: 0, height: 6 },
-
-
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.05,
+        shadowRadius: 14,
       },
-      android: {
-        // borderWidth: 1,
-        // borderColor: "#03241E1A",
-      },
+
     }),
   },
   chatRowUnread: {
-    borderColor: "#FEF08A", // soft gold/yellow border
-    backgroundColor: "#FFFDF5", // soft warm tint
+    borderColor: "#FACC15",
+    backgroundColor: "#FFFEF4",
   },
   separator: {
     height: 1,
@@ -435,14 +437,20 @@ const styles = StyleSheet.create({
   },
   avatarContainer: {
     position: "relative",
+    width: 58,
+    height: 58,
+    borderRadius: 29,
+    backgroundColor: "#FFF7CC",
+    alignItems: "center",
+    justifyContent: "center",
   },
   avatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     backgroundColor: "#F8FAFC",
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderWidth: 2,
+    borderColor: "#FFFFFF",
   },
   avatarFallback: {
     backgroundColor: "#FFCC00",
@@ -456,7 +464,7 @@ const styles = StyleSheet.create({
   },
   onlineDot: {
     position: "absolute",
-    bottom: 0,
+    bottom: 3,
     right: 2,
     width: 14,
     height: 14,
@@ -492,29 +500,34 @@ const styles = StyleSheet.create({
   },
   timeTextUnread: {
     fontFamily: font.MonolithRegular,
-    color: "#FFCC00",
+    color: "#CA8A04",
   },
   subHeaderRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 4,
+    marginTop: 9,
     gap: 8,
   },
   trackingIdPill: {
     backgroundColor: "#F1F5F9",
-    borderRadius: 6,
+    borderRadius: 999,
     paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingVertical: 4,
+    flexDirection: "row",
+    alignItems: "center",
+    maxWidth: "58%",
   },
   trackingIdText: {
     fontSize: 11,
     fontFamily: font.MonolithRegular,
     color: "#64748B",
+    marginLeft: 4,
+    flexShrink: 1,
   },
   badge: {
-    borderRadius: 6,
+    borderRadius: 999,
     paddingHorizontal: 8,
-    paddingVertical: 2,
+    paddingVertical: 4,
   },
   badgeText: {
     fontSize: 11,
@@ -530,7 +543,7 @@ const styles = StyleSheet.create({
   lastMessageText: {
     fontSize: 13,
     fontFamily: font.MonolithRegular,
-    color: "#FFCC00",
+    color: "#64748B",
     flex: 1,
   },
   lastMessageTextUnread: {
@@ -562,7 +575,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: 80,
+    paddingTop: 70,
     paddingHorizontal: 40,
   },
   illustrationWrap: {
@@ -578,7 +591,7 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 60,
     backgroundColor: "#FFCC00",
-    opacity: 0.08,
+    opacity: 0.12,
   },
   emptyIcon: {
     height: 80,
