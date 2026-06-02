@@ -61,6 +61,10 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
   const data = { ...rawData, ...(rawData?.parcel ?? {}), ...(rawData?.data ?? {}) };
   const pickupAddress = data?.pickup?.location || data?.sender?.address || data?.pickupLocation || data?.pickup_address;
   const dropAddress = data?.drop?.location || data?.receiver?.address || data?.dropLocation || data?.drop_address;
+  const trackingId = data?.trackingId || data?.tracking_id || data?.parcelTrackingId;
+  const amount = data?.offerAmount || data?.deliveryPrice || data?.price || data?.amount || data?.counterAmount;
+  const customerName = data?.sender?.name || data?.customerName || data?.user?.name || data?.receiver?.name;
+  const parcelType = data?.shipmentType || data?.parcelType || data?.consignmentType || data?.typeLabel;
 
   if (!visible) return null;
 
@@ -115,6 +119,7 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
       style={styles.modalContainer}
     >
       <View style={styles.modalCard}>
+        <View style={styles.accentBar} />
         {/* Top Header */}
         <View style={styles.header}>
           <View style={styles.headerIconWrapper}>
@@ -131,7 +136,9 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
             <Text style={styles.headerTitle}>
               {isCounterOffer ? strings.CounterOfferReceived : strings.NewDeliveryRequest}
             </Text>
-
+            <Text style={styles.headerSubtitle}>
+              {isCounterOffer ? (strings.ReviewAcceptDeliveryOffer || "Review the updated offer") : (strings.NewDeliveryRequestMessage || "A new delivery is available")}
+            </Text>
           </View>
 
           <TouchableOpacity
@@ -147,7 +154,31 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
           contentContainerStyle={styles.scrollContent}
           bounces={false}
         >
-          {/* Price/Amount Section */}
+          <View style={styles.summaryCard}>
+            <View style={styles.summaryIconWrap}>
+              <Icon name={isCounterOffer ? "swap-horizontal" : "flash-outline"} size={wp(5)} color="#111827" />
+            </View>
+            <View style={styles.summaryCopy}>
+              <Text style={styles.summaryLabel}>{isCounterOffer ? (strings.CounterOfferLabel || "Counter Offer") : (strings.NewDeliveryRequest || "Delivery Request")}</Text>
+              <Text style={styles.summaryTitle} numberOfLines={1}>
+                {trackingId ? `#${trackingId}` : (customerName || strings.NewDeliveryRequest || "New Delivery")}
+              </Text>
+            </View>
+            {!!amount && (
+              <View style={styles.amountPill}>
+                <Text style={styles.amountText}>{amount}</Text>
+              </View>
+            )}
+          </View>
+
+          {!!parcelType && (
+            <View style={styles.metaRow}>
+              <View style={styles.metaChip}>
+                <Icon name="cube-outline" size={wp(3.5)} color="#64748B" />
+                <Text style={styles.metaText} numberOfLines={1}>{parcelType}</Text>
+              </View>
+            </View>
+          )}
 
           {/* Location Path (Timeline) */}
           {(pickupAddress || dropAddress) ? (
@@ -201,6 +232,7 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
             style={styles.btnLater}
             onPress={closeNotification}
           >
+            <Icon name="close-circle-outline" size={wp(4.6)} color="#64748B" />
             <Text style={styles.btnLaterText}>{strings.Later || strings.Cancel}</Text>
           </TouchableOpacity>
 
@@ -210,6 +242,7 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
             disabled={acceptCounterOfferLoading}
             onPress={handleAccept}
           >
+            <Icon name={isFromProps || isCounterOffer ? "checkmark-circle" : "arrow-forward-circle"} size={wp(5)} color="#111827" />
             <Text style={styles.btnActionText}>
               {isFromProps ? strings.Accept : (isCounterOffer ? strings.Accept : strings.ViewDetails || 'View Details')}
             </Text>
@@ -223,20 +256,30 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
 
 const styles = StyleSheet.create({
   modalContainer: {
-    margin: wp(5),
+    margin: wp(4),
     justifyContent: 'center',
   },
   modalCard: {
     backgroundColor: '#FFFFFF',
-    borderRadius: wp(8),
-    paddingHorizontal: wp(6),
-    paddingVertical: hp(3),
+    borderRadius: wp(6),
+    paddingHorizontal: wp(5),
+    paddingTop: hp(2.4),
+    paddingBottom: hp(2.2),
     maxHeight: hp(85),
     width: '100%',
+    overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.1,
-    shadowRadius: 20,
+    shadowOpacity: 0.14,
+    shadowRadius: 22,
+  },
+  accentBar: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 5,
+    backgroundColor: color.primary || '#FFCC00',
   },
   handleBar: {
     width: wp(12),
@@ -250,8 +293,8 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: hp(2.5),
-    paddingBottom: hp(2),
+    marginBottom: hp(1.8),
+    paddingBottom: hp(1.6),
     borderBottomWidth: 1,
     borderBottomColor: '#F1F5F9', // subtle separator line
   },
@@ -260,14 +303,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   headerIconCircle: {
-    width: wp(12),
-    height: wp(12),
-    borderRadius: wp(6),
-    backgroundColor: color.primaryLight || '#FFFBEB',
+    width: wp(11),
+    height: wp(11),
+    borderRadius: wp(5.5),
+    backgroundColor: '#FFF7CC',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: color.primary || '#FFCC00',
+    borderWidth: 2,
+    borderColor: '#FFFFFF',
   },
   headerTitleContainer: {
     flex: 1,
@@ -275,11 +318,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   headerTitle: {
-    fontSize: wp(4.5),
-    color: color.textMain,
+    fontSize: wp(4.4),
+    color: '#0F172A',
     fontFamily: font.MonolithRegular,
-    lineHeight: wp(6),
-    letterSpacing: 0.3,
+    lineHeight: wp(5.8),
+  },
+  headerSubtitle: {
+    fontSize: wp(3.1),
+    color: '#64748B',
+    fontFamily: font.MonolithRegular,
+    marginTop: 2,
   },
   badgeRow: {
     flexDirection: 'row',
@@ -299,12 +347,80 @@ const styles = StyleSheet.create({
   closeIconButton: {
     padding: wp(2),
     backgroundColor: '#F8FAFC',
-    borderRadius: wp(4),
+    borderRadius: wp(3.5),
     borderWidth: 1,
     borderColor: '#E2E8F0',
   },
   scrollContent: {
-    paddingBottom: hp(2),
+    paddingBottom: hp(1.6),
+  },
+  summaryCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F8FAFC',
+    borderRadius: wp(4),
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    padding: wp(3.5),
+    marginBottom: hp(1.5),
+  },
+  summaryIconWrap: {
+    width: wp(10),
+    height: wp(10),
+    borderRadius: wp(5),
+    backgroundColor: '#FFF7CC',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: wp(3),
+
+  },
+  summaryCopy: {
+    flex: 1,
+    paddingRight: wp(2),
+  },
+  summaryLabel: {
+    fontSize: wp(2.8),
+    color: '#64748B',
+    fontFamily: font.MonolithRegular,
+    marginBottom: 3,
+  },
+  summaryTitle: {
+    fontSize: wp(4),
+    color: '#0F172A',
+    fontFamily: font.MonolithRegular,
+  },
+  amountPill: {
+    paddingHorizontal: wp(3),
+    paddingVertical: hp(0.8),
+    borderRadius: 999,
+    backgroundColor: '#FFCC00',
+  },
+  amountText: {
+    fontSize: wp(3.6),
+    color: '#111827',
+    fontFamily: font.MonolithRegular,
+  },
+  metaRow: {
+    flexDirection: 'row',
+    marginBottom: hp(1.5),
+  },
+  metaChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    maxWidth: '100%',
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 999,
+    paddingHorizontal: wp(3),
+    paddingVertical: hp(0.7),
+  },
+  metaText: {
+    marginLeft: 6,
+    fontSize: wp(3.1),
+    color: '#64748B',
+    fontFamily: font.MonolithRegular,
+    flexShrink: 1,
   },
   priceContainer: {
     backgroundColor: '#FFFFFF',
@@ -375,18 +491,13 @@ const styles = StyleSheet.create({
     fontFamily: font.MonolithRegular,
   },
   pathContainer: {
-    backgroundColor: "#F4F6F9",
+    backgroundColor: "#FFFFFF",
     borderRadius: wp(4),
-    paddingVertical: wp(4.5),
+    paddingVertical: wp(4),
     paddingHorizontal: wp(4),
     borderWidth: 1,
-    borderColor: color.borderLight,
-    marginBottom: hp(2.5),
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.03,
-    shadowRadius: 5,
-
+    borderColor: '#E2E8F0',
+    marginBottom: hp(2),
   },
   timelineRow: {
     flexDirection: 'row',
@@ -396,9 +507,9 @@ const styles = StyleSheet.create({
     width: wp(8),
   },
   iconCircle: {
-    width: wp(7.5),
-    height: wp(7.5),
-    borderRadius: wp(3.75),
+    width: wp(8),
+    height: wp(8),
+    borderRadius: wp(4),
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1.5,
@@ -419,55 +530,55 @@ const styles = StyleSheet.create({
   rightCol: {
     flex: 1,
     marginLeft: wp(3),
-    paddingBottom: hp(3),
+    paddingBottom: hp(2.5),
     justifyContent: 'center',
   },
   pathLabel: {
-    fontSize: wp(3.2),
-    color: color.textMuted,
+    fontSize: wp(3),
+    color: '#64748B',
     fontFamily: font.MonolithRegular,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
     marginBottom: hp(0.4),
   },
   pathAddress: {
-    fontSize: wp(4),
-    color: color.textMain,
+    fontSize: wp(3.8),
+    color: '#0F172A',
     fontFamily: font.MonolithRegular,
+    lineHeight: wp(5.1),
   },
   footer: {
     flexDirection: 'row',
-    gap: wp(4),
-
+    gap: wp(3),
+    paddingTop: hp(0.5),
   },
   btnLater: {
     flex: 1,
-    height: hp(6),
-    borderRadius: wp(2.9),
+    height: hp(6.2),
+    borderRadius: wp(3.5),
     backgroundColor: '#F1F5F9',
     justifyContent: 'center',
     alignItems: 'center',
+    flexDirection: 'row',
   },
   btnLaterText: {
-    fontSize: wp(4),
+    fontSize: wp(3.7),
     color: '#64748B',
     fontFamily: font.MonolithRegular,
+    marginLeft: 6,
   },
   btnAction: {
-    flex: 2,
-    height: hp(6),
-
-    borderRadius: wp(2.9),
+    flex: 1.55,
+    height: hp(6.2),
+    borderRadius: wp(3.5),
     backgroundColor: '#FFCC00',
     justifyContent: 'center',
     alignItems: 'center',
-
+    flexDirection: 'row',
   },
   btnActionText: {
-    fontSize: wp(4.5),
+    fontSize: wp(4),
     color: '#000000',
     fontFamily: font.MonolithRegular,
-
+    marginLeft: 7,
   },
 });
 
