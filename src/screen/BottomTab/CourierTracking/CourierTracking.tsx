@@ -13,6 +13,8 @@ import {
   ScrollView,
   Platform,
 } from "react-native";
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 import MapView, { Marker, AnimatedRegion, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import StatusBarComponent from "../../../compoent/StatusBarCompoent";
@@ -253,6 +255,8 @@ const CourierTrackingScreen = () => {
   const [distance, setDistance] = useState(0);
   const [totalRouteDistance, setTotalRouteDistance] = useState<number | null>(null);
   const [routeDuration, setRouteDuration] = useState<number | null>(null);
+  const [fullRouteFailed, setFullRouteFailed] = useState(false);
+  const [activeRouteFailed, setActiveRouteFailed] = useState(false);
   const [currentCoords, setCurrentCoords] = useState(() => pickup);
   const [driverLocation] = useState(
     () =>
@@ -388,10 +392,12 @@ const CourierTrackingScreen = () => {
             // console.log("Tracking socket data:", data);
 
             if (data?.type === "driver_location" && data?.lat != null && data?.lon != null) {
-              const newPoint = {
-                latitude: parseFloat(data.lat),
-                longitude: parseFloat(data.lon),
-              };
+              const lat = parseFloat(data.lat);
+              const lon = parseFloat(data.lon);
+              if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
+              const newPoint = lat > 60 && lon < 40
+                ? { latitude: lon, longitude: lat }
+                : { latitude: lat, longitude: lon };
               setCurrentCoords(newPoint);
               (driverLocation as any)
                 .timing({
@@ -461,6 +467,20 @@ const CourierTrackingScreen = () => {
     (pickup.latitude !== dropoff.latitude || pickup.longitude !== dropoff.longitude)
   );
   const totalDistanceText = formatKm(totalRouteDistance ?? getDistanceKm(pickup, dropoff));
+
+  useEffect(() => {
+    setFullRouteFailed(false);
+    setActiveRouteFailed(false);
+  }, [
+    pickup.latitude,
+    pickup.longitude,
+    dropoff.latitude,
+    dropoff.longitude,
+    routeOrigin.latitude,
+    routeOrigin.longitude,
+    routeDestForPolyline.latitude,
+    routeDestForPolyline.longitude,
+  ]);
 
   const [statusKey, setStatusKey] = useState<string | null>(null);
 
@@ -548,8 +568,12 @@ const CourierTrackingScreen = () => {
             tracksViewChanges={false}
           >
             <View style={styles.pickupMarkerContainer}>
-              <View style={styles.pulseRing} />
-              <View style={styles.pickupPointInner} />
+              <View style={[styles.pinHead, styles.pickupPin]}>
+                <View style={styles.pinIconCircle}>
+                  <Ionicons name="cube-outline" size={16} color="#10B981" />
+                </View>
+              </View>
+              <View style={[styles.pinPointer, styles.pickupPointer]} />
             </View>
           </Marker>
 
@@ -560,10 +584,12 @@ const CourierTrackingScreen = () => {
             tracksViewChanges={false}
           >
             <View style={styles.dropoffMarkerContainer}>
-              <View style={styles.dropoffPin}>
-                <View style={styles.dropoffPinInner} />
+              <View style={[styles.pinHead, styles.dropPin]}>
+                <View style={styles.pinIconCircle}>
+                  <Ionicons name="location-sharp" size={17} color="#EF4444" />
+                </View>
               </View>
-              <View style={styles.dropoffPinPointer} />
+              <View style={[styles.pinPointer, styles.dropPointer]} />
             </View>
           </Marker>
 
@@ -574,7 +600,10 @@ const CourierTrackingScreen = () => {
             anchor={{ x: 0.5, y: 0.5 }}
           >
             <View style={styles.courierMarker}>
-              <Image source={imageIndex.caricon} style={styles.courierImage} />
+              <View style={styles.courierPulse} />
+              <View style={styles.courierMarkerInner}>
+                <Image source={imageIndex.caricon} style={styles.courierImage} />
+              </View>
             </View>
           </Marker.Animated>
 
@@ -592,6 +621,7 @@ const CourierTrackingScreen = () => {
               lineJoin="round"
               precision="high"
               onReady={(res) => {
+                setFullRouteFailed(false);
                 setTotalRouteDistance(res?.distance ?? null);
                 setRouteDuration(res?.duration ?? null);
                 mapRef.current?.fitToCoordinates(res.coordinates, {
@@ -599,11 +629,14 @@ const CourierTrackingScreen = () => {
                   animated: true,
                 });
               }}
-              onError={(err) => console.warn("Full route error:", err)}
+              onError={(err) => {
+                console.warn("Full route error:", err);
+                setFullRouteFailed(true);
+              }}
             />
           )}
 
-          {!pickupToDropoffValid && (
+          {(!pickupToDropoffValid || fullRouteFailed) && (
             <Polyline
               coordinates={[pickup, dropoff]}
               strokeWidth={4}
@@ -628,6 +661,7 @@ const CourierTrackingScreen = () => {
               optimizeWaypoints={true}
               precision="high"
               onReady={(res) => {
+                setActiveRouteFailed(false);
                 setDistance(res?.distance ?? 0);
                 setEta(`${Math.ceil(res?.duration ?? 0)} mins`);
                 mapRef.current?.fitToCoordinates(res.coordinates, {
@@ -635,7 +669,19 @@ const CourierTrackingScreen = () => {
                   animated: true,
                 });
               }}
-              onError={(err) => console.warn("Active route error:", err)}
+              onError={(err) => {
+                console.warn("Active route error:", err);
+                setActiveRouteFailed(true);
+              }}
+            />
+          )}
+          {routePointsValid && activeRouteFailed && (
+            <Polyline
+              coordinates={[routeOrigin, routeDestForPolyline]}
+              strokeWidth={6}
+              strokeColor={polylineStrokeColor}
+              lineCap="round"
+              lineJoin="round"
             />
           )}
         </MapView>
@@ -820,64 +866,76 @@ const styles = StyleSheet.create({
   pickupMarkerContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    width: 40,
-    height: 40,
-
-  },
-  pulseRing: {
-    position: 'absolute',
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: 'rgba(255, 204, 0, 0.2)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 204, 0, 0.45)',
-  },
-  pickupPointInner: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    backgroundColor: '#FFCC00',
-    borderWidth: 2,
-    borderColor: '#FFF',
   },
   dropoffMarkerContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom: 2,
   },
-  dropoffPin: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: '#FFCC00',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: '#FFF',
+  pinHead: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 3,
+    borderColor: "#FFFFFF",
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    zIndex: 2,
+    shadowOpacity: 0.22,
+    shadowRadius: 7,
+    elevation: 5,
   },
-  dropoffPinInner: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#FFF',
+  pinIconCircle: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
   },
-  dropoffPinPointer: {
-    width: 4,
-    height: 6,
-    backgroundColor: '#FFCC00',
-    marginTop: -2,
-    zIndex: 1,
+  pickupPin: {
+    backgroundColor: "#10B981",
+  },
+  dropPin: {
+    backgroundColor: "#EF4444",
+  },
+  pinPointer: {
+    width: 0,
+    height: 0,
+    borderLeftWidth: 9,
+    borderRightWidth: 9,
+    borderTopWidth: 12,
+    borderLeftColor: "transparent",
+    borderRightColor: "transparent",
+    marginTop: -5,
+  },
+  pickupPointer: {
+    borderTopColor: "#10B981",
+  },
+  dropPointer: {
+    borderTopColor: "#EF4444",
   },
   courierMarker: {
-    width: 46,
-    height: 46,
-    borderRadius: 23,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+  },
+  courierPulse: {
+    position: "absolute",
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: "rgba(255, 204, 0, 0.22)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 204, 0, 0.45)",
+  },
+  courierMarkerInner: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: "#FFF",
     justifyContent: "center",
     alignItems: "center",
