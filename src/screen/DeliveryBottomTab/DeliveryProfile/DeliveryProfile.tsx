@@ -27,6 +27,7 @@ import { color } from "../../../constant";
 import Icon from 'react-native-vector-icons/Ionicons';
 import StarIcon from 'react-native-vector-icons/MaterialIcons';
 import font from "../../../theme/font";
+import LoadingModal from "../../../utils/Loader";
 
 type Props = {
   onEditProfile?: () => void;
@@ -49,11 +50,13 @@ const ListItem = ({
   label,
   onPress,
   secure = false,
+  destructive = false,
 }: {
   icon: React.ReactNode;
   label: string;
   onPress?: () => void;
   secure?: boolean;
+  destructive?: boolean;
 }) => (
   <TouchableOpacity
     onPress={onPress}
@@ -64,16 +67,9 @@ const ListItem = ({
       <View style={[styles.iconWrap, secure && styles.secureIconWrap]}>
         {icon}
       </View>
-      <Text style={styles.rowLabel}>{label}</Text>
+      <Text style={[styles.rowLabel, destructive && styles.rowLabelDanger]}>{label}</Text>
     </View>
-    <Image
-      source={imageIndex.right}
-      style={{
-        height: 18,
-        width: 18,
-        tintColor: "#CBD5E1"
-      }}
-    />
+    <Icon name="chevron-forward" size={18} color={destructive ? "#EF4444" : "#94A3B8"} />
   </TouchableOpacity>
 );
 
@@ -93,6 +89,10 @@ const DeliveryProfile: React.FC<Props> = ({
 
   const dispatch = useDispatch();
   const isLogin: any = useSelector<any>((state) => state?.auth?.userData);
+  const token: any = useSelector<any>((state) => state?.auth?.token);
+  const displayName = [isLogin?.firstName, isLogin?.lastName].filter(Boolean).join(" ") || isLogin?.name || user.name || "Driver";
+  const ratingValue = Number(isLogin?.rating || 0);
+  const roleLabel = isLogin?.type === 'Delivery' ? strings.Delivery : (isLogin?.type === 'User' ? strings.User : isLogin?.type || strings.Delivery);
   useEffect(() => {
     getProfileApi();
   }, []);
@@ -101,7 +101,7 @@ const DeliveryProfile: React.FC<Props> = ({
     try {
       const response = await GetProfileApi(setLoading);
       if (response) {
-        dispatch(loginSuccess({ userData: response }));
+        dispatch(loginSuccess({ userData: response, token: token || response?.token || "" }));
       }
     } catch (error) {
       setLoading(false)
@@ -141,7 +141,19 @@ const DeliveryProfile: React.FC<Props> = ({
 
         contentContainerStyle={styles.container}>
         {/* Header */}
-        <Text style={styles.title}>{strings.Profile}</Text>
+        <View style={styles.headerRow}>
+          <View>
+            <Text style={styles.title}>{strings.Profile}</Text>
+            <Text style={styles.subtitle}>{strings.Delivery || "Delivery"}</Text>
+          </View>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            style={styles.headerEditBtn}
+            onPress={() => navigation.navigate(ScreenNameEnum.EditProfileDeliver)}
+          >
+            <Icon name="create-outline" size={18} color="#111827" />
+          </TouchableOpacity>
+        </View>
 
         {/* Profile card */}
         <TouchableOpacity
@@ -149,52 +161,56 @@ const DeliveryProfile: React.FC<Props> = ({
             navigation.navigate(ScreenNameEnum.EditProfileDeliver)
           }}
           style={styles.profileCard}>
+          <View style={styles.profileAccent} />
           <View style={styles.avatarWrap}>
             {isLogin?.image ? (
               <Image source={{ uri: isLogin?.image }} style={styles.avatar} />
             ) : (
               <Image source={imageIndex.prfile} style={styles.avatar} />
             )}
+            <View style={styles.statusBadge}>
+              <Icon name="checkmark" size={13} color="#111827" />
+            </View>
           </View>
 
           <View style={{ flex: 1 }}>
-            <Text style={styles.name}>{isLogin?.firstName || user.name}</Text>
-            <Text style={styles.email}>{isLogin?.email || user.email}</Text>
-            <Text style={styles.phoneNumber}>{isLogin?.phoneNumber || ""}</Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 6 }}>
+            <View style={styles.nameLine}>
+              <Text style={styles.name} numberOfLines={1}>{displayName}</Text>
+
+            </View>
+            {!!(isLogin?.email || user.email) && (
+              <View style={styles.infoRow}>
+                <Icon name="mail-outline" size={14} color="#64748B" />
+                <Text style={styles.email} numberOfLines={1}>{isLogin?.email || user.email}</Text>
+              </View>
+            )}
+            {!!isLogin?.phoneNumber && (
+              <View style={styles.infoRow}>
+                <Icon name="call-outline" size={14} color="#64748B" />
+                <Text style={styles.email} numberOfLines={1}>{isLogin.phoneNumber}</Text>
+              </View>
+            )}
+            <View style={styles.ratingRow}>
               <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 {[1, 2, 3, 4, 5].map((star) => (
                   <StarIcon
                     key={star}
-                    name={Number(isLogin?.rating || 0) >= star ? "star" : (Number(isLogin?.rating || 0) >= star - 0.5 ? "star-half" : "star-border")}
+                    name={ratingValue >= star ? "star" : (ratingValue >= star - 0.5 ? "star-half" : "star-border")}
                     size={16}
-                    color={Number(isLogin?.rating || 0) >= star - 0.5 ? color.primary : "#CBD5E1"}
+                    color={ratingValue >= star - 0.5 ? color.primary : "#CBD5E1"}
                   />
                 ))}
               </View>
-              <Text style={{
-                fontSize: 12,
-                fontFamily: font.MonolithRegular,
-                color: "#64748B",
-                marginLeft: 6
-              }}>
+              <Text style={styles.ratingText}>
                 {isLogin?.rating || 0} ({isLogin?.totalReviews || 0} {strings.ReviewsLabel})
               </Text>
             </View>
-            <Text style={styles.phoneNumber}>
-              {isLogin?.type === 'Delivery' ? strings.Delivery : (isLogin?.type === 'User' ? strings.User : isLogin?.type)}
-            </Text>
           </View>
-          <Image source={imageIndex.right}
-            style={{
-              height: 20,
-              width: 20,
-              tintColor: "#CBD5E1"
-            }}
-          />
+          <Icon name="chevron-forward" size={20} color="#94A3B8" />
         </TouchableOpacity>
 
         {/* Menu */}
+        <Text style={styles.sectionTitle}>{strings.Account || "Account"}</Text>
         <View style={styles.card}>
           <ListItem
             icon={<Icon name="document-text-outline" size={24} color={color.primary} />}
@@ -236,8 +252,9 @@ const DeliveryProfile: React.FC<Props> = ({
           />
           <ItemDivider />
           <ListItem
-            icon={<Icon name="trash-outline" size={24} color="red" />}
+            icon={<Icon name="trash-outline" size={24} color="#EF4444" />}
             label={strings.DeleteAccount}
+            destructive
             onPress={() => {
               setDeleteModalVisible(true);
             }}
@@ -249,6 +266,7 @@ const DeliveryProfile: React.FC<Props> = ({
           onPress={() => setModal(true)}
           style={styles.logoutBtn}
         >
+          <Icon name="log-out-outline" size={19} color="#EF4444" />
           <Text style={styles.logoutText}>{strings.Logout}</Text>
         </TouchableOpacity>
 
@@ -271,6 +289,7 @@ const DeliveryProfile: React.FC<Props> = ({
           onCancel={() => setDeleteModalVisible(false)}
         />
       </ScrollView>
+      <LoadingModal visible={isLoading} />
     </SafeAreaView>
   );
 };

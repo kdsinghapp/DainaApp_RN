@@ -59,7 +59,7 @@ const StatItem = ({ label, value, icon, index }: any) => (
   </Animated.View>
 );
 
-const MenuItem = ({ icon, label, onPress, index, isLast }: any) => {
+const MenuItem = ({ icon, label, onPress, index, isLast, destructive = false }: any) => {
   const scale = useSharedValue(1);
   const opacity = useSharedValue(1);
 
@@ -84,7 +84,8 @@ const MenuItem = ({ icon, label, onPress, index, isLast }: any) => {
   };
 
   return (
-    <View
+    <Animated.View
+      entering={FadeInRight.delay(120 + index * 55).duration(350)}
       style={[animatedStyle, styles.menuItemContainer]}
     >
       <TouchableOpacity
@@ -98,14 +99,11 @@ const MenuItem = ({ icon, label, onPress, index, isLast }: any) => {
           <View style={styles.menuIconWrap}>
             {icon}
           </View>
-          <Text style={styles.menuLabel}>{label}</Text>
+          <Text style={[styles.menuLabel, destructive && styles.menuLabelDanger]}>{label}</Text>
         </View>
-        <Image
-          source={imageIndex.rightaArrow}
-          style={styles.menuArrow}
-        />
+        <Icon name="chevron-forward" size={18} color={destructive ? "#EF4444" : "#94A3B8"} />
       </TouchableOpacity>
-    </View>
+    </Animated.View>
   );
 };
 
@@ -117,6 +115,9 @@ const ProfileScreen: React.FC = () => {
 
   const dispatch = useDispatch();
   const userData: any = useSelector<any>((state) => state?.auth?.userData);
+  const token: any = useSelector<any>((state) => state?.auth?.token);
+  const displayName = [userData?.firstName, userData?.lastName].filter(Boolean).join(" ") || userData?.name || "User";
+  const accountType = userData?.type || strings?.Account || "Account";
   useEffect(() => {
     getProfileApi();
   }, []);
@@ -125,7 +126,7 @@ const ProfileScreen: React.FC = () => {
     try {
       const response = await GetProfileApi(setLoading);
       if (response) {
-        dispatch(loginSuccess({ userData: response }));
+        dispatch(loginSuccess({ userData: response, token: token || response?.token || "" }));
       }
     } catch (error) {
       setLoading(false);
@@ -156,7 +157,19 @@ const ProfileScreen: React.FC = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        <View style={styles.profileCard}>
+        <View style={styles.screenHeader}>
+          <Text style={styles.screenTitle}>{strings?.Account || "Account"}</Text>
+          <TouchableOpacity
+            activeOpacity={0.85}
+            style={styles.headerEditBtn}
+            onPress={() => navigation.navigate(ScreenNameEnum.EditProfile)}
+          >
+            <Icon name="create-outline" size={18} color="#111827" />
+          </TouchableOpacity>
+        </View>
+
+        <Animated.View entering={FadeInDown.duration(450)} style={styles.profileCard}>
+          <View style={styles.profileTopAccent} />
           <View style={styles.profileHeader}>
             <View style={styles.avatarWrap}>
               <View style={styles.avatarGlow} />
@@ -164,26 +177,38 @@ const ProfileScreen: React.FC = () => {
                 source={userData?.image ? { uri: userData?.image } : imageIndex.prfile}
                 style={styles.avatar}
               />
-
+              <View style={styles.editBadge}>
+                <Icon name="checkmark" size={14} color="#111827" />
+              </View>
             </View>
 
             <View style={styles.nameSection}>
-              <Text style={styles.nameText}>{userData?.firstName || "User"}</Text>
-              <Text style={styles.emailText}>{userData?.email || ""}</Text>
-              <Text style={[styles.emailText, {
-                color: color.primary
-              }]}>{userData?.phoneNumber || ""}   </Text>
-
+              <View style={styles.nameRow}>
+                <Text style={styles.nameText} numberOfLines={1}>{displayName}</Text>
+                <View style={styles.typePill}>
+                  <Text style={styles.typePillText}>{accountType}</Text>
+                </View>
+              </View>
+              {!!userData?.email && (
+                <View style={styles.profileInfoRow}>
+                  <Icon name="mail-outline" size={14} color="#64748B" />
+                  <Text style={styles.emailText} numberOfLines={1}>{userData.email}</Text>
+                </View>
+              )}
+              {!!userData?.phoneNumber && (
+                <View style={styles.profileInfoRow}>
+                  <Icon name="call-outline" size={14} color="#64748B" />
+                  <Text style={styles.emailText} numberOfLines={1}>{userData.phoneNumber}</Text>
+                </View>
+              )}
             </View>
           </View>
-
-
-        </View>
+        </Animated.View>
 
         {/* Menu Sections */}
         <View style={styles.menuContainer}>
           <View style={styles.sectionWrap}>
-            <Text style={styles.sectionTitle}>{strings?.Account}. {userData?.type}</Text>
+            <Text style={styles.sectionTitle}>{strings?.Account || "Account"}</Text>
             <View style={styles.card}>
               <MenuItem
                 index={0}
@@ -233,7 +258,8 @@ const ProfileScreen: React.FC = () => {
               <MenuItem
                 index={6}
                 isLast
-                icon={<Icon name="trash-outline" size={22} color="red" />}
+                destructive
+                icon={<Icon name="trash-outline" size={22} color="#EF4444" />}
                 label={strings.DeleteAccount}
                 onPress={() => {
                   ReactNativeHapticFeedback.trigger("impactMedium", hapticOptions);
@@ -253,6 +279,7 @@ const ProfileScreen: React.FC = () => {
               }}
               style={styles.logoutBtn}
             >
+              <Icon name="log-out-outline" size={19} color="#EF4444" />
               <Text style={styles.logoutText}>{strings.Logout}</Text>
             </TouchableOpacity>
           </View>
@@ -277,6 +304,7 @@ const ProfileScreen: React.FC = () => {
         }}
         onCancel={() => setDeleteModalVisible(false)}
       />
+      <LoadingModal visible={isLoading} />
     </SafeAreaView>
   );
 };
@@ -287,65 +315,97 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8FAFC",
   },
   scrollContent: {
-    paddingBottom: hp(20),
-    paddingTop: hp(2),
+    paddingBottom: hp(18),
+    paddingTop: hp(1.5),
+  },
+  screenHeader: {
+    marginHorizontal: 20,
+    marginBottom: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  screenTitle: {
+    fontSize: 25,
+    color: "#0F172A",
+    fontFamily: font.MonolithRegular,
+  },
+  headerEditBtn: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    alignItems: "center",
+    justifyContent: "center",
   },
   profileCard: {
     backgroundColor: "#FFF",
-    marginHorizontal: 24,
-    borderRadius: 18,
+    marginHorizontal: 20,
+    borderRadius: 22,
     justifyContent: "center",
-    alignItems: "center",
-    padding: 12,
+    padding: 16,
     borderWidth: 1,
-    borderColor: "#d6e1f9ff",
+    borderColor: "#E2E8F0",
+    overflow: "hidden",
     ...Platform.select({
       ios: {
         shadowColor: "#0F172A",
-        shadowOffset: { width: 0, height: 12 },
-        shadowOpacity: 0.06,
-        shadowRadius: 16,
+        shadowOffset: { width: 0, height: 10 },
+        shadowOpacity: 0.08,
+        shadowRadius: 18,
       },
-      android: {
-        elevation: 0,
-      },
+
     }),
+  },
+  profileTopAccent: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 5,
+    backgroundColor: color.primary,
   },
   profileHeader: {
     flexDirection: "row",
     alignItems: "center",
+    width: "100%",
   },
   avatarWrap: {
     position: "relative",
+    width: 78,
+    height: 78,
+    alignItems: "center",
+    justifyContent: "center",
   },
   avatarGlow: {
     position: "absolute",
-    top: -3,
-    left: -3,
-    right: -3,
-    bottom: -3,
-
+    width: 78,
+    height: 78,
+    borderRadius: 39,
+    backgroundColor: "#FFF7CC",
   },
   avatar: {
-    width: 66,
-    height: 66,
-    borderRadius: 40,
-    borderWidth: 1,
+    width: 68,
+    height: 68,
+    borderRadius: 34,
+    borderWidth: 3,
     borderColor: "#FFF",
-
   },
   editBadge: {
     position: "absolute",
-    bottom: 0,
-    right: 0,
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+    bottom: 4,
+    right: 3,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     backgroundColor: color.primary,
-    borderWidth: 3,
+    borderWidth: 2,
     borderColor: "#FFF",
     justifyContent: "center",
     alignItems: "center",
+
   },
   editBadgeIcon: {
     width: 12,
@@ -353,20 +413,45 @@ const styles = StyleSheet.create({
     tintColor: "#000",
   },
   nameSection: {
-    marginLeft: 18,
+    marginLeft: 14,
     flex: 1,
   },
+  nameRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 7,
+  },
   nameText: {
-    fontSize: 22,
+    flex: 1,
+    fontSize: 20,
     fontFamily: font.MonolithRegular,
     color: "#0F172A",
-    letterSpacing: -0.5,
+  },
+  typePill: {
+    marginLeft: 8,
+    paddingHorizontal: 9,
+    paddingVertical: 5,
+    borderRadius: 999,
+    backgroundColor: "#F8FAFC",
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+  },
+  typePillText: {
+    fontSize: 10,
+    color: "#475569",
+    fontFamily: font.MonolithRegular,
+  },
+  profileInfoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 5,
   },
   emailText: {
     fontSize: 13,
     fontFamily: font.MonolithRegular,
     color: "#64748B",
-    marginTop: 2,
+    marginLeft: 7,
+    flex: 1,
   },
   verifiedContainer: {
     flexDirection: "row",
@@ -431,36 +516,33 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   menuContainer: {
-    paddingHorizontal: 24,
-    marginTop: 24,
+    paddingHorizontal: 20,
+    marginTop: 22,
   },
   sectionWrap: {
-    marginBottom: 24,
+    marginBottom: 20,
   },
   sectionTitle: {
     fontSize: 12,
     fontFamily: font.MonolithRegular,
-    color: "#94A3B8",
-    marginBottom: 12,
+    color: "#64748B",
+    marginBottom: 10,
     marginLeft: 4,
-    letterSpacing: 1.5,
   },
   card: {
     backgroundColor: "#FFF",
-    borderRadius: 18,
+    borderRadius: 16,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "#d6e1f9ff",
+    borderColor: "#E2E8F0",
     ...Platform.select({
       ios: {
         shadowColor: "#0F172A",
-        shadowOffset: { width: 0, height: 6 },
-        shadowOpacity: 0.04,
-        shadowRadius: 10,
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.05,
+        shadowRadius: 14,
       },
-      android: {
-        elevation: 0,
-      },
+
     }),
   },
   menuItemContainer: {
@@ -470,28 +552,35 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: 18,
-    paddingHorizontal: 20,
+    minHeight: 64,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
     borderBottomWidth: 1,
-    borderBottomColor: "#F8FAFC",
+    borderBottomColor: "#F1F5F9",
   },
   menuLeft: {
     flexDirection: "row",
     alignItems: "center",
+    flex: 1,
+    paddingRight: 10,
   },
   menuIconWrap: {
-    width: 42,
-    height: 42,
-    borderRadius: 12,
+    width: 40,
+    height: 40,
+    borderRadius: 14,
     backgroundColor: "#F8FAFC",
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 16,
+    marginRight: 14,
   },
   menuLabel: {
-    fontSize: 16,
+    flex: 1,
+    fontSize: 15,
     fontFamily: font.MonolithRegular,
     color: "#0F172A",
+  },
+  menuLabelDanger: {
+    color: "#EF4444",
   },
   menuArrow: {
     width: 14,
@@ -499,17 +588,21 @@ const styles = StyleSheet.create({
     tintColor: "#CBD5E1",
   },
   logoutBtn: {
-    height: 60,
-    borderRadius: 18,
-    backgroundColor: "#FFF",
+    height: 56,
+    borderRadius: 16,
+    backgroundColor: "#FEF2F2",
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 8,
+    marginTop: 2,
+    borderWidth: 1,
+    borderColor: "#FECACA",
+    flexDirection: "row",
   },
   logoutText: {
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: font.MonolithRegular,
-    color: "red",
+    color: "#EF4444",
+    marginLeft: 8,
   },
   versionText: {
     textAlign: "center",
@@ -522,4 +615,3 @@ const styles = StyleSheet.create({
 });
 
 export default ProfileScreen;
-

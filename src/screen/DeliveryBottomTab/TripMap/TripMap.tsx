@@ -87,8 +87,12 @@ const TripMap = () => {
     longitude: 117.4028,
   });
   const locationSocketRef = useRef<WebSocket | null>(null);
+  const driverLocationSocketRef = useRef<WebSocket | null>(null);
+  const latestDriverLocationPayloadRef = useRef<{ parcelId: number | string; lat: number; lon: number } | null>(null);
   const locationTokenRef = useRef<string | null>(null);
   const locationHeartbeatRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const parcelIdRef = useRef<string | number | undefined>(item?.parcelId ?? item?.id);
+  parcelIdRef.current = parcel?.parcelId ?? parcel?.id ?? item?.parcelId ?? item?.id;
   const canCancel = item?.deliveryStatus &&
     [STATUS.PENDING, STATUS.ASSIGNED, STATUS.GOING_TO_PICKUP, STATUS.PICKED_UP, STATUS.ON_THE_WAY].includes(item.deliveryStatus);
 
@@ -136,6 +140,8 @@ const TripMap = () => {
       }
       locationSocketRef.current?.close();
       locationSocketRef.current = null;
+      driverLocationSocketRef.current?.close();
+      driverLocationSocketRef.current = null;
     };
   }, []);
 
@@ -181,19 +187,36 @@ const TripMap = () => {
         return;
       }
 
-      const ws = new WebSocket(
-        `${WebSocket_Url}/driver-location?token=${encodeURIComponent(token)}`
-      );
+      const parcelIdForSocket = parcelIdRef.current;
+      if (!parcelIdForSocket) return;
 
-      ws.onopen = () => {
-        const payload = {
-          parcelId: item?.parcelId || item?.id,
-          lat: lat,
-          lon: lon,
-        };
-        ws.send(JSON.stringify(payload));
-        console.log('Driver location sent via socket:', payload);
+      const payload = {
+        parcelId: parcelIdForSocket,
+        lat,
+        lon,
       };
+      latestDriverLocationPayloadRef.current = payload;
+
+      const sendLatestPayload = (ws: WebSocket) => {
+        const latestPayload = latestDriverLocationPayloadRef.current;
+        if (latestPayload && ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify(latestPayload));
+        }
+      };
+
+      const existingSocket = driverLocationSocketRef.current;
+      if (existingSocket?.readyState === WebSocket.OPEN) {
+        sendLatestPayload(existingSocket);
+        return;
+      }
+      if (existingSocket?.readyState === WebSocket.CONNECTING) {
+        return;
+      }
+
+      const ws = new WebSocket(`${WebSocket_Url}/driver-location?token=${encodeURIComponent(token)}`);
+      driverLocationSocketRef.current = ws;
+
+      ws.onopen = () => sendLatestPayload(ws);
 
       ws.onmessage = (event) => {
         try {
@@ -202,7 +225,6 @@ const TripMap = () => {
         } catch (e) {
           console.warn('Failed to parse driver location response:', event.data);
         }
-        ws.close();
       };
 
       ws.onerror = (error) => {
@@ -210,7 +232,9 @@ const TripMap = () => {
       };
 
       ws.onclose = () => {
-        console.log('Driver location socket closed');
+        if (driverLocationSocketRef.current === ws) {
+          driverLocationSocketRef.current = null;
+        }
       };
     } catch (error) {
       console.warn('sendDriverLocationViaSocket error:', error);
@@ -398,6 +422,7 @@ const TripMap = () => {
   const [currentCoords, setCurrentCoords] = useState(driverCoords);
   const [routeDistanceKm, setRouteDistanceKm] = useState<number | null>(null);
   const [directionsFailed, setDirectionsFailed] = useState(false);
+  const [activeDirectionsFailed, setActiveDirectionsFailed] = useState(false);
 
   const pickupAddress = source?.pickupLocation || item?.pickup?.location || strings.PickupLocation;
   const dropoffAddress = source?.dropLocation || item?.drop?.location || strings.DropLocation;
@@ -409,6 +434,7 @@ const TripMap = () => {
 
   const deliveryStatus = item?.deliveryStatus ?? parcel?.deliveryStatus ?? item?.parcel?.deliveryStatus ?? '';
   const isToPickup = deliveryStatus === STATUS.ASSIGNED || deliveryStatus === STATUS.GOING_TO_PICKUP;
+  const isToDropoff = deliveryStatus === STATUS.PICKED_UP || deliveryStatus === STATUS.ON_THE_WAY || deliveryStatus === STATUS.ARRIVING;
   const routeDestination = isToPickup ? pickup : dropoff;
   const distanceBetween = (a: LatLng, b: LatLng) => {
     const dLat = a.latitude - b.latitude;
@@ -461,10 +487,6 @@ const TripMap = () => {
   }, [driverCoords.latitude, driverCoords.longitude]);
 
   useEffect(() => {
-    setDirectionsFailed(false);
-  }, [pickup.latitude, pickup.longitude, dropoff.latitude, dropoff.longitude]);
-
-  useEffect(() => {
     const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
     const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
     const showSub = Keyboard.addListener(showEvent, (e) => setKeyboardHeight(e.endCoordinates.height));
@@ -494,6 +516,35 @@ const TripMap = () => {
     latitude: safeNum(driverCoords?.latitude, DEFAULT_LAT) ?? DEFAULT_LAT,
     longitude: safeNum(driverCoords?.longitude, DEFAULT_LNG) ?? DEFAULT_LNG,
   };
+  const activeRouteValid = Boolean(
+    routeDestination?.latitude &&
+    routeDestination?.longitude &&
+    Math.abs(driverCoordinate.latitude) <= 90 &&
+    Math.abs(driverCoordinate.longitude) <= 180 &&
+    Math.abs(routeDestination.latitude) <= 90 &&
+    Math.abs(routeDestination.longitude) <= 180 &&
+    Number.isFinite(driverCoordinate.latitude) &&
+    Number.isFinite(driverCoordinate.longitude) &&
+    Number.isFinite(routeDestination.latitude) &&
+    Number.isFinite(routeDestination.longitude) &&
+    distanceBetween(driverCoordinate, routeDestination) >= MIN_DIST &&
+    (isToPickup || isToDropoff)
+  );
+
+  useEffect(() => {
+    setDirectionsFailed(false);
+    setActiveDirectionsFailed(false);
+  }, [
+    pickup.latitude,
+    pickup.longitude,
+    dropoff.latitude,
+    dropoff.longitude,
+    driverCoordinate.latitude,
+    driverCoordinate.longitude,
+    routeDestination.latitude,
+    routeDestination.longitude,
+    deliveryStatus,
+  ]);
 
   const buttonConfig = getButtonConfig();
   const updateParcelStatus = async (orderId: string | number, newStatus: string, otp?: string) => {
@@ -574,8 +625,8 @@ const TripMap = () => {
                 origin={pickup}
                 destination={dropoff}
                 apikey={GOOGLE_MAPS_APIKEY}
-                strokeWidth={5}
-                strokeColor={color.primary}
+                strokeWidth={4}
+                strokeColor="rgba(15, 23, 42, 0.22)"
                 lineCap="round"
                 lineJoin="round"
                 precision="high"
@@ -583,8 +634,7 @@ const TripMap = () => {
                 optimizeWaypoints={true}
                 onReady={result => {
                   setDirectionsFailed(false);
-                  console.log('Route duration:', result.duration);
-                  console.log('Route distance:', result.distance);
+
                   setRouteDistanceKm(result.distance);
                   mapRef.current?.fitToCoordinates(result.coordinates, {
                     edgePadding: {
@@ -606,6 +656,46 @@ const TripMap = () => {
               <Polyline
                 coordinates={[pickup, dropoff]}
                 strokeWidth={4}
+                strokeColor="rgba(15, 23, 42, 0.22)"
+                lineCap="round"
+                lineJoin="round"
+              />
+            )}
+            {activeRouteValid && (
+              <MapViewDirections
+                key={`active-driver-route-${deliveryStatus}-${driverCoordinate.latitude.toFixed(5)}-${driverCoordinate.longitude.toFixed(5)}-${routeDestination.latitude.toFixed(5)}-${routeDestination.longitude.toFixed(5)}`}
+                origin={driverCoordinate}
+                destination={routeDestination}
+                apikey={GOOGLE_MAPS_APIKEY}
+                strokeWidth={7}
+                strokeColor={color.primary}
+                lineCap="round"
+                lineJoin="round"
+                precision="high"
+                mode="DRIVING"
+                optimizeWaypoints={true}
+                onReady={result => {
+                  setActiveDirectionsFailed(false);
+                  mapRef.current?.fitToCoordinates(result.coordinates, {
+                    edgePadding: {
+                      right: wp(15),
+                      bottom: hp(40),
+                      left: wp(15),
+                      top: hp(15),
+                    },
+                    animated: true,
+                  });
+                }}
+                onError={(err) => {
+                  console.warn('Active MapViewDirections error:', err);
+                  setActiveDirectionsFailed(true);
+                }}
+              />
+            )}
+            {activeRouteValid && activeDirectionsFailed && (
+              <Polyline
+                coordinates={[driverCoordinate, routeDestination]}
+                strokeWidth={6}
                 strokeColor={color.primary}
                 lineCap="round"
                 lineJoin="round"
@@ -613,33 +703,23 @@ const TripMap = () => {
             )}
             <Marker coordinate={pickup} title={strings.Pickup} tracksViewChanges={false} anchor={{ x: 0.5, y: 1 }}>
               <View style={styles.mapMarkerWrap}>
-
-
-                <View style={[styles.pinPointer, styles.pickupPointer]} />
-
-                <View style={{
-                  backgroundColor: "white",
-                  borderRadius: 200,
-                  padding: 10
-                }}>
-                  <Ionicons name="location-sharp" size={30}
-                    color="#10B981"
-                  />
+                <View style={[styles.pinHead, styles.pickupPin]}>
+                  <View style={styles.pinIconCircle}>
+                    <Ionicons name="cube-outline" size={16} color="#10B981" />
+                  </View>
                 </View>
+                <View style={[styles.pinPointer, styles.pickupPointer]} />
               </View>
             </Marker>
             <Marker coordinate={dropoff} title={strings.Drop} tracksViewChanges={false} anchor={{ x: 0.5, y: 1 }}>
-              <View style={{
-                backgroundColor: "white",
-                borderRadius: 200,
-                padding: 10
-              }}>
-                <Ionicons name="location-sharp" size={30}
-
-                  color="red"
-                />
+              <View style={styles.mapMarkerWrap}>
+                <View style={[styles.pinHead, styles.dropPin]}>
+                  <View style={styles.pinIconCircle}>
+                    <Ionicons name="location-sharp" size={17} color="#EF4444" />
+                  </View>
+                </View>
+                <View style={[styles.pinPointer, styles.dropPointer]} />
               </View>
-
             </Marker>
             <Marker
               key="driver-marker"

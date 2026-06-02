@@ -17,7 +17,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import LoadingModal from "../../../utils/Loader";
 import { getMessaging } from "@react-native-firebase/messaging";
 import strings from "../../../localization/Localization";
-
 type CountryOption = {
   country: string;
   code: string;
@@ -27,7 +26,6 @@ type CountryOption = {
 
 
 const PhoneLogin = () => {
-  // const [phoneNumber, setPhoneNumber] = useState("9145215135");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [countryCode, setCountryCode] = useState("IN");
   const [callingCode, setCallingCode] = useState("+91");
