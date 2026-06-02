@@ -251,7 +251,117 @@ export default function ViewDetails() {
         contentContainerStyle={{ paddingBottom: 32, marginTop: 11 }}
         showsVerticalScrollIndicator={false}
       >
+        {offers.length > 0 && (
+          <>
+            <View style={styles.offersSectionHeader}>
+              <View>
+                <Text style={styles.sectionTitle}>{strings.OffersForYourAd || "Offers For Your Ad"}</Text>
 
+              </View>
+
+            </View>
+            <View style={styles.offersWrap}>
+              {offers.map((offer, index) => {
+                const carrierName = offer?.carrierName || offer?.deliveryUser?.name || strings.Unknown || "Unknown";
+                const offerAmount = offer?.offerAmount ?? "N/A";
+                const hasCounter = offer?.counterAmount || offer?.counterMessage;
+                const offerId = offer?.id ?? offer?.offerId;
+                const isCounterOffered = norm(offer?.status) === "counter_offered";
+                const carrierInitial = carrierName.charAt(0).toUpperCase();
+
+                return (
+                  <TouchableOpacity
+                    key={String(offerId ?? index)}
+                    activeOpacity={0.8}
+                    style={[styles.offerCard, isCounterOffered && styles.offerCardLocked]}
+                    onPress={() => {
+                      if (isCounterOffered) return;
+
+                      (navigation as any).navigate(ScreenNameEnum.OfferOR, {
+                        id: { parcel: parcel ?? source }
+                      })
+                    }}
+                    disabled={isCounterOffered}
+                  >
+                    <View style={[styles.offerAccentLine, isCounterOffered && styles.counterAccentLine]} />
+                    <View style={styles.offerTopRow}>
+                      <View style={styles.offerCarrierRow}>
+                        <View style={styles.offerAvatar}>
+                          <Text style={styles.offerAvatarText}>{carrierInitial}</Text>
+                        </View>
+                        <View style={styles.offerCarrierTextWrap}>
+                          <Text style={styles.offerCarrier} numberOfLines={1}>{carrierName}</Text>
+                          <Text style={styles.offerSubText}>
+                            {isCounterOffered ? "Counter offer sent" : strings.OfferInformation || "Offer Information"}
+                          </Text>
+                        </View>
+                      </View>
+                      {!!offer?.status && (
+                        <View style={[styles.offerStatusPill, isCounterOffered && styles.counterStatusPill]}>
+                          <Text style={[styles.offerStatusText, isCounterOffered && styles.counterStatusText]}>
+                            {titleize(offer.status)}
+                          </Text>
+                        </View>
+                      )}
+                    </View>
+
+                    <View style={styles.offerAmountStack}>
+                      <View style={styles.amountLine}>
+                        <View style={[styles.priceIconWrap, styles.offerIconWrap]}>
+                          <Icon name="cash-outline" size={16} color="#64748B" />
+                        </View>
+                        <View style={styles.amountTextColumn}>
+                          <Text style={styles.offerLabel}>{strings.OfferPrice || "Offer Price"}</Text>
+                        </View>
+                        <Text style={styles.offerAmount}>{offerAmount}</Text>
+                      </View>
+                      {hasCounter && (
+                        <View style={[styles.amountLine, styles.counterAmountLine]}>
+                          <View style={[styles.priceIconWrap, styles.counterIconWrap]}>
+                            <Icon name="swap-horizontal" size={16} color="#8A6A00" />
+                          </View>
+                          <View style={styles.amountTextColumn}>
+                            <Text style={styles.counterLabel}>{strings.CounterOfferLabel || "Counter Offer"}</Text>
+                          </View>
+                          <Text style={styles.counterAmount}>{offer?.counterAmount ?? "N/A"}</Text>
+                        </View>
+                      )}
+                    </View>
+
+                    {(!!offer?.message || !!offer?.counterMessage) && (
+                      <View style={styles.messageBox}>
+                        {!!offer?.message && (
+                          <View style={styles.messageRow}>
+                            <Text style={styles.messageLabel}>{strings.MessageLabel || "Message"}</Text>
+                            <Text style={styles.offerMessage} numberOfLines={2}>{offer.message}</Text>
+                          </View>
+                        )}
+                        {!!offer?.counterMessage && (
+                          <View style={[styles.messageRow, !!offer?.message && styles.messageDivider]}>
+                            <Text style={styles.messageLabel}>{strings.CounterOfferLabel || "Counter Offer"}</Text>
+                            <Text style={styles.counterMessage} numberOfLines={2}>{offer.counterMessage}</Text>
+                          </View>
+                        )}
+                      </View>
+                    )}
+
+                    {isCounterOffered ? (
+                      <View style={styles.offerLockedFooter}>
+                        <Icon name="time-outline" size={16} color="#8A6A00" />
+                        <Text style={styles.offerLockedText}>Waiting for carrier response</Text>
+                      </View>
+                    ) : (
+                      <View style={styles.offerActionRow}>
+                        <Text style={styles.offerActionText}>{strings.ViewOffer || "View Offer"}</Text>
+                        <Icon name="chevron-forward" size={18} color="#111827" />
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </>
+        )}
 
         {statusNorm === STATUS.PENDING && !hasCounterOffered && (
           <View style={styles.pendingActionCard}>
@@ -457,33 +567,6 @@ export default function ViewDetails() {
 
 
           </View>
-          {/* {statusNorm === STATUS.PENDING && (
-            <TouchableOpacity
-              onPress={handleCancelOrder}
-              activeOpacity={0.8}
-              style={{
-                backgroundColor: "#FFF1F0",
-                padding: 14,
-                borderRadius: 16,
-                marginTop: 20,
-                alignItems: "center",
-                borderWidth: 1,
-                borderColor: "#FFA39E",
-                flexDirection: "row",
-                justifyContent: "center"
-              }}
-            >
-              <Icon name="close-circle-outline" size={20} color="#FF4D4F" style={{ marginRight: 8 }} />
-              <Text style={{
-                color: "#FF4D4F",
-                fontFamily: font.MonolithRegular,
-                fontSize: 15,
-
-              }}>
-                {strings?.CancelOrder || "Cancel Order"}
-              </Text>
-            </TouchableOpacity>
-          )} */}
         </TouchableOpacity>
 
 
@@ -558,116 +641,7 @@ export default function ViewDetails() {
           </View>
         )}
 
-        {offers.length > 0 && (
-          <>
-            <View style={styles.offersSectionHeader}>
-              <View>
-                <Text style={styles.sectionTitle}>{strings.OffersForYourAd || "Offers For Your Ad"}</Text>
-                <Text style={styles.offersSectionSubtitle}>
-                  {offers.length} {offers.length === 1 ? "offer" : "offers"} available
-                </Text>
-              </View>
-            </View>
-            <View style={styles.offersWrap}>
-              {offers.map((offer, index) => {
-                const carrierName = offer?.carrierName || offer?.deliveryUser?.name || strings.Unknown || "Unknown";
-                const offerAmount = offer?.offerAmount ?? "N/A";
-                const hasCounter = offer?.counterAmount || offer?.counterMessage;
-                const offerId = offer?.id ?? offer?.offerId;
-                const isCounterOffered = norm(offer?.status) === "counter_offered";
 
-                return (
-                  <TouchableOpacity
-                    key={String(offerId ?? index)}
-                    activeOpacity={0.8}
-                    style={[styles.offerCard, isCounterOffered && styles.offerCardLocked]}
-                    onPress={() => {
-                      if (isCounterOffered) return;
-
-                      (navigation as any).navigate(ScreenNameEnum.OfferOR, {
-                        id: { parcel: parcel ?? source }
-                      })
-                    }}
-                    disabled={isCounterOffered}
-                  >
-                    <View style={styles.offerTopRow}>
-                      <View style={styles.offerCarrierRow}>
-                        <View style={styles.offerAvatar}>
-                          <Icon name="person" size={19} color="#111827" />
-                        </View>
-                        <View style={styles.offerCarrierTextWrap}>
-                          <Text style={styles.offerCarrier} numberOfLines={1}>{carrierName}</Text>
-                          <Text style={styles.offerSubText}>
-                            {isCounterOffered ? "Counter offer sent" : strings.OfferInformation || "Offer Information"}
-                          </Text>
-                        </View>
-                      </View>
-                      {!!offer?.status && (
-                        <View style={[styles.offerStatusPill, isCounterOffered && styles.counterStatusPill]}>
-                          <Text style={[styles.offerStatusText, isCounterOffered && styles.counterStatusText]}>
-                            {titleize(offer.status)}
-                          </Text>
-                        </View>
-                      )}
-                    </View>
-
-                    <View style={styles.offerPriceGrid}>
-                      <View style={styles.pricePanel}>
-                        <View style={styles.priceIconWrap}>
-                          <Icon name="cash-outline" size={16} color="#64748B" />
-                        </View>
-                        <View style={styles.priceTextWrap}>
-                          <Text style={styles.offerLabel}>{strings.OfferPrice || "Offer Price"}</Text>
-                          <Text style={styles.offerAmount}>{offerAmount}</Text>
-                        </View>
-                      </View>
-                      {hasCounter && (
-                        <View style={[styles.pricePanel, styles.counterPricePanel]}>
-                          <View style={[styles.priceIconWrap, styles.counterIconWrap]}>
-                            <Icon name="swap-horizontal" size={16} color="#8A6A00" />
-                          </View>
-                          <View style={styles.priceTextWrap}>
-                            <Text style={styles.counterLabel}>{strings.CounterOfferLabel || "Counter Offer"}</Text>
-                            <Text style={styles.counterAmount}>{offer?.counterAmount ?? "N/A"}</Text>
-                          </View>
-                        </View>
-                      )}
-                    </View>
-
-                    {(!!offer?.message || !!offer?.counterMessage) && (
-                      <View style={styles.messageBox}>
-                        {!!offer?.message && (
-                          <View style={styles.messageRow}>
-                            <Text style={styles.messageLabel}>{strings.MessageLabel || "Message"}</Text>
-                            <Text style={styles.offerMessage} numberOfLines={2}>{offer.message}</Text>
-                          </View>
-                        )}
-                        {!!offer?.counterMessage && (
-                          <View style={[styles.messageRow, !!offer?.message && styles.messageDivider]}>
-                            <Text style={styles.messageLabel}>{strings.CounterOfferLabel || "Counter Offer"}</Text>
-                            <Text style={styles.counterMessage} numberOfLines={2}>{offer.counterMessage}</Text>
-                          </View>
-                        )}
-                      </View>
-                    )}
-
-                    {isCounterOffered ? (
-                      <View style={styles.offerLockedFooter}>
-                        <Icon name="time-outline" size={16} color="#8A6A00" />
-                        <Text style={styles.offerLockedText}>Waiting for carrier response</Text>
-                      </View>
-                    ) : (
-                      <View style={styles.offerActionRow}>
-                        <Text style={styles.offerActionText}>{strings.ViewOffer || "View Offer"}</Text>
-                        <Icon name="chevron-forward" size={18} color="#111827" />
-                      </View>
-                    )}
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          </>
-        )}
 
         {/* Tracking Package – steps with icon + label */}
         <View style={styles.sectionTitleRow}>
@@ -937,24 +911,50 @@ const styles = StyleSheet.create({
     fontFamily: font.MonolithRegular,
     fontSize: 11,
   },
+  offersCountBadge: {
+    minWidth: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: "#111827",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 10,
+  },
+  offersCountText: {
+    color: "#FFFFFF",
+    fontFamily: font.MonolithRegular,
+    fontSize: 13,
+  },
   offersWrap: {
     marginHorizontal: 16,
-    gap: 12,
+    gap: 14,
   },
   offerCard: {
     backgroundColor: CARD,
-    borderRadius: 16,
+    borderRadius: 18,
     borderWidth: 1,
     borderColor: "#E5E7EB",
-    padding: 15,
+    padding: 16,
     shadowColor: "#000",
     shadowOpacity: 0.06,
     shadowRadius: 10,
     shadowOffset: { width: 0, height: 4 },
+    overflow: "hidden",
   },
   offerCardLocked: {
     borderColor: "#F4D45E",
     backgroundColor: "#FFFDF2",
+  },
+  offerAccentLine: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 4,
+    backgroundColor: "#111827",
+  },
+  counterAccentLine: {
+    backgroundColor: YELLOW,
   },
   offerTopRow: {
     flexDirection: "row",
@@ -969,14 +969,19 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   offerAvatar: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: YELLOW,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
     borderColor: "#F2C200",
+  },
+  offerAvatarText: {
+    color: "#111827",
+    fontFamily: font.MonolithRegular,
+    fontSize: 16,
   },
   offerCarrierTextWrap: {
     flex: 1,
@@ -1012,25 +1017,25 @@ const styles = StyleSheet.create({
   counterStatusText: {
     color: "#FFFFFF",
   },
-  offerPriceGrid: {
+  offerAmountStack: {
     marginTop: 14,
-    flexDirection: "row",
-    gap: 10,
-  },
-  pricePanel: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#F8FAFC",
-    borderRadius: 12,
+    borderRadius: 14,
     borderWidth: 1,
     borderColor: "#EEF2F7",
-    paddingHorizontal: 10,
-    paddingVertical: 12,
+    overflow: "hidden",
+    backgroundColor: "#F8FAFC",
   },
-  counterPricePanel: {
+  amountLine: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 13,
+    gap: 10,
+  },
+  counterAmountLine: {
     backgroundColor: "#FFF8D9",
-    borderColor: "#F4D45E",
+    borderTopWidth: 1,
+    borderTopColor: "#F4D45E",
   },
   priceIconWrap: {
     width: 28,
@@ -1039,13 +1044,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 9,
+  },
+  offerIconWrap: {
+    backgroundColor: "#FFFFFF",
   },
   counterIconWrap: {
     backgroundColor: "#FFF2B8",
   },
-  priceTextWrap: {
+  amountTextColumn: {
     flex: 1,
+    minWidth: 0,
   },
   offerLabel: {
     color: MUTED,
@@ -1055,8 +1063,9 @@ const styles = StyleSheet.create({
   offerAmount: {
     color: TEXT,
     fontFamily: font.MonolithRegular,
-    fontSize: 16,
-    marginTop: 5,
+    fontSize: 17,
+    textAlign: "right",
+    maxWidth: 120,
   },
   messageBox: {
     marginTop: 14,
@@ -1094,8 +1103,9 @@ const styles = StyleSheet.create({
   counterAmount: {
     color: "#111827",
     fontFamily: font.MonolithRegular,
-    fontSize: 16,
-    marginTop: 5,
+    fontSize: 17,
+    textAlign: "right",
+    maxWidth: 120,
   },
   counterMessage: {
     color: "#111827",
@@ -1107,10 +1117,11 @@ const styles = StyleSheet.create({
     marginTop: 14,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-end",
-    paddingTop: 12,
-    borderTopWidth: 1,
-    borderTopColor: "#F1F5F9",
+    justifyContent: "center",
+    backgroundColor: "#F8FAFC",
+    borderRadius: 12,
+    paddingVertical: 10,
+    gap: 4,
   },
   offerActionText: {
     color: "#111827",

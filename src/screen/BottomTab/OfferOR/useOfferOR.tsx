@@ -11,13 +11,12 @@ export const useOfferOR = () => {
   const [offerData, setOfferData] = useState<any>({ offers: [] });
   const rou: any = useRoute()
   const [selectedOfferId, setSelectedOfferId] = useState<number | null>(null)
-  const { Parcelid, id } = rou?.params || ""
+  const { id } = rou?.params || ""
   useEffect(() => {
     fetchOffers();
   }, []);
   const navgation = useNavigation<any>()
   const fetchOffers = async () => {
-    // setOfferData(Parcelid || []);
     try {
       setIsLoading(true);
       const token = await AsyncStorage.getItem('token');

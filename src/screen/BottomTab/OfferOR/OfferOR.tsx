@@ -21,6 +21,7 @@ import { color } from "../../../constant";
 
 import Animated, { FadeInDown } from "react-native-reanimated";
 import strings from "../../../localization/Localization";
+import { ActivityIndicator } from "react-native";
 
 export default function OfferOR() {
   const [Open, setOpen] = useState(false)
@@ -136,38 +137,58 @@ export default function OfferOR() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
-      <LoadingModal visible={isLoading} />
+
       <CustomHeader label={strings?.Back}
 
         leftPress={() => {
           navgation.navigate(ScreenNameEnum.TabNavigator)
         }}
       />
-      <FlatList
-        data={offerData?.offers ?? []}
-        keyExtractor={(item: any) => String(item.id ?? item.offerId)}
-        style={{
-          marginBottom: 45
-        }}
-        contentContainerStyle={{ marginHorizontal: 15, paddingBottom: 45 }}
-        showsVerticalScrollIndicator={false}
-        initialNumToRender={8}
-        maxToRenderPerBatch={8}
-        windowSize={7}
-        ListHeaderComponent={<Text style={styles.header}>{strings.OffersForYourAd}</Text>}
-        ListEmptyComponent={() => (
-          <Text style={styles.emptyText}>
-            {strings?.NoOffersAvailable}
-          </Text>
-        )}
-        renderItem={({ item, index }) => {
-          return (
-            <Animated.View entering={FadeInDown.delay(Math.min(index, 8) * 60).duration(400)}>
-              <OfferCard item={item} onCounterPress={() => setOpen(true)} />
+      {isLoading ? (
+        <ActivityIndicator
+          color={color.primary}
+          size="large"
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        />
+      ) : (
+        <FlatList
+          data={offerData?.offers ?? []}
+          keyExtractor={(item) => String(item.id ?? item.offerId)}
+          style={{ marginBottom: 45 }}
+          contentContainerStyle={{
+            marginHorizontal: 15,
+            paddingBottom: 45,
+          }}
+          showsVerticalScrollIndicator={false}
+          initialNumToRender={8}
+          maxToRenderPerBatch={8}
+          windowSize={7}
+          ListHeaderComponent={
+            <Text style={styles.header}>
+              {strings.OffersForYourAd}
+            </Text>
+          }
+          ListEmptyComponent={() => (
+            <Text style={styles.emptyText}>
+              {strings?.NoOffersAvailable}
+            </Text>
+          )}
+          renderItem={({ item, index }) => (
+            <Animated.View
+              entering={FadeInDown.delay(Math.min(index, 8) * 60).duration(400)}
+            >
+              <OfferCard
+                item={item}
+                onCounterPress={() => setOpen(true)}
+              />
             </Animated.View>
-          )
-        }}
-      />
+          )}
+        />
+      )}
       <CounterOfferModal
         visible={Open}
         defaultValue={1}

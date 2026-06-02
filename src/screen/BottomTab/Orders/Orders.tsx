@@ -17,7 +17,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import StatusBarComponent from "../../../compoent/StatusBarCompoent";
 import { useNavigation } from "@react-navigation/native";
 import ScreenNameEnum from "../../../routes/screenName.enum";
-import LoadingModal from "../../../utils/Loader";
 import { STATUS, STATUS_COLORS, STATUS_LABELS } from "../../../utils/Constant";
 import useOrders from "./useOrders";
 import strings from "../../../localization/Localization";
@@ -68,7 +67,6 @@ export default function OrdersScreen() {
     }, [])
   );
 
-  // Pending = all except Complete & Cancelled. Complete = delivered/completed. Cancelled = cancelled only.
   const data = useMemo(() => {
     return orderData.filter((o: Order) => {
       const status = norm(o.deliveryStatus);
@@ -83,7 +81,6 @@ export default function OrdersScreen() {
   }, [tab, orderData]);
 
 
-  // 2. Pull to Refresh Logic
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
@@ -116,7 +113,6 @@ export default function OrdersScreen() {
           (nava as any).navigate(ScreenNameEnum.ViewDetails, { item: order });
         }}
       >
-        {/* Card Header: Tracking ID & Status Pill */}
         <View style={styles.cardHeader}>
           <View style={styles.trackingGroup}>
             <Text style={styles.trackingLabel}>{strings.TrackingID}</Text>
@@ -125,7 +121,6 @@ export default function OrdersScreen() {
           <StatusPill status={order.deliveryStatus} />
         </View>
 
-        {/* Route Details: Vertical Address Timeline */}
         <View style={styles.routeContainer}>
           <View style={styles.routeLineColumn}>
             <View style={styles.routeDotPickup} />

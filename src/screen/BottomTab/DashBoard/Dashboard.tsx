@@ -58,7 +58,6 @@ const ShippingScreen = () => {
       <HomeHeaderBar
         location={currentlocation || address}
         onNotificationPress={() => navigation.navigate(ScreenNameEnum.NotificationsScreen)}
-
         hasNotification={false}
       />
 
@@ -176,27 +175,7 @@ const ShippingScreen = () => {
                 </Text>
               )}
 
-              {/* {(counterOfferAcceptedModal.data?.pickupOtp ||
-                  counterOfferAcceptedModal.data?.deliveryOtp) && (
-                  <View style={offerAcceptedStyles.otpRow}>
-                    {counterOfferAcceptedModal.data?.pickupOtp && (
-                      <View style={offerAcceptedStyles.otpBox}>
-                        <Text style={offerAcceptedStyles.otpLabel}>Pickup OTP</Text>
-                        <Text style={offerAcceptedStyles.otpValue}>
-                          {counterOfferAcceptedModal.data.pickupOtp}
-                        </Text>
-                      </View>
-                    )}
-                    {counterOfferAcceptedModal.data?.deliveryOtp && (
-                      <View style={offerAcceptedStyles.otpBox}>
-                        <Text style={offerAcceptedStyles.otpLabel}>Delivery OTP</Text>
-                        <Text style={offerAcceptedStyles.otpValue}>
-                          {counterOfferAcceptedModal.data.deliveryOtp}
-                        </Text>
-                      </View>
-                    )}
-                  </View>
-                )} */}
+
               <View style={offerAcceptedStyles.buttonRow}>
                 <TouchableOpacity
                   style={offerAcceptedStyles.btnDismiss}
@@ -205,13 +184,7 @@ const ShippingScreen = () => {
                 >
                   <Text style={offerAcceptedStyles.btnDismissText}>{strings.OK}</Text>
                 </TouchableOpacity>
-                {/* <TouchableOpacity
-                    style={offerAcceptedStyles.btnView}
-                    onPress={handleViewOrder}
-                    activeOpacity={0.8}
-                  >
-                    <Text style={offerAcceptedStyles.btnViewText}>View order</Text>
-                  </TouchableOpacity> */}
+
               </View>
             </View>
           </TouchableOpacity>
