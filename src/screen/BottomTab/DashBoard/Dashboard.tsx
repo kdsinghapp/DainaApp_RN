@@ -18,10 +18,11 @@ import ScreenNameEnum from "../../../routes/screenName.enum";
 import AddressModalInput from "../../../compoent/AutocompleteData";
 import useDashboard from "./useDashboard";
 import CurrentLocation from "../../../CurrentLocation";
-import LoadingModal from "../../../utils/Loader";
 import { FlatList } from "react-native-gesture-handler";
 import OrderCard from "../../../compoent/OrderCard";
 import strings from "../../../localization/Localization";
+import { ActivityIndicator } from "react-native";
+import { color } from "../../../constant";
 
 const ShippingScreen = () => {
 
@@ -51,28 +52,12 @@ const ShippingScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
-      <LoadingModal visible={isLoading} />
-
       <CurrentLocation ref={locationRef} />
-
       <HomeHeaderBar
         location={currentlocation || address}
         onNotificationPress={() => navigation.navigate(ScreenNameEnum.NotificationsScreen)}
         hasNotification={false}
       />
-
-      {/* <TouchableOpacity style={styles.inputBox} 
-        onPress={()=> navigation.navigate(ScreenNameEnum.PickupLocation)}
-        >
-          <Text style={{ color: "black" ,fontSize:14, fontFamily:font.MonolithRegular}}>Enter Pickup Location</Text>
-        <Image source={imageIndex.Next} 
-        style={{
-          height:20,
-          width:20
-        }}
-        />
-        </TouchableOpacity> */}
-
       <View style={{
         marginTop: 11, marginBottom: 5
       }}>
@@ -92,41 +77,58 @@ const ShippingScreen = () => {
         <Text style={styles.sectionTitle}>{strings.ShippingHistory}</Text>
 
       </View>
+      {isLoading ? (
 
-      <FlatList
-        contentContainerStyle={{ paddingBottom: 120 }}
-        data={orderData}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => {
-          return (
-            <OrderCard order={item} onPress={() => {
-              if (item?.deliveryStatus === "pending") {
-                navigation.navigate(ScreenNameEnum.ViewDetails, {
-                  item: item
-                })
-              } else {
-                // navigation.navigate(ScreenNameEnum.NearbyDriversMap)
-                navigation.navigate(ScreenNameEnum.ViewDetails, {
-                  item: item
-                })
-              }
+        <ActivityIndicator
+          color={color.primary}
+          size="large"
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        />
+      ) : (
 
-            }} />
-          )
-        }}
-        ItemSeparatorComponent={() => <View style={{ height: 14 }} />}
-        showsVerticalScrollIndicator={false}
-        ListEmptyComponent={() => (
-          <View style={styles.emptyWrap}>
-            <View style={styles.illustrationWrap}>
-              <View style={styles.illustrationBg} />
-              <Image source={imageIndex.ordePracle} style={styles.emptyIcon} />
+
+        <FlatList
+          contentContainerStyle={{ paddingBottom: 120 }}
+          data={orderData}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => {
+            return (
+              <OrderCard order={item} onPress={() => {
+                if (item?.deliveryStatus === "pending") {
+                  navigation.navigate(ScreenNameEnum.ViewDetails, {
+                    item: item
+                  })
+                } else {
+                  // navigation.navigate(ScreenNameEnum.NearbyDriversMap)
+                  navigation.navigate(ScreenNameEnum.ViewDetails, {
+                    item: item
+                  })
+                }
+
+              }} />
+            )
+          }}
+          ItemSeparatorComponent={() => <View style={{ height: 14 }} />}
+          showsVerticalScrollIndicator={false}
+          ListEmptyComponent={() => (
+            <View style={styles.emptyWrap}>
+              <View style={styles.illustrationWrap}>
+                <View style={styles.illustrationBg} />
+                <Image source={imageIndex.ordePracle} style={styles.emptyIcon} />
+              </View>
+              <Text style={styles.emptyTitle}>{strings.NoOrder}</Text>
+              <Text style={styles.emptySubtitle}>{strings.NoOrdersFound1}</Text>
             </View>
-            <Text style={styles.emptyTitle}>{strings.NoOrder}</Text>
-            <Text style={styles.emptySubtitle}>{strings.NoOrdersFound1}</Text>
-          </View>
-        )}
-      />
+          )}
+        />
+
+      )
+      }
+
       <AddressModalInput
         value={address}
         modalVisible={locationModal}
@@ -190,7 +192,7 @@ const ShippingScreen = () => {
           </TouchableOpacity>
         </TouchableOpacity>
       </Modal>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 };
 
