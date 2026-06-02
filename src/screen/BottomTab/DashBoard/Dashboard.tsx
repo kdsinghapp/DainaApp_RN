@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useState } from "react";
 import {
   View,
   Text,
@@ -18,7 +18,7 @@ import ScreenNameEnum from "../../../routes/screenName.enum";
 import AddressModalInput from "../../../compoent/AutocompleteData";
 import useDashboard from "./useDashboard";
 import CurrentLocation from "../../../CurrentLocation";
-import { FlatList } from "react-native-gesture-handler";
+import { FlatList, RefreshControl } from "react-native-gesture-handler";
 import OrderCard from "../../../compoent/OrderCard";
 import strings from "../../../localization/Localization";
 import { ActivityIndicator } from "react-native";
@@ -43,11 +43,14 @@ const ShippingScreen = () => {
     setCounterOfferAcceptedModal,
     getParceldetailsApi,
   } = useDashboard();
+  const [refreshing, setRefreshing] = useState(false);
 
   const closeOfferAcceptedModal = () => {
     setCounterOfferAcceptedModal({ visible: false, data: null });
   };
-
+  const onRefresh = useCallback(async () => {
+    getParceldetailsApi()
+  }, [getParceldetailsApi]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -94,6 +97,14 @@ const ShippingScreen = () => {
         <FlatList
           contentContainerStyle={{ paddingBottom: 120 }}
           data={orderData}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={["#FFCC00"]}
+              tintColor="#FFCC00"
+            />
+          }
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => {
             return (
