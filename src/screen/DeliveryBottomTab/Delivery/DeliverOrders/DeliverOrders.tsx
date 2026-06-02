@@ -197,8 +197,6 @@ const DeliveryHome = () => {
     );
     const isAcceptingThisOffer = acceptingOfferId === offerId;
     const offerAmountText = offerAmount != null ? `$${offerAmount}` : "";
-
-    // Dynamic Translucent Status Chip helper
     const getTranslucentColor = (hex: string) => {
       if (!hex || hex === "black") return "rgba(255, 149, 0, 0.08)";
       if (hex.startsWith("#")) {

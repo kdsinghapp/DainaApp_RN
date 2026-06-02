@@ -137,7 +137,12 @@ export default function OfferOR() {
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
       <LoadingModal visible={isLoading} />
-      <CustomHeader label={strings?.Back} />
+      <CustomHeader label={strings?.Back}
+
+        leftPress={() => {
+          navgation.navigate(ScreenNameEnum.TabNavigator)
+        }}
+      />
       <FlatList
         data={offerData?.offers ?? []}
         keyExtractor={(item: any) => String(item.id ?? item.offerId)}
@@ -163,40 +168,40 @@ export default function OfferOR() {
           )
         }}
       />
-        <CounterOfferModal
-          visible={Open}
-          defaultValue={1}
-          currency="$"
-          min={1}
-          max={50000}
-          onCancel={() => setOpen(false)}
-          onSubmit={(amount: number) => {
-            if (selectedOfferId) {
-              CounterOffer(selectedOfferId, amount); // 👈 ID + amount
-            }
-            setOpen(false);
-          }}
+      <CounterOfferModal
+        visible={Open}
+        defaultValue={1}
+        currency="$"
+        min={1}
+        max={50000}
+        onCancel={() => setOpen(false)}
+        onSubmit={(amount: number) => {
+          if (selectedOfferId) {
+            CounterOffer(selectedOfferId, amount); // 👈 ID + amount
+          }
+          setOpen(false);
+        }}
 
-        />
+      />
 
 
 
-        <TrackCourierModal visible={trackerModal}
+      <TrackCourierModal visible={trackerModal}
 
-          onClose={() => {
-            settrackerModal(false)
+        onClose={() => {
+          settrackerModal(false)
 
-            setOpen(false)
-          }}
-          onpress={() => {
-            setOpen(false)
-            settrackerModal(false)
+          setOpen(false)
+        }}
+        onpress={() => {
+          setOpen(false)
+          settrackerModal(false)
 
-            navgation.navigate(ScreenNameEnum.CourierTrackingScreen)
+          navgation.navigate(ScreenNameEnum.CourierTrackingScreen)
 
-          }}
-        //  onLocationGranted
-        />
+        }}
+      //  onLocationGranted
+      />
     </SafeAreaView>
   );
 }

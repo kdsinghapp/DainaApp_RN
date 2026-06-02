@@ -190,7 +190,6 @@ export default function OrdersScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBarComponent />
-      <LoadingModal visible={isLoading} />
       <View style={styles.container}>
         <Text style={styles.title}>{strings.Orders}</Text>
 
