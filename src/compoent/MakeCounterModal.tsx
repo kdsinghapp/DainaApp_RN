@@ -17,7 +17,7 @@ import strings from '../localization/Localization';
 import font from '../theme/font';
 
 
-const PillButton = ({ label, onPress, variant = 'primary', disabled, loading }) => {
+const PillButton = ({ label, onPress, variant = 'primary', disabled = false, loading = false }: any) => {
   const bg = variant === 'primary' ? '#F2C200' : '#2D3A3A';
   const text = variant === 'primary' ? '#1A1A1A' : '#FFFFFF';
   return (
@@ -37,7 +37,7 @@ const PillButton = ({ label, onPress, variant = 'primary', disabled, loading }) 
 };
 
 /** Common: AppModal (centered card with backdrop) */
-const AppModal = ({ visible, onRequestClose, children }) => {
+const AppModal = ({ visible, onRequestClose, children }: any) => {
   const fade = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     Animated.timing(fade, {
@@ -82,10 +82,16 @@ const CounterOfferModal = ({
   onSubmit,
   loading = false,
   title = strings.MakeOffer,
+  showMessage = false,
+  messagePlaceholder = strings.TypeMessageHere || 'Type message here...',
 }: any) => {
   const [value, setValue] = useState(String(defaultValue ?? ''));
+  const [message, setMessage] = useState('');
   useEffect(() => {
-    if (visible) setValue(String(defaultValue ?? ''));
+    if (visible) {
+      setValue(String(defaultValue ?? ''));
+      setMessage('');
+    }
   }, [visible, defaultValue]);
 
   const error = useMemo(() => {
@@ -99,7 +105,7 @@ const CounterOfferModal = ({
 
   const handleSubmit = () => {
     if (!error && value !== '') {
-      onSubmit?.(Number(value));
+      onSubmit?.(Number(value), message.trim());
     }
   };
 
@@ -121,6 +127,17 @@ const CounterOfferModal = ({
       </View>
 
       {!!error && <Text style={styles.error}>{error}</Text>}
+
+      {showMessage && (
+        <TextInput
+          value={message}
+          onChangeText={setMessage}
+          placeholder={messagePlaceholder}
+          style={styles.messageInput}
+          multiline
+          textAlignVertical="top"
+        />
+      )}
 
       <View style={styles.row}>
         <PillButton label={strings.Cancel} variant="secondary" onPress={onCancel} />
@@ -211,5 +228,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: font.MonolithRegular
 
+  },
+  messageInput: {
+    minHeight: 86,
+    borderWidth: 1,
+    borderColor: '#E6E6E6',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    color: '#1F2937',
+    fontSize: 14,
+    fontFamily: font.MonolithRegular,
+    marginTop: 10,
   },
 });

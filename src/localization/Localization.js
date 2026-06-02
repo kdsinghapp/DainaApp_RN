@@ -101,7 +101,7 @@ const strings = new LocalizedStrings({
     OfferPrice: "Offer Price",
     MessageLabel: "Message",
     PhoneLabel: "Phone",
-    Accept: "ACCEPT",
+    Accept: "Accept",
     CounterOfferLabel: "COUNTER OFFER",
     Chat: "CHAT",
     Back: "Back",
@@ -260,7 +260,7 @@ const strings = new LocalizedStrings({
     ConsignmentType: "Consignment Type",
     ShipmentType: "Shipment Type",
     MakeOffer: "Make Offer",
-    AmountWithCurrency: "Amount ₮ ",
+    AmountWithCurrency: "Amount ₮",
     EnterValidAmount: "Please enter a valid amount",
     MinimumIs: "Minimum is",
     MaximumIs: "Maximum is",
@@ -418,6 +418,7 @@ const strings = new LocalizedStrings({
     OrderCompleted: "Order Completed",
     OrderCancelled: "Order Cancelled",
     Processing: "Processing...",
+    Reply: "Reply",
     EnterPickupOTPShared: "Enter Pickup OTP shared by customer",
     EnterDeliveryOTPShared: "Enter delivery OTP shared by customer",
     CancelOrder: "Cancel Order",
@@ -1010,6 +1011,7 @@ const strings = new LocalizedStrings({
     CurrentLocation: "Одоогийн байршил",
 
     Messages: "Мессежүүд",
+    Reply: "Хариулах",
 
   },
 });

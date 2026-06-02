@@ -554,7 +554,7 @@ const ChatScreen = () => {
         </View>
 
         {/* Offer button — only show for Delivery users */}
-        {item?.offerAmount && userData?.type == "Delivery" && isOfferAvailable && (
+        {/* {item?.offerAmount && userData?.type == "Delivery" && isOfferAvailable && (
 
           <>
             {item?.offerStatus === "counter_offered" ? (
@@ -567,7 +567,7 @@ const ChatScreen = () => {
             ) : null}
           </>
 
-        )}
+        )} */}
 
         {/* Call button */}
         <TouchableOpacity onPress={() => handleCall(agentPhone)}>

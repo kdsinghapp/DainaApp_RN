@@ -22,6 +22,7 @@ import { styles } from "./style";
 import { STATUS, STATUS_COLORS, STATUS_LABELS } from "../../../../utils/Constant";
 import strings from "../../../../localization/Localization";
 import { errorToast, successToast } from "../../../../utils/customToast";
+import CounterOfferModal from "../../../../compoent/MakeCounterModal";
 
 type OrderStatus = "Pending" | "Completed" | "Cancelled";
 type Order = {
@@ -52,6 +53,9 @@ const DeliveryHome = () => {
   const [isOnline, setIsOnline] = useState(false);
   const [isLoading, setisLoading] = useState(false);
   const [acceptingOfferId, setAcceptingOfferId] = useState<string | number | null>(null);
+  const [rejectingOfferId, setRejectingOfferId] = useState<string | number | null>(null);
+  const [replyingOfferId, setReplyingOfferId] = useState<string | number | null>(null);
+  const [counterReplyOffer, setCounterReplyOffer] = useState<any>(null);
   const pillX = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     Animated.timing(pillX, {
@@ -146,7 +150,7 @@ const DeliveryHome = () => {
 
   const acceptOffer = async (item: any) => {
     const offerId = item?.offerId ?? item?.id;
-    if (!offerId || acceptingOfferId) return;
+    if (!offerId || acceptingOfferId || rejectingOfferId || replyingOfferId) return;
 
     setAcceptingOfferId(offerId);
     try {
@@ -181,6 +185,87 @@ const DeliveryHome = () => {
     }
   };
 
+  const rejectOffer = async (item: any) => {
+    const offerId = item?.offerId ?? item?.id;
+    if (!offerId || acceptingOfferId || rejectingOfferId || replyingOfferId) return;
+
+    setRejectingOfferId(offerId);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        errorToast("Token not found");
+        return;
+      }
+
+      const response = await fetch(`${base_url}/delivery/offers/${offerId}/reject-counter`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({}),
+      });
+
+      const result = await response.json();
+      if (response.ok && (result?.status == 1 || result?.success === true)) {
+        successToast(result?.message || "Counter offer cancelled");
+        await fetchAvailableRequests();
+      } else {
+        errorToast(result?.message || "Failed to cancel offer");
+      }
+    } catch (error) {
+      console.error("Reject offer error:", error);
+      errorToast(strings.SomethingWentWrong || "Something went wrong");
+    } finally {
+      setRejectingOfferId(null);
+    }
+  };
+
+  const sendCounterReply = async (item: any, amount: number, message?: string) => {
+    const offerId = item?.offerId ?? item?.id;
+    if (!offerId || acceptingOfferId || rejectingOfferId || replyingOfferId) return;
+
+    setReplyingOfferId(offerId);
+    try {
+      const token = await AsyncStorage.getItem("token");
+      if (!token) {
+        errorToast("Token not found");
+        return;
+      }
+
+      const body = new URLSearchParams();
+      body.append("amount", String(amount));
+      if (message?.trim()) {
+        body.append("message", message.trim());
+      }
+
+      const response = await fetch(`${base_url}/delivery/offers/${offerId}/counter-reply`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/x-www-form-urlencoded",
+          Accept: "application/json",
+        },
+        body: body.toString(),
+      });
+
+      const result = await response.json();
+      if (response.ok && (result?.status == 1 || result?.success === true)) {
+        successToast(result?.message || strings.CounterOfferSent || "Counter reply sent successfully");
+        setCounterReplyOffer(null);
+        await fetchAvailableRequests();
+      } else {
+        errorToast(result?.message || strings.CounterOfferFailed || "Failed to send counter reply");
+      }
+    } catch (error) {
+      console.error("Counter reply error:", error);
+      errorToast(strings.SomethingWentWrong || "Something went wrong");
+    } finally {
+      setReplyingOfferId(null);
+    }
+  };
+
   const renderItem = ({ item }: { item: any }) => {
 
     const st = item?.parcel?.deliveryStatus;
@@ -196,7 +281,10 @@ const DeliveryHome = () => {
       (!offerStatus || offerStatus === "counter_offered")
     );
     const isAcceptingThisOffer = acceptingOfferId === offerId;
-    const offerAmountText = offerAmount != null ? `$${offerAmount}` : "";
+    const isRejectingThisOffer = rejectingOfferId === offerId;
+    const isReplyingThisOffer = replyingOfferId === offerId;
+    const isProcessingThisOffer = isAcceptingThisOffer || isRejectingThisOffer || isReplyingThisOffer;
+    const offerAmountText = offerAmount != null ? `₮ ${offerAmount}` : "";
     const getTranslucentColor = (hex: string) => {
       if (!hex || hex === "black") return "rgba(255, 149, 0, 0.08)";
       if (hex.startsWith("#")) {
@@ -243,27 +331,58 @@ const DeliveryHome = () => {
             <View style={styles.offerInfo}>
               <View style={styles.offerHeaderRow}>
                 <Text style={styles.offerEyebrow}>{strings.CounterOfferReceived || "Counter Offer Received"}</Text>
-
-              </View>
-              <Text style={styles.offerTitle}>{strings.UserOfferedNewPrice}</Text>
-              <View style={styles.offerAmountPill}>
                 <Text style={styles.offerAmount}>{offerAmountText}</Text>
               </View>
+              <Text style={styles.offerTitle}>{strings.UserOfferedNewPrice}</Text>
+              <View style={styles.offerActionsRow}>
+
+                <TouchableOpacity
+                  style={[styles.acceptOfferBtn, isProcessingThisOffer && styles.acceptOfferBtnDisabled]}
+                  activeOpacity={0.85}
+                  disabled={isProcessingThisOffer}
+                  onPress={(event) => {
+                    event.stopPropagation();
+                    acceptOffer(item);
+                  }}
+                >
+                  <Text style={styles.acceptOfferText}>
+                    {isAcceptingThisOffer ? strings.Processing : strings.Accept}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.cancelOfferBtn, isProcessingThisOffer && styles.acceptOfferBtnDisabled]}
+                  activeOpacity={0.85}
+                  disabled={isProcessingThisOffer}
+                  onPress={(event) => {
+                    event.stopPropagation();
+                    rejectOffer(item);
+                  }}
+                >
+                  <Text style={styles.cancelOfferText}>
+                    {isRejectingThisOffer ? strings.Processing : strings.Cancel}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.replyOfferBtn, isProcessingThisOffer && styles.acceptOfferBtnDisabled]}
+                  activeOpacity={0.85}
+                  disabled={isProcessingThisOffer}
+                  onPress={(event) => {
+                    event.stopPropagation();
+                    setCounterReplyOffer(item);
+                  }}
+                >
+                  <Text style={styles.replyOfferText}>
+                    {isReplyingThisOffer ? strings.Reply : strings.Reply}
+                  </Text>
+                </TouchableOpacity>
+
+              </View>
+
             </View>
 
-            <TouchableOpacity
-              style={[styles.acceptOfferBtn, isAcceptingThisOffer && styles.acceptOfferBtnDisabled]}
-              activeOpacity={0.85}
-              disabled={isAcceptingThisOffer}
-              onPress={(event) => {
-                event.stopPropagation();
-                acceptOffer(item);
-              }}
-            >
-              <Text style={styles.acceptOfferText}>
-                {isAcceptingThisOffer ? strings.Processing : strings.Accept}
-              </Text>
-            </TouchableOpacity>
+
           </View>
         )}
 
@@ -328,7 +447,22 @@ const DeliveryHome = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
-      <LoadingModal visible={isLoading} />
+      <CounterOfferModal
+        visible={!!counterReplyOffer}
+        defaultValue={counterReplyOffer?.counterAmount ?? counterReplyOffer?.offerAmount ?? ""}
+        currency="₮"
+        min={1}
+        max={50000}
+        showMessage
+        title="Counter Reply"
+        onCancel={() => setCounterReplyOffer(null)}
+        loading={!!replyingOfferId}
+        onSubmit={(amount: number, message?: string) => {
+          if (counterReplyOffer) {
+            sendCounterReply(counterReplyOffer, amount, message);
+          }
+        }}
+      />
 
       {/* <View style={styles.ordersHeader}>
         <Text style={styles.sectionTitle}>Orders</Text>
@@ -343,7 +477,7 @@ const DeliveryHome = () => {
       <View style={styles.tabs}>
         {TABS.map((tab) => {
           const active = tab === activeTab;
-          const label = tab === "Completed" ? strings.Complete : tab === "Cancelled" ? strings.Canceled : strings[tab as keyof typeof strings] || tab;
+          const label = tab === "Completed" ? strings.Complete : tab === "Cancelled" ? strings.Canceled : strings.Pending || tab;
           return (
             <Pressable
               key={tab}

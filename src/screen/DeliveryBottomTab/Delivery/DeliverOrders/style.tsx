@@ -218,14 +218,12 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    gap: 14,
     padding: 14,
     borderRadius: 18,
     backgroundColor: "#FFFDF5",
-    borderWidth: 1,
-    borderColor: "#FDE68A",
+
     position: "relative",
-    marginBottom: 11,
+    marginBottom: 10,
     overflow: "hidden",
   },
   offerAccent: {
@@ -233,7 +231,7 @@ export const styles = StyleSheet.create({
     left: 0,
     top: 0,
     bottom: 0,
-    width: 5,
+    width: 3,
     backgroundColor: "#F59E0B",
   },
   offerInfo: {
@@ -244,6 +242,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 4,
+    justifyContent: "space-between"
   },
   offerEyebrow: {
     fontSize: 10,
@@ -288,21 +287,59 @@ export const styles = StyleSheet.create({
     lineHeight: 16,
     flexShrink: 1,
   },
+  offerActionsRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 8,
+    marginTop: 11,
+    marginBottom: 11,
+  },
   acceptOfferBtn: {
-    minWidth: 88,
+    flex: 1,
     height: 36,
     borderRadius: 21,
     backgroundColor: "#FFCC00",
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
+
+  },
+  cancelOfferBtn: {
+    flex: 1,
+    height: 36,
+    borderRadius: 21,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#EF4444",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 10,
+  },
+  replyOfferBtn: {
+    flex: 1,
+    height: 36,
+    borderRadius: 21,
+    backgroundColor: "#EDEFEE",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 10,
   },
   acceptOfferBtnDisabled: {
     opacity: 0.65,
   },
   acceptOfferText: {
-    fontSize: 15,
+    fontSize: 13,
     color: "white",
+    fontFamily: font.MonolithRegular,
+  },
+  cancelOfferText: {
+    fontSize: 13,
+    color: "#EF4444",
+    fontFamily: font.MonolithRegular,
+  },
+  replyOfferText: {
+    fontSize: 13,
+    color: "black",
     fontFamily: font.MonolithRegular,
   },
 
