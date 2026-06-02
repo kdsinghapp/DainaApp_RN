@@ -17,8 +17,8 @@ import imageIndex from "../../../assets/imageIndex";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useRoute, useFocusEffect } from "@react-navigation/native";
 import ScreenNameEnum from "../../../routes/screenName.enum";
-import { GetApi, CancelParcelApi, RateDeliveryApi } from "../../../Api/apiRequest";
-import { STATUS, STATUS_LABELS, STATUS_ICONS, STATUS_COLORS, s } from "../../../utils/Constant";
+import { GetApi, RateDeliveryApi } from "../../../Api/apiRequest";
+import { STATUS, STATUS_LABELS, STATUS_ICONS, STATUS_COLORS } from "../../../utils/Constant";
 import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { successToast } from "../../../utils/customToast";
@@ -37,6 +37,21 @@ type Order = {
   status: string;
 };
 
+type ParcelOffer = {
+  id?: number | string;
+  offerId?: number | string;
+  carrierName?: string;
+  offerAmount?: string | number;
+  message?: string;
+  status?: string;
+  counterAmount?: string | number;
+  counterMessage?: string;
+  deliveryUser?: {
+    name?: string;
+    phone?: string;
+  };
+};
+
 const STATUS_STEPS = [
   STATUS.PENDING,
   STATUS.ASSIGNED,
@@ -47,6 +62,11 @@ const STATUS_STEPS = [
 ];
 
 const norm = (s: string | undefined) => (s || "").toLowerCase().trim();
+const titleize = (value?: string) =>
+  (value || "")
+    .replace(/_/g, " ")
+    .trim()
+    .replace(/\b\w/g, char => char.toUpperCase());
 
 
 export default function ViewDetails() {
@@ -58,7 +78,7 @@ export default function ViewDetails() {
   const ratingSubmittedRef = useRef(false);
   const [isDetailsExpanded, setIsDetailsExpanded] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [parcel, setParcel] = useState(item ?? null);
   const [statusKey, setStatusKey] = useState<string | null>(() => item?.deliveryStatus ?? null);
   const isMounted = useRef(true);
@@ -113,30 +133,6 @@ export default function ViewDetails() {
     }, []),
   );
 
-  const handleCancelOrder = async () => {
-    const parcelId = parcel?.id ?? item?.id;
-    if (!parcelId) return;
-    try {
-      const res = await CancelParcelApi(parcelId, setLoading);
-      if (res?.status === 1 || res?.status === "1") {
-        successToast(strings.OrderCancelled);
-        nav.goBack();
-      } else {
-
-        successToast(strings.OrderCancelled);
-
-        // successToast(res?.message || "Order cancelled successfully");
-        // nav.goBack();
-        // If API fails but we want to allow user to clear it locally, we could do more here.
-        // But for now, let's just show the message.
-        nav.goBack();
-      }
-    } catch (_) {
-      successToast(strings.OrderCancelled);
-
-      nav.goBack();
-    }
-  };
 
   useEffect(() => {
     const key = parcel?.deliveryStatus ?? item?.deliveryStatus ?? null;
@@ -239,8 +235,11 @@ export default function ViewDetails() {
     currentIdx >= 0 ? currentIdx / (STATUS_STEPS.length - 1) : 0;
   const statusLabel = STATUS_LABELS[statusNorm] || "Unknown";
   const statusColor = STATUS_COLORS[statusNorm] || "black";
+  const offers: ParcelOffer[] = Array.isArray(source?.offers) ? source.offers : [];
+  const hasCounterOffered = offers.some(offer => norm(offer?.status) === "counter_offered");
+  const displayStatusLabel = hasCounterOffered ? titleize("counter_offered") : statusLabel;
+  const displayStatusColor = hasCounterOffered ? YELLOW : statusColor;
 
-  console.log("ss", parcel)
   const navigation = useNavigation()
   const driver = parcel?.assignedDriver ?? item?.assignedDriver ?? parcel?.driver ?? item?.driver;
   return (
@@ -254,7 +253,7 @@ export default function ViewDetails() {
       >
 
 
-        {statusNorm === STATUS.PENDING && (
+        {statusNorm === STATUS.PENDING && !hasCounterOffered && (
           <View style={styles.pendingActionCard}>
             <View style={styles.pendingHeader}>
               <Icon name="time" size={22} color={YELLOW} />
@@ -344,11 +343,11 @@ export default function ViewDetails() {
           <TouchableOpacity
             style={[
               styles.row,
-              statusNorm === STATUS.DELIVERED && { opacity: 0.5 } // thoda fade dikhe
+              (statusNorm === STATUS.DELIVERED || hasCounterOffered) && { opacity: 0.5 } // thoda fade dikhe
             ]}
-            disabled={statusNorm === STATUS.DELIVERED}
+            disabled={statusNorm === STATUS.DELIVERED || hasCounterOffered}
             onPress={() => {
-              if (statusNorm === STATUS.DELIVERED) return; // extra safety
+              if (statusNorm === STATUS.DELIVERED || hasCounterOffered) return; // extra safety
 
               if (statusNorm === STATUS.PENDING) {
                 (navigation as any).navigate(ScreenNameEnum.OfferOR, {
@@ -391,11 +390,11 @@ export default function ViewDetails() {
               style={[
                 styles.pill,
                 activeIdx >= STATUS_STEPS.length - 1 ? styles.pillDone : styles.pillProgress,
-                { backgroundColor: statusColor },
+                { backgroundColor: displayStatusColor },
               ]}
             >
               <Text style={styles.pillText}>
-                {statusLabel}
+                {displayStatusLabel}
                 {/* {order.status === "pending" ? "Waiting for Driver" : order.status === "packaged"
                   ? "Still Packaged"
                   : order.status === "shipped"
@@ -425,7 +424,7 @@ export default function ViewDetails() {
                   {strings.RateYourDelivery}</Text>
               </TouchableOpacity>
 
-            ) : (
+            ) : hasCounterOffered ? null : (
 
               <TouchableOpacity
                 onPress={() => {
@@ -557,6 +556,95 @@ export default function ViewDetails() {
               onSelectImage={setSelectedImage}
             />
           </View>
+        )}
+
+        {offers.length > 0 && (
+          <>
+            <View style={styles.sectionTitleRow}>
+              <Text style={styles.sectionTitle}>{strings.OffersForYourAd || "Offers For Your Ad"}</Text>
+            </View>
+            <View style={styles.offersWrap}>
+              {offers.map((offer, index) => {
+                const carrierName = offer?.carrierName || offer?.deliveryUser?.name || strings.Unknown || "Unknown";
+                const offerAmount = offer?.offerAmount ?? "N/A";
+                const hasCounter = offer?.counterAmount || offer?.counterMessage;
+                const offerId = offer?.id ?? offer?.offerId;
+                const isCounterOffered = norm(offer?.status) === "counter_offered";
+
+                return (
+                  <TouchableOpacity
+                    key={String(offerId ?? index)}
+                    activeOpacity={0.8}
+                    style={[styles.offerCard, isCounterOffered && styles.offerCardLocked]}
+                    onPress={() => {
+                      if (isCounterOffered) return;
+
+                      (navigation as any).navigate(ScreenNameEnum.OfferOR, {
+                        id: { parcel: parcel ?? source }
+                      })
+                    }}
+                    disabled={isCounterOffered}
+                  >
+                    <View style={styles.offerTopRow}>
+                      <View style={styles.offerCarrierRow}>
+                        <View style={styles.offerAvatar}>
+                          <Icon name="person" size={18} color="#111827" />
+                        </View>
+                        <View style={styles.offerCarrierTextWrap}>
+                          <Text style={styles.offerCarrier} numberOfLines={1}>{carrierName}</Text>
+                          <Text style={styles.offerSubText}>
+                            {isCounterOffered ? "Counter offer sent" : strings.OfferInformation || "Offer Information"}
+                          </Text>
+                        </View>
+                      </View>
+                      {!!offer?.status && (
+                        <View style={[styles.offerStatusPill, isCounterOffered && styles.counterStatusPill]}>
+                          <Text style={[styles.offerStatusText, isCounterOffered && styles.counterStatusText]}>
+                            {titleize(offer.status)}
+                          </Text>
+                        </View>
+                      )}
+                    </View>
+
+                    <View style={styles.offerPriceGrid}>
+                      <View style={styles.pricePanel}>
+                        <Text style={styles.offerLabel}>{strings.OfferPrice || "Offer Price"}</Text>
+                        <Text style={styles.offerAmount}>{offerAmount}</Text>
+                      </View>
+                      {hasCounter && (
+                        <View style={[styles.pricePanel, styles.counterPricePanel]}>
+                          <Text style={styles.counterLabel}>{strings.CounterOfferLabel || "Counter Offer"}</Text>
+                          <Text style={styles.counterAmount}>{offer?.counterAmount ?? "N/A"}</Text>
+                        </View>
+                      )}
+                    </View>
+
+                    {(!!offer?.message || !!offer?.counterMessage) && (
+                      <View style={styles.messageBox}>
+                        {!!offer?.message && (
+                          <Text style={styles.offerMessage} numberOfLines={2}>
+                            {strings.MessageLabel || "Message"}: {offer.message}
+                          </Text>
+                        )}
+                        {!!offer?.counterMessage && (
+                          <Text style={styles.counterMessage} numberOfLines={2}>
+                            {strings.MessageLabel || "Message"}: {offer.counterMessage}
+                          </Text>
+                        )}
+                      </View>
+                    )}
+
+                    {!isCounterOffered && (
+                      <View style={styles.offerActionRow}>
+                        <Text style={styles.offerActionText}>{strings.ViewOffer || "View Offer"}</Text>
+                        <Icon name="chevron-forward" size={18} color="#111827" />
+                      </View>
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </>
         )}
 
         {/* Tracking Package – steps with icon + label */}
@@ -812,6 +900,164 @@ const styles = StyleSheet.create({
     color: "#64748B",
     marginTop: 2,
 
+  },
+  offersWrap: {
+    marginHorizontal: 16,
+    gap: 12,
+  },
+  offerCard: {
+    backgroundColor: CARD,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    padding: 14,
+    shadowColor: "#000",
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 3 },
+  },
+  offerCardLocked: {
+    borderColor: "#F4D45E",
+    backgroundColor: "#FFFEF7",
+  },
+  offerTopRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
+  },
+  offerCarrierRow: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  offerAvatar: {
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: YELLOW,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  offerCarrierTextWrap: {
+    flex: 1,
+  },
+  offerCarrier: {
+    color: TEXT,
+    fontFamily: font.MonolithRegular,
+    fontSize: 14,
+  },
+  offerSubText: {
+    color: "#64748B",
+    fontFamily: font.MonolithRegular,
+    fontSize: 11,
+    marginTop: 3,
+  },
+  offerStatusPill: {
+    backgroundColor: "#FEF9E7",
+    borderRadius: 999,
+    paddingHorizontal: 9,
+    paddingVertical: 6,
+    borderWidth: 1,
+    borderColor: "#F5E7A6",
+  },
+  counterStatusPill: {
+    backgroundColor: "#111827",
+    borderColor: "#111827",
+  },
+  offerStatusText: {
+    color: "#8A6A00",
+    fontFamily: font.MonolithRegular,
+    fontSize: 10,
+  },
+  counterStatusText: {
+    color: "#FFFFFF",
+  },
+  offerPriceGrid: {
+    marginTop: 12,
+    flexDirection: "row",
+    gap: 10,
+  },
+  pricePanel: {
+    flex: 1,
+    backgroundColor: "#F8FAFC",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#EEF2F7",
+    paddingHorizontal: 12,
+    paddingVertical: 11,
+  },
+  counterPricePanel: {
+    backgroundColor: "#FFF8D9",
+    borderColor: "#F4D45E",
+  },
+  offerLabel: {
+    color: MUTED,
+    fontFamily: font.MonolithRegular,
+    fontSize: 11,
+  },
+  offerAmount: {
+    color: TEXT,
+    fontFamily: font.MonolithRegular,
+    fontSize: 17,
+    marginTop: 5,
+  },
+  messageBox: {
+    marginTop: 12,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: "#F1F5F9",
+    padding: 12,
+  },
+  offerMessage: {
+    color: "#4B5563",
+    fontFamily: font.MonolithRegular,
+    fontSize: 12,
+    lineHeight: 18,
+  },
+  counterLabel: {
+    color: "#64748B",
+    fontFamily: font.MonolithRegular,
+    fontSize: 11,
+  },
+  counterAmount: {
+    color: "#111827",
+    fontFamily: font.MonolithRegular,
+    fontSize: 17,
+    marginTop: 5,
+  },
+  counterMessage: {
+    marginTop: 8,
+    color: "#111827",
+    fontFamily: font.MonolithRegular,
+    fontSize: 12,
+    lineHeight: 18,
+  },
+  offerActionRow: {
+    marginTop: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+  },
+  offerActionText: {
+    color: "#111827",
+    fontFamily: font.MonolithRegular,
+    fontSize: 12,
+  },
+  noOffersCard: {
+    backgroundColor: "#F8FAFC",
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "#EEF2F7",
+    padding: 14,
+  },
+  noOffersText: {
+    color: "#64748B",
+    fontFamily: font.MonolithRegular,
+    fontSize: 12,
+    lineHeight: 18,
   },
   modalContainer: {
     flex: 1,
