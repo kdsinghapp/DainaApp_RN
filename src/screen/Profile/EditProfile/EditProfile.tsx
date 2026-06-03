@@ -23,7 +23,6 @@ import { GetProfileApi, UpdateProfile } from "../../../Api/apiRequest";
 import { loginSuccess } from "../../../redux/feature/authSlice";
 import { errorToast } from "../../../utils/customToast";
 import strings from "../../../localization/Localization";
-
 const EditProfile = () => {
   const navigation = useNavigation();
   const userData: any = useSelector((state: any) => state.auth.userData);

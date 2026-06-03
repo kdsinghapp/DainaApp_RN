@@ -548,7 +548,6 @@ const TripMap = () => {
 
   const buttonConfig = getButtonConfig();
   const updateParcelStatus = async (orderId: string | number, newStatus: string, otp?: string) => {
-    // Implement your API call here
     const token = await AsyncStorage.getItem('token');
     const body = {
       otp: otp ?? '',
