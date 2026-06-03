@@ -22,6 +22,7 @@ import useOrders from "./useOrders";
 import strings from "../../../localization/Localization";
 import { ActivityIndicator } from "react-native";
 import { color } from "../../../constant";
+import Icon from "react-native-vector-icons/Ionicons";
 
 type OrderStatus = "packaged" | "shipped" | "inTransit" | "delivered";
 
@@ -82,7 +83,6 @@ export default function OrdersScreen() {
     });
   }, [tab, orderData]);
 
-
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     try {
@@ -115,13 +115,20 @@ export default function OrdersScreen() {
           (nava as any).navigate(ScreenNameEnum.ViewDetails, { item: order });
         }}
       >
+        <View style={styles.cardAccent} />
         <View style={styles.cardHeader}>
           <View style={styles.trackingGroup}>
-            <Text style={styles.trackingLabel}>{strings.TrackingID}</Text>
-            <Text style={styles.trackingId}>#{order.trackingId}</Text>
+            <View style={styles.trackingIconWrap}>
+              <Icon name="cube-outline" size={18} color="#111827" />
+            </View>
+            <View style={styles.trackingTextWrap}>
+              <Text style={styles.trackingLabel}>{strings.TrackingID}</Text>
+              <Text style={styles.trackingId} numberOfLines={1}>#{order.trackingId || order.id}</Text>
+            </View>
           </View>
           <StatusPill status={order.deliveryStatus} />
         </View>
+        <ProgressTrack status={order.deliveryStatus} />
 
         <View style={styles.routeContainer}>
           <View style={styles.routeLineColumn}>
@@ -131,6 +138,7 @@ export default function OrdersScreen() {
           </View>
 
           <View style={styles.routeDetailsColumn}>
+
             <View style={styles.routeLocationRow}>
               <View style={styles.addressHeaderRow}>
                 <Text style={styles.locationLabel}>{strings.From || "From"}</Text>
@@ -152,26 +160,24 @@ export default function OrdersScreen() {
               </View>
               <Text style={styles.addressText} numberOfLines={2}>{order?.dropLocation || "—"}</Text>
             </View>
+
           </View>
         </View>
 
-        {/* Divider line before Progress Stepper */}
-        <View style={styles.divider} />
 
-        {/* Stepper Progress Bar */}
-        <ProgressTrack status={order.deliveryStatus} />
 
         {/* Card Footer: Detail Link */}
         <View style={styles.footerRow}>
           <Text style={styles.dateLabel}>
             {order.startDate ? `${strings.Today || "Date"}: ${formatDate(order.startDate)}` : ""}
           </Text>
-          <Pressable onPress={() => (nava as any).navigate(ScreenNameEnum.ViewDetails, { item: order })}>
+          <Pressable style={styles.viewDetailsBtn} onPress={() => (nava as any).navigate(ScreenNameEnum.ViewDetails, { item: order })}>
             <Text style={styles.viewDetails}>
               {norm(order.deliveryStatus) === STATUS.DELIVERED || norm(order.deliveryStatus) === STATUS.COMPLETED
                 ? strings.WriteAReview
                 : strings.ViewDetails}
             </Text>
+            <Icon name="chevron-forward" size={16} color="#111827" />
           </Pressable>
         </View>
       </TouchableOpacity>
@@ -389,20 +395,29 @@ const styles = StyleSheet.create({
 
   card: {
     backgroundColor: "#FFFFFF",
-    borderRadius: 18,
+    borderRadius: 20,
     padding: 16,
     marginBottom: 12,
     borderWidth: 1,
     borderColor: "#E2E8F0",
+    overflow: "hidden",
     ...Platform.select({
       ios: {
         shadowColor: "#0F172A",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.03,
-        shadowRadius: 10,
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.06,
+        shadowRadius: 16,
       },
-
+      android: { elevation: 1 },
     }),
+  },
+  cardAccent: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 4,
+    backgroundColor: YELLOW,
   },
   cardHeader: {
     flexDirection: "row",
@@ -411,7 +426,22 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   trackingGroup: {
-    flexDirection: "column",
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingRight: 10,
+  },
+  trackingIconWrap: {
+    width: 42,
+    height: 42,
+    borderRadius: 14,
+    backgroundColor: "#FFF7CC",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
+  },
+  trackingTextWrap: {
+    flex: 1,
   },
   trackingLabel: {
     color: MUTED,
@@ -430,6 +460,11 @@ const styles = StyleSheet.create({
   routeContainer: {
     flexDirection: "row",
     marginVertical: 4,
+    backgroundColor: "#F8FAFC",
+    borderRadius: 14,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: "#F1F5F9",
   },
   routeLineColumn: {
     width: 24,
@@ -489,7 +524,7 @@ const styles = StyleSheet.create({
 
   divider: {
     height: 1,
-    backgroundColor: "#E2E8F0",
+    backgroundColor: "#F1F5F9",
     marginVertical: 14,
   },
 
@@ -564,16 +599,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     marginTop: 14,
+    gap: 12,
   },
   dateLabel: {
+    flex: 1,
     fontSize: 12,
     color: MUTED,
     fontFamily: font.MonolithRegular,
   },
   pill: {
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    borderRadius: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
+    borderRadius: 999,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -582,9 +619,18 @@ const styles = StyleSheet.create({
     fontSize: 11,
   },
   viewDetails: {
-    color: YELLOW,
+    color: "#111827",
     fontFamily: font.MonolithRegular,
-    fontSize: 14,
+    fontSize: 13,
+    marginRight: 4,
+  },
+  viewDetailsBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: YELLOW,
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
 
   emptyWrap: {

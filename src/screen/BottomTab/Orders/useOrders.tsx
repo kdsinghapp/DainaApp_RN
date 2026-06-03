@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { GetProfileApi, Parceldetails } from '../../../Api/apiRequest';
 import { loginSuccess } from '../../../redux/feature/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -35,6 +35,7 @@ const useOrders = () => {
     getParceldetailsApi()
   }, [])
   const dispatch = useDispatch();
+  const token: any = useSelector<any>((state) => state?.auth?.token);
   const locationRef: any = useRef(null);
 
   useEffect(() => {
@@ -48,7 +49,7 @@ const useOrders = () => {
     try {
       const response = await GetProfileApi(setLoading);
       if (response) {
-        dispatch(loginSuccess({ userData: response }));
+        dispatch(loginSuccess({ userData: response, token: token || response?.token || "" }));
         setLoading(false)
       }
     } catch (error) {
