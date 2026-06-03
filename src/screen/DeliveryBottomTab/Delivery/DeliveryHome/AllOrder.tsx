@@ -23,6 +23,8 @@ import { GetDashboardCounts, GetProfileApi } from "../../../../Api/apiRequest";
 import strings from "../../../../localization/Localization";
 import CustomHeader from "../../../../compoent/CustomHeader";
 import { color } from "../../../../constant";
+import NewOrderNotificationModal from "../../../../compoent/NewOrderNotificationModal";
+import OfferAcceptedModal from "../../../../compoent/OfferAcceptedModal";
 
 const AllOrder = () => {
   const ctx = useDeliveryContext();
@@ -104,6 +106,8 @@ const AllOrder = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
+      <NewOrderNotificationModal />
+      <OfferAcceptedModal />
       <Animated.View
         style={{
           flex: 1,

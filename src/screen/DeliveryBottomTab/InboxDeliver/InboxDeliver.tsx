@@ -19,6 +19,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import strings from "../../../localization/Localization";
 import imageIndex from "../../../assets/imageIndex";
 import SearchBar from "../../../compoent/SearchBar";
+import NewOrderNotificationModal from "../../../compoent/NewOrderNotificationModal";
+import OfferAcceptedModal from "../../../compoent/OfferAcceptedModal";
 type LastMessage = {
   text: string;
   senderRole: "user" | "delivery";
@@ -237,7 +239,8 @@ export default function InboxDeliver() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
-
+      <NewOrderNotificationModal />
+      <OfferAcceptedModal />
       {/* Screen Title & Subheader */}
       <View style={styles.headerContainer}>
         <Text style={styles.headerTitle}>{strings.Inbox || "Messages"}</Text>

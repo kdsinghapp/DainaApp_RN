@@ -23,6 +23,8 @@ import { STATUS, STATUS_COLORS, STATUS_LABELS } from "../../../../utils/Constant
 import strings from "../../../../localization/Localization";
 import { errorToast, successToast } from "../../../../utils/customToast";
 import CounterOfferModal from "../../../../compoent/MakeCounterModal";
+import NewOrderNotificationModal from "../../../../compoent/NewOrderNotificationModal";
+import OfferAcceptedModal from "../../../../compoent/OfferAcceptedModal";
 
 type OrderStatus = "Pending" | "Completed" | "Cancelled";
 type Order = {
@@ -447,6 +449,8 @@ const DeliveryHome = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
+      <NewOrderNotificationModal />
+      <OfferAcceptedModal />
       <CounterOfferModal
         visible={!!counterReplyOffer}
         defaultValue={counterReplyOffer?.counterAmount ?? counterReplyOffer?.offerAmount ?? ""}

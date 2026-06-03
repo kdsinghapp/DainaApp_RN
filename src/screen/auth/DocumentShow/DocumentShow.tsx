@@ -21,6 +21,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import strings from '../../../localization/Localization';
 import { useNavigation } from '@react-navigation/native';
 import ScreenNameEnum from '../../../routes/screenName.enum';
+import NewOrderNotificationModal from '../../../compoent/NewOrderNotificationModal';
+import OfferAcceptedModal from '../../../compoent/OfferAcceptedModal';
 
 export default function DocumentShow() {
   const navigation = useNavigation<any>();
@@ -321,6 +323,8 @@ export default function DocumentShow() {
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
       <CustomHeader label={strings.MyDocuments} />
+      <NewOrderNotificationModal />
+      <OfferAcceptedModal />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}

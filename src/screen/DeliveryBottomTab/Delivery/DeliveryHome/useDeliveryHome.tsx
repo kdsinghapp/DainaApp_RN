@@ -241,11 +241,13 @@ export const useDeliveryHome = () => {
   );
 
   const connectSocket = (token: string) => {
+    if (cancelledRef.current) return Promise.resolve();
     if (reconnectTimerRef.current) clearTimeout(reconnectTimerRef.current);
     if (heartbeatIntervalRef.current) clearInterval(heartbeatIntervalRef.current);
 
-    // Properly close any existing socket before reconnecting
     if (socketRef.current) {
+      socketRef.current.onclose = null;
+      socketRef.current.onerror = null;
       socketRef.current.close();
       socketRef.current = null;
     }
@@ -258,18 +260,19 @@ export const useDeliveryHome = () => {
         const wsUrl = `${WebSocket_Url}/driver?token=${token}`;
         console.log('🌐 [WebSocket] Connecting to primary socket:', wsUrl);
         const ws = new WebSocket(wsUrl);
+        socketRef.current = ws;
 
         ws.onopen = () => {
+          if (socketRef.current !== ws) return;
           if (cancelledRef.current) {
             ws.close();
             return;
           }
           console.log('✅ [WebSocket] Primary driver socket connected');
           setIsConnected(true);
-          socketRef.current = ws;
 
           heartbeatIntervalRef.current = setInterval(() => {
-            if (ws.readyState === WebSocket.OPEN) {
+            if (socketRef.current === ws && ws.readyState === WebSocket.OPEN) {
               ws.send(JSON.stringify({ type: 'ping' }));
             }
           }, 30000);
@@ -278,6 +281,7 @@ export const useDeliveryHome = () => {
         };
 
         ws.onmessage = async (event: { data: string | Blob | ArrayBuffer }) => {
+          if (socketRef.current !== ws) return;
           if (cancelledRef.current) return;
           let raw: string;
           const d = event.data;
@@ -363,6 +367,7 @@ export const useDeliveryHome = () => {
         };
 
         ws.onerror = (event) => {
+          if (socketRef.current !== ws) return;
           const msg = (event && typeof event === 'object' && 'message' in event) ? String((event as { message?: string }).message) : 'WebSocket error';
           console.error('❌ [WebSocket] Primary Error:', msg);
           if (!cancelledRef.current) setIsConnected(false);
@@ -370,6 +375,7 @@ export const useDeliveryHome = () => {
         };
 
         ws.onclose = (event) => {
+          if (socketRef.current !== ws) return;
           console.log(`⚠️ [WebSocket] Primary Closed: ${event.code} - ${event.reason}`);
           if (heartbeatIntervalRef.current) clearInterval(heartbeatIntervalRef.current);
           if (!cancelledRef.current) {
@@ -408,11 +414,13 @@ export const useDeliveryHome = () => {
 
   // Single socket: nearby-parcels – live location
   const connectLiveLocationSocket = (token: string) => {
+    if (cancelledRef.current) return Promise.resolve();
     if (liveReconnectTimerRef.current) clearTimeout(liveReconnectTimerRef.current);
     if (liveHeartbeatIntervalRef.current) clearInterval(liveHeartbeatIntervalRef.current);
 
-    // Properly close any existing socket before reconnecting
     if (socketLiveRef.current) {
+      socketLiveRef.current.onclose = null;
+      socketLiveRef.current.onerror = null;
       socketLiveRef.current.close();
       socketLiveRef.current = null;
     }
@@ -426,17 +434,18 @@ export const useDeliveryHome = () => {
 
         console.log("🌐 [WebSocket] Connecting to live/nearby socket:", wsUrl)
         const ws = new WebSocket(wsUrl);
+        socketLiveRef.current = ws;
 
         ws.onopen = () => {
+          if (socketLiveRef.current !== ws) return;
           if (cancelledRef.current) {
             ws.close();
             return;
           }
           console.log('✅ [WebSocket] Live/nearby socket connected');
-          socketLiveRef.current = ws;
 
           liveHeartbeatIntervalRef.current = setInterval(() => {
-            if (ws.readyState === WebSocket.OPEN) {
+            if (socketLiveRef.current === ws && ws.readyState === WebSocket.OPEN) {
               ws.send(JSON.stringify({ type: 'ping' }));
             }
           }, 30000);
@@ -463,6 +472,7 @@ export const useDeliveryHome = () => {
         };
 
         ws.onmessage = async (event: { data: string | Blob | ArrayBuffer }) => {
+          if (socketLiveRef.current !== ws) return;
           if (cancelledRef.current) return;
           let raw: string;
           const d = event?.data;
@@ -554,6 +564,7 @@ export const useDeliveryHome = () => {
         };
 
         ws.onerror = (event) => {
+          if (socketLiveRef.current !== ws) return;
           const msg =
             event && typeof event === 'object' && 'message' in event
               ? String((event as { message?: string }).message)
@@ -563,6 +574,7 @@ export const useDeliveryHome = () => {
         };
 
         ws.onclose = (event) => {
+          if (socketLiveRef.current !== ws) return;
           console.log(`⚠️ [WebSocket] Live/nearby Closed: ${event.code} - ${event.reason}`);
           if (liveHeartbeatIntervalRef.current) clearInterval(liveHeartbeatIntervalRef.current);
           if (!cancelledRef.current) {
@@ -600,14 +612,15 @@ export const useDeliveryHome = () => {
       return;
     }
 
-    if (!token) return;
+    const activeToken = token || await AsyncStorage.getItem('token');
+    if (!activeToken) return;
 
     console.log('🔄 [WebSocket] Reconnecting all sockets due to state change...');
-    if (!socketRef.current || socketRef.current.readyState !== WebSocket.OPEN) {
-      connectSocket(token).catch(e => console.log('❌ Primary socket reconnect failed:', e));
+    if (!socketRef.current || socketRef.current.readyState > WebSocket.OPEN) {
+      connectSocket(activeToken).catch(e => console.log('❌ Primary socket reconnect failed:', e));
     }
-    if (!socketLiveRef.current || socketLiveRef.current.readyState !== WebSocket.OPEN) {
-      connectLiveLocationSocket(token).catch(e => console.log('❌ Live socket reconnect failed:', e));
+    if (!socketLiveRef.current || socketLiveRef.current.readyState > WebSocket.OPEN) {
+      connectLiveLocationSocket(activeToken).catch(e => console.log('❌ Live socket reconnect failed:', e));
     }
   }, [token, userType]);
 
@@ -695,13 +708,33 @@ export const useDeliveryHome = () => {
         clearTimeout(soundTimerRef.current);
         soundTimerRef.current = null;
       }
+      if (reconnectTimerRef.current) {
+        clearTimeout(reconnectTimerRef.current);
+        reconnectTimerRef.current = null;
+      }
+      if (liveReconnectTimerRef.current) {
+        clearTimeout(liveReconnectTimerRef.current);
+        liveReconnectTimerRef.current = null;
+      }
+      if (heartbeatIntervalRef.current) {
+        clearInterval(heartbeatIntervalRef.current);
+        heartbeatIntervalRef.current = null;
+      }
+      if (liveHeartbeatIntervalRef.current) {
+        clearInterval(liveHeartbeatIntervalRef.current);
+        liveHeartbeatIntervalRef.current = null;
+      }
       stopNotificationSound(); // Stop any playing sounds on unmount
       try {
         if (socketRef.current) {
+          socketRef.current.onclose = null;
+          socketRef.current.onerror = null;
           socketRef.current.close();
           socketRef.current = null;
         }
         if (socketLiveRef.current) {
+          socketLiveRef.current.onclose = null;
+          socketLiveRef.current.onerror = null;
           socketLiveRef.current.close();
           socketLiveRef.current = null;
         }
