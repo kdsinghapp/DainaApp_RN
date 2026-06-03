@@ -29,7 +29,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { errorToast, successToast } from "../../../utils/customToast";
 import strings from "../../../localization/Localization";
 
-// Status Constants
 const STATUS = {
   PENDING: 'pending',
   ASSIGNED: 'assigned',
@@ -49,9 +48,7 @@ const STATUS_COLORS = {
   [STATUS.GOING_TO_PICKUP]: '#5856D6',
   [STATUS.PICKED_UP]: '#34C759',
   [STATUS.ON_THE_WAY]: '#5AC8FA',
-  // [STATUS.ARRIVING]: '#FF2D55',
   [STATUS.DELIVERED]: '#32D74B',
-  // [STATUS.COMPLETED]: '#64D2FF',
   [STATUS.CANCELLED]: '#FF3B30'
 };
 
@@ -133,15 +130,6 @@ const ParcelDetails = () => {
           showInputs: false
         };
 
-      // case STATUS.DELIVERED:
-      //   return {
-      //     title: "Complete Order",
-      //     onPress: () => handleStatusUpdate(STATUS.COMPLETED),
-      //     color: STATUS_COLORS[STATUS.COMPLETED], // Fixed
-      //     icon: "flag-outline",
-      //     showInputs: false
-      //   };
-
       case STATUS.DELIVERED:
         return {
           title: strings.OrderCompleted,
@@ -175,7 +163,6 @@ const ParcelDetails = () => {
   useEffect(() => {
 
   }, [item?.parcelId])
-  // Handle status update
   const handleStatusUpdate = async (newStatus: any) => {
     console.log("newStatus", newStatus)
     try {
@@ -187,19 +174,14 @@ const ParcelDetails = () => {
         Alert.alert(strings.EnterDeliveryOTPShared)
         return;
       }
-      // Call API to update status
 
       const result = await updateParcelStatus(item?.parcelId, newStatus, newStatus == STATUS.DELIVERED ? deliveryOtp : pickupOtp);
       console.log(result)
       if (result.status == 1) {
         successToast(strings.SuccessLabel)
-        // Alert.alert("Success", `Status updated to ${STATUS_LABELS[newStatus]}`);
         navigation.goBack();
-        // You might want to refresh the data here
       } else {
         errorToast(result.message ?? "Failed to update status")
-        // Alert.alert("Error", result.message ?? "Failed to update status");
-        // Alert.alert("Success", "Update Status Successfully");
       }
     } catch (error) {
       console.error("Status update error:", error);
@@ -359,30 +341,11 @@ const ParcelDetails = () => {
                     <Text style={styles.value}>{item?.shipmentType || item?.data?.shipmentType || ''}</Text>
                   </View>
                 </View>
-                {/* {item?.proposedPrice || item?.data?.proposedPrice &&
-                  (
-                    <View style={styles.infoRow}>
-                      <View style={styles.inputContainer}>
-                        <Text style={styles.label}>Price</Text>
-                        <Text style={styles.value}>{item?.proposedPrice || item?.data?.proposedPrice || ''}</Text>
-                      </View>
-                      <View style={styles.inputContainer}>
-                        <Text style={styles.label}>Delivery Type</Text>
-                        <Text style={styles.value}>{item?.deliveryType || item?.data?.deliveryType || ''}</Text>
-                      </View>
-                    </View>
-                  )
-                } */}
 
 
-                {/* <View style={styles.inputContainer}>
-                  <Text style={styles.label}>Sender Address</Text>
-                  <Text style={styles.value}>{item?.senderAddress || 'N/A'}</Text>
-                </View> */}
               </View>
             )}
 
-            {/* Offer Inputs (Only for pending status and if not already offered) */}
             {buttonConfig.showInputs && item?.deliveryStatus === STATUS.PENDING && !item?.parcel?.isOffered && (
               <View style={styles.sectionContainer}>
                 <Text style={styles.sectionTitle}>{strings.MakeOffer}</Text>
@@ -484,25 +447,7 @@ const ParcelDetails = () => {
                 </TouchableOpacity>
               )}
 
-              {/* Status Progress Indicator */}
-              {/* {item?.deliveryStatus && ![STATUS.DELIVERED, STATUS.CANCELLED].includes(item.deliveryStatus) && (
-                <View style={styles.progressContainer}>
-                  <Text style={styles.progressText}>
-                    Next Step: {STATUS_LABELS[getNextStatus(item.deliveryStatus)]}
-                  </Text>
-                  <View style={styles.progressBar}>
-                    <View 
-                      style={[
-                        styles.progressFill, 
-                        { 
-                          width: `${getProgressPercentage(item.deliveryStatus)}%`,
-                          backgroundColor: STATUS_COLORS[item.deliveryStatus]
-                        }
-                      ]} 
-                    />
-                  </View>
-                </View>
-              )} */}
+
             </View>
           </View>
         </ScrollView>
