@@ -9,6 +9,7 @@ const strings = new LocalizedStrings({
     UsefulTips: "Useful Tips",
     PaymentHistory: "Payment History",
     Camera: "Camera",
+    ViewAll: "View All",
     Gallery: "Gallery",
     Account: "Account Settings",
     Support: "Support & Legal"
@@ -1012,6 +1013,8 @@ const strings = new LocalizedStrings({
 
     Messages: "Мессежүүд",
     Reply: "Хариулах",
+    ViewAll: "Бүгдийг харах"
+
 
   },
 });

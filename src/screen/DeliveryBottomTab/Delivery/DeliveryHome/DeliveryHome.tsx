@@ -27,6 +27,7 @@ import { GetDashboardCounts, GetProfileApi } from "../../../../Api/apiRequest";
 import strings from "../../../../localization/Localization";
 import OnlineSlideRight from "../../../../compoent/OnlineSlideRight";
 import font from "../../../../theme/font";
+import { slice } from "@tensorflow/tfjs";
 
 const DeliveryHome = () => {
   const ctx = useDeliveryContext();
@@ -278,15 +279,19 @@ const DeliveryHome = () => {
 
                 <View style={styles.ordersHeader}>
                   <Text style={styles.sectionTitle1}> Nearby {strings.Order}</Text>
+                  <Text
+
+                    onPress={() => {
+                      navigation.navigate(ScreenNameEnum.AllOrder)
+                    }}
+                    style={[styles.sectionTitle1, { textAlign: "right" }]}>{strings?.ViewAll}</Text>
                 </View>
               </>
             }
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
-            data={filteredRequests}
-
-
+            data={filteredRequests.slice(0, 10)}
             style={{
               marginTop: 12,
             }}

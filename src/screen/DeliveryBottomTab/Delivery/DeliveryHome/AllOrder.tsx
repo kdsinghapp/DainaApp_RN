@@ -8,31 +8,26 @@ import {
   FlatList,
   RefreshControl,
   Animated,
+  ActivityIndicator,
 } from "react-native";
 import ReAnimated, { FadeInDown, } from "react-native-reanimated";
 import { SafeAreaView, } from "react-native-safe-area-context";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import StatusBarComponent from "../../../../compoent/StatusBarCompoent";
-import HomeHeaderBar from "../../../../compoent/HomeHeaderBar";
 import imageIndex from "../../../../assets/imageIndex";
 import { useDeliveryContext } from "../../../../context/DeliveryContext";
 import { styles } from "./style";
-import CurrentLocation from "../../../../CurrentLocation";
 import ScreenNameEnum from "../../../../routes/screenName.enum";
 import useDashboard from "../../../BottomTab/DashBoard/useDashboard";
-import NewOrderNotificationModal from "../../../../compoent/NewOrderNotificationModal";
-import OfferAcceptedModal from "../../../../compoent/OfferAcceptedModal";
 import { GetDashboardCounts, GetProfileApi } from "../../../../Api/apiRequest";
 import strings from "../../../../localization/Localization";
-import OnlineSlideRight from "../../../../compoent/OnlineSlideRight";
-import font from "../../../../theme/font";
 import CustomHeader from "../../../../compoent/CustomHeader";
+import { color } from "../../../../constant";
 
 const AllOrder = () => {
   const ctx = useDeliveryContext();
   if (!ctx) return null;
   const { isLoading, requests, coords, newOrderNotification, fetchAvailableRequests, isOnline, setIsOnline, isConnected } = ctx;
-  // console.log("newOrderNotification",newOrderNotification?.data?.user?.name)
 
   const [counts, setCounts] = useState<any>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -106,7 +101,6 @@ const AllOrder = () => {
       };
     }, [])
   );
-  const { locationRef, address, currentlocation } = useDashboard()
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
@@ -117,90 +111,101 @@ const AllOrder = () => {
           opacity: fade,
         }}
       >
-        <FlatList
-        data={filteredRequests}
-        style={{
-          marginTop: 12,
-          marginBottom: 70,
-        }}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        keyExtractor={(item: any) => String(item.id ?? item.parcelId ?? item.trackingId)}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 20 }}
-        initialNumToRender={8}
-        maxToRenderPerBatch={8}
-        windowSize={7}
-        ListHeaderComponent={
-          <>
-            <CustomHeader label={strings.Order} />
-            <View style={styles.ordersHeader}>
-              <Text style={styles.sectionTitle1}> Nearby {strings.Order}</Text>
-            </View>
-          </>
-        }
-        renderItem={({ item, index }) => {
-          return (
-            <ReAnimated.View entering={FadeInDown.delay(Math.min(index, 8) * 60)}>
-              <TouchableOpacity
-                style={styles.card}
-                activeOpacity={0.85}
-                onPress={() => {
-                  navigation.navigate(ScreenNameEnum.ParcelDetails, {
-                    item: item,
-                  });
-                }}
-              >
-                <View style={styles.cardTop}>
-                  <View style={styles.iconBox}>
-                    <Image
-                      source={imageIndex?.icons || { uri: "" }}
-                      style={{ height: 20, width: 20 }}
-                      resizeMode="contain"
-                    />
-                  </View>
 
-                  <Text style={[styles.cardId, styles.bold]}>
-                    #{item?.trackingId || item?.id}
-                  </Text>
-                  <Text style={styles.bulletSeparator}>•</Text>
-                  <Text style={styles.cardDate}>
-                    {item?.date}
-                  </Text>
-                  <View style={{ flex: 1 }} />
+        {isLoading ? <ActivityIndicator
+          color={color.primary}
+          size="large"
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        /> : (
+          <FlatList
+            data={filteredRequests}
+            style={{
+              marginTop: 12,
+              marginBottom: 70,
+            }}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+            keyExtractor={(item: any) => String(item.id ?? item.parcelId ?? item.trackingId)}
+            showsVerticalScrollIndicator={false}
+            initialNumToRender={8}
+            maxToRenderPerBatch={8}
+            windowSize={7}
+            ListHeaderComponent={
+              <>
+                <CustomHeader label={strings.Order} />
+                <View style={styles.ordersHeader}>
+                  <Text style={styles.sectionTitle1}> Nearby {strings.Order}</Text>
                 </View>
-                <View style={styles.routeRow}>
-                  <View style={styles.timelineContainer}>
-                    <View style={styles.timelineDotStart} />
-                    <View style={styles.timelineLine} />
-                    <View style={styles.timelineDotEnd} />
-                  </View>
-                  <View style={{ flex: 1, marginLeft: 12 }}>
-                    <Text style={styles.label}>{strings?.From}</Text>
-                    <Text style={styles.value}  >
-                      {item?.pickupLocation || item?.pickup?.location}
-                    </Text>
-                    <Text style={[styles.label, { marginTop: 12 }]}>{strings?.To}</Text>
-                    <Text style={styles.value} >
-                      {item?.dropLocation || item?.drop?.location}
-                    </Text>
-                  </View>
+              </>
+            }
+            renderItem={({ item, index }) => {
+              return (
+                <ReAnimated.View entering={FadeInDown.delay(Math.min(index, 8) * 60)}>
+                  <TouchableOpacity
+                    style={styles.card}
+                    activeOpacity={0.85}
+                    onPress={() => {
+                      navigation.navigate(ScreenNameEnum.ParcelDetails, {
+                        item: item,
+                      });
+                    }}
+                  >
+                    <View style={styles.cardTop}>
+                      <View style={styles.iconBox}>
+                        <Image
+                          source={imageIndex?.icons || { uri: "" }}
+                          style={{ height: 20, width: 20 }}
+                          resizeMode="contain"
+                        />
+                      </View>
+
+                      <Text style={[styles.cardId, styles.bold]}>
+                        #{item?.trackingId || item?.id}
+                      </Text>
+                      <Text style={styles.bulletSeparator}>•</Text>
+                      <Text style={styles.cardDate}>
+                        {item?.date}
+                      </Text>
+                      <View style={{ flex: 1 }} />
+                    </View>
+                    <View style={styles.routeRow}>
+                      <View style={styles.timelineContainer}>
+                        <View style={styles.timelineDotStart} />
+                        <View style={styles.timelineLine} />
+                        <View style={styles.timelineDotEnd} />
+                      </View>
+                      <View style={{ flex: 1, marginLeft: 12 }}>
+                        <Text style={styles.label}>{strings?.From}</Text>
+                        <Text style={styles.value}  >
+                          {item?.pickupLocation || item?.pickup?.location}
+                        </Text>
+                        <Text style={[styles.label, { marginTop: 12 }]}>{strings?.To}</Text>
+                        <Text style={styles.value} >
+                          {item?.dropLocation || item?.drop?.location}
+                        </Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                </ReAnimated.View>
+              );
+            }}
+            ListEmptyComponent={
+              <View style={styles.emptyWrap}>
+                <View style={styles.illustrationWrap}>
+                  <View style={styles.illustrationBg} />
+                  <Image source={imageIndex.ordePracle} style={styles.emptyIcon} />
                 </View>
-              </TouchableOpacity>
-            </ReAnimated.View>
-          );
-        }}
-        ListEmptyComponent={
-          <View style={styles.emptyWrap}>
-            <View style={styles.illustrationWrap}>
-              <View style={styles.illustrationBg} />
-              <Image source={imageIndex.ordePracle} style={styles.emptyIcon} />
-            </View>
-            <Text style={styles.emptyTitle}>{strings.NoOrder}</Text>
-          </View>
-        }
-      />
+                <Text style={styles.emptyTitle}>{strings.NoOrder}</Text>
+              </View>
+            }
+          />
+        )}
+
       </Animated.View>
     </SafeAreaView>
   );
