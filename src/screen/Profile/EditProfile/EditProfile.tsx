@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     height: 18,
   },
   buttonContainer: {
-    marginBottom: 30,
+    marginBottom: Platform.OS == "ios" ? 1 : 30,
     marginHorizontal: 15,
   },
 });

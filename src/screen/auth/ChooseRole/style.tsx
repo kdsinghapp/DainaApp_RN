@@ -62,7 +62,6 @@ export const styles = StyleSheet.create({
 
     borderWidth: 1,
     borderColor: "#d6e1f9ff",
-    // elevation: 3,
   },
   optionSelected: {
     borderColor: '#FFCC00',
@@ -123,7 +122,7 @@ export const styles = StyleSheet.create({
   bottomButtonContainer: {
     paddingHorizontal: 24,
     paddingTop: 16,
-    paddingBottom: Platform.OS === 'ios' ? 34 : 24,
+    paddingBottom: Platform.OS === 'ios' ? 10 : 24,
 
   },
   nextButton: {

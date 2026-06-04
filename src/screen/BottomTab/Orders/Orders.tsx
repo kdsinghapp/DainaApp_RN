@@ -408,8 +408,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.06,
         shadowRadius: 16,
       },
-      android: { elevation: 1 },
     }),
+
   },
   cardAccent: {
     position: "absolute",

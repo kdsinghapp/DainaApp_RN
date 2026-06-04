@@ -883,7 +883,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.22,
     shadowRadius: 7,
-    elevation: 5,
   },
   pinIconCircle: {
     width: 26,

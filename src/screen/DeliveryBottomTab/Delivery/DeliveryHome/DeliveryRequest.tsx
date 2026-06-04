@@ -568,8 +568,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
-    elevation: 4,
-  },
+   },
   detailsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -1133,7 +1132,7 @@ export default DeliveryRequest;
 //     shadowOffset: { width: 0, height: 2 },
 //     shadowOpacity: 0.1,
 //     shadowRadius: 3,
-//     elevation: 3,
+ 
 //   },
 //   headerContent: {
 //     flex: 1,

@@ -233,7 +233,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.18,
     shadowRadius: 8,
-    elevation: 6,
   },
   modalHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 15 },
   modalTitle: { fontFamily: font.MonolithRegular, fontSize: 18, color: "#000" },

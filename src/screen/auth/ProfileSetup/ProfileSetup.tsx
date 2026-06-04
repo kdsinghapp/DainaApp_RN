@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
     height: 18,
   },
   buttonContainer: {
-    marginBottom: 30,
+    marginBottom: Platform.OS === 'ios' ? 10 : 30,
     marginHorizontal: 15,
   },
 });

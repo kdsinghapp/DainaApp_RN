@@ -123,7 +123,6 @@
 //           shadowOpacity: 0.8,
 //           shadowRadius: 6,
 //           shadowOffset: { width: 0, height: 0 },
-//           elevation: 5,
 //         }}
 //       />
 //     </>
@@ -664,7 +663,7 @@
 // shadowOffset: { width: 0, height: 4 },
 
 // // Android Shadow
-// elevation: 8,
+
 
 //   },
 //   sweepWrap: {

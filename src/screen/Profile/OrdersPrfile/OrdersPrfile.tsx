@@ -410,9 +410,7 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.05,
         shadowRadius: 15,
       },
-      android: {
-        elevation: 0,
-      },
+
     }),
   },
   cardHeader: {

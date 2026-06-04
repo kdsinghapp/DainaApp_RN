@@ -95,6 +95,5 @@ export const styles = StyleSheet.create({
   button: {
     marginVertical: 8,
     borderRadius: 27,
-    // elevation:1
   },
 });

@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet, Dimensions, Platform } from "react-native";
 import { color } from "../../../constant";
 import font from "../../../theme/font";
 
@@ -62,7 +62,7 @@ export const styles = StyleSheet.create({
   },
   buttonWrapper: {
     marginHorizontal: 20,
-    marginBottom: 25,
+    marginBottom: Platform.OS == "ios" ? 10 : 29,
   },
   modal: {
     justifyContent: "flex-end",
