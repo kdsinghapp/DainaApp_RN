@@ -365,26 +365,32 @@ export default function ViewDetails() {
 
         {statusNorm === STATUS.PENDING && !hasCounterOffered && (
           <View style={styles.pendingActionCard}>
+            <View style={styles.pendingCardBgDecoration} />
             <View style={styles.pendingHeader}>
-              <Icon name="time" size={22} color={YELLOW} />
-              <Text style={styles.pendingTitle}>{strings.StatusPending}</Text>
+              <View style={styles.pendingIconWrap}>
+                <Icon name="time" size={24} color="#A38200" />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.pendingTitle}>{strings.StatusPending || "Pending"}</Text>
+                <Text style={styles.pendingSubtitle}>Waiting for driver offers</Text>
+              </View>
             </View>
             <Text style={styles.pendingMessage}>
-              {strings.PendingOfferMessage}
+              {strings.PendingOfferMessage || "Your parcel is posted successfully. Drivers will send you offers soon."}
             </Text>
             <View style={styles.actionButtonGroup}>
               <TouchableOpacity
-                style={[styles.actionButton, { backgroundColor: YELLOW }]}
+                style={styles.pendingActionButton}
+                activeOpacity={0.8}
                 onPress={() => {
                   (navigation as any).navigate(ScreenNameEnum.OfferOR, {
                     id: { parcel: parcel }
                   })
                 }}
               >
-                <Text style={[styles.actionButtonText, { color: "white" }]}>{strings.CheckOffer}</Text>
+                <Icon name="search-outline" size={20} color="#111827" style={{ marginRight: 8 }} />
+                <Text style={styles.pendingActionButtonText}>{strings.CheckOffer || "Check Offers"}</Text>
               </TouchableOpacity>
-
-
             </View>
           </View>
         )}
@@ -852,25 +858,55 @@ const styles = StyleSheet.create({
 
   /* Pending Action Card Styles */
   pendingActionCard: {
-    backgroundColor: CARD,
+    backgroundColor: "#FFFDF2",
     marginHorizontal: 16,
     marginTop: 16,
     borderRadius: 20,
     padding: 20,
     borderWidth: 1,
-    borderColor: "#F0F0F0",
-
+    borderColor: "#FFCC00",
+    shadowColor: "#FFCC00",
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    overflow: "hidden",
+  },
+  pendingCardBgDecoration: {
+    position: "absolute",
+    top: -30,
+    right: -30,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: "#FFF5CC",
+    opacity: 0.6,
   },
   pendingHeader: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 12,
   },
+  pendingIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "#FFF5CC",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+    borderWidth: 1,
+    borderColor: "#FFCC00",
+  },
   pendingTitle: {
     fontSize: 18,
     fontFamily: font.MonolithRegular,
-    color: TEXT,
-    marginLeft: 10,
+    color: "#111827",
+  },
+  pendingSubtitle: {
+    fontSize: 12,
+    fontFamily: font.MonolithRegular,
+    color: "#64748B",
+    marginTop: 2,
   },
   pendingMessage: {
     fontSize: 14,
@@ -892,6 +928,23 @@ const styles = StyleSheet.create({
   actionButtonText: {
     fontSize: 14,
     fontFamily: font.MonolithRegular,
+  },
+  pendingActionButton: {
+    height: 52,
+    borderRadius: 16,
+    backgroundColor: "#FFCC00",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#FFCC00",
+    shadowOpacity: 0.4,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+  },
+  pendingActionButtonText: {
+    fontSize: 15,
+    fontFamily: font.MonolithRegular,
+    color: "#111827",
   },
   verificationTriggerButton: {
     backgroundColor: "#FFFFFF",
