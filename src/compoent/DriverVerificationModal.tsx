@@ -141,7 +141,6 @@ const DriverVerificationModal = ({
                     <View style={styles.infoLabelWithIcon}>
                       <Icon name="call-outline" size={16} color="#64748B" style={styles.inlineIcon} />
                       <View>
-                        <Text style={styles.infoLabel}>Phone</Text>
 
                         <Text style={styles.callButtonText}>{phone}</Text>
 
@@ -168,11 +167,11 @@ const DriverVerificationModal = ({
                   <View style={styles.infoRow}>
                     <View style={styles.infoLabelWithIcon}>
                       <Icon name="location-outline" size={16} color="#64748B" style={styles.inlineIcon} />
-                      <Text style={styles.infoLabel}>{strings.Address || "Address"}</Text>
+                      <Text style={styles.infoValue}  >
+                        {driver.address}
+                      </Text>
                     </View>
-                    <Text style={styles.infoValue}  >
-                      {driver.address}
-                    </Text>
+
                   </View>
                 ) : null}
               </View>
@@ -185,29 +184,6 @@ const DriverVerificationModal = ({
               </Text>
             </View>
 
-            <View style={styles.detailCard}>
-              <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>{strings.VehicleType || "Vehicle Type"}</Text>
-                <View style={styles.badge}>
-                  <Text style={styles.badgeText}>{vehicleType || ""}</Text>
-                </View>
-              </View>
-              <View style={styles.divider} />
-              <View style={styles.infoRow}>
-                <Text style={styles.infoLabel}>{strings.VehicleNumber || "Vehicle Number"}</Text>
-                <View style={styles.licensePlateBox}>
-                  <View style={styles.licensePlateLeftStrip} />
-                  <Text style={styles.licensePlateText}>{(vehicleNumber || "-").toUpperCase()}</Text>
-                </View>
-              </View>
-            </View>
-
-            <View style={styles.sectionHeader}>
-              <Icon name="document-text-outline" size={18} color="#0F172A" style={styles.inlineIcon} />
-              <Text style={styles.sectionHeaderText}>
-                {strings.VerificationDocuments || "Verification Documents"}
-              </Text>
-            </View>
 
             {documents.length > 0 ? (
               <View style={styles.documentsContainer}>

@@ -611,27 +611,49 @@ export default function ViewDetails() {
 
                 </View>
               </View>
+              <View style={{
+                flexDirection: "row",
+                justifyContent: "center"
+              }}>
 
-              <TouchableOpacity
-                onPress={() => {
-                  const phone = driver?.phone;
-                  if (phone) {
-                    Linking.openURL(`tel:${phone}`);
+
+
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate(ScreenNameEnum.ChatScreen, {
+                      item: item?.id,
+                      chatName: driver?.name,
+                    })
                   }
-                }}
-              >
-                <Image
-                  source={imageIndex.Calls}
-                  style={{
-                    height: 33,
-                    width: 33,
+                >
+                  <Image
+                    source={imageIndex.messtrcker}
+                    style={{
+                      height: 33,
+                      width: 33,
+                      right: 12,
+                    }}
+                  />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    const phone = driver?.phone;
+                    if (phone) {
+                      Linking.openURL(`tel:${phone}`);
+                    }
                   }}
-                />
-              </TouchableOpacity>
+                >
+                  <Image
+                    source={imageIndex.Calls}
+                    style={{
+                      height: 33,
+                      width: 33,
+                    }}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
-
-
-
             <DriverVerificationModal
               visible={isDetailsExpanded}
               driver={driver}

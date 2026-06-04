@@ -121,8 +121,8 @@ const buildListItems = (messages: Message[], rawDates: Record<string, string>): 
 const ChatScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { item } = (route?.params as any) || {};
-  const parcelId = item?.parcelId || item?.id;
+  const { item, chatName } = (route?.params as any) || {};
+  const parcelId = item?.parcelId || item?.id || item;
   const [counterModalVisible, setCounterModalVisible] = useState(false);
   const [offerModalVisible, setOfferModalVisible] = useState(false);
   const [isOfferAvailable, setIsOfferAvailable] = useState(true);
@@ -444,8 +444,7 @@ const ChatScreen = () => {
     item?.carrierName ??
     item?.parcelOwner?.name ??
     item?.driver?.name ??
-    item?.user?.firstName ?? item?.assignedDriver?.name ?? "Delivery Agent";
-
+    item?.user?.firstName ?? item?.assignedDriver?.name ?? chatName ?? "Delivery Agent"
   const agentImage =
     chattingWith?.image ??
     item?.deliveryUser?.profile_image ??
@@ -552,22 +551,6 @@ const ChatScreen = () => {
           </Text>
           <Text style={styles.trackingId}>{item?.trackingId}</Text>
         </View>
-
-        {/* Offer button — only show for Delivery users */}
-        {/* {item?.offerAmount && userData?.type == "Delivery" && isOfferAvailable && (
-
-          <>
-            {item?.offerStatus === "counter_offered" ? (
-              <TouchableOpacity
-                onPress={() => setOfferModalVisible(true)}
-                style={[styles.headerOfferBtn, { backgroundColor: '#FFF7ED', borderColor: '#FDBA74' }]}
-              >
-                <Text style={[styles.headerOfferText, { color: '#EA580C' }]}>View Offer</Text>
-              </TouchableOpacity>
-            ) : null}
-          </>
-
-        )} */}
 
         {/* Call button */}
         <TouchableOpacity onPress={() => handleCall(agentPhone)}>
