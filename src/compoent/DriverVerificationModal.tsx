@@ -72,6 +72,7 @@ const DriverVerificationModal = ({
     }
   };
 
+
   return (
     <Modal
       visible={visible}
