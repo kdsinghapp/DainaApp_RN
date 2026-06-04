@@ -15,15 +15,14 @@ export const useParcelDetails = () => {
   const [amount, setAmount] = useState("");
   const [Phone, setPhoneNumber] = useState("");
   const [imgloading, setImgloading] = useState(true);
-  // https://api.daina.tech/
   const [message, setMessage] = useState("");
   const { item } = rout?.params || ""
   const navigation = useNavigation()
   const imgPath = item?.imageUrl || item?.data?.imageUrl;
-  const fullImageUrl = imgPath 
+  const fullImageUrl = imgPath
     ? (imgPath.startsWith('http') ? imgPath : `https://api.daina.tech${imgPath.startsWith('/') ? '' : '/'}${imgPath}`)
     : null;
-  
+
   console.log("fullImageUrl", fullImageUrl)
   console.log("item path", imgPath)
   const makeOffer = async (amount: any, message: any) => {
