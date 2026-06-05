@@ -32,39 +32,6 @@ import ScreenNameEnum from '../../../routes/screenName.enum';
 import strings from '../../../localization/Localization';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
-const MAP_STYLE = [
-  {
-    "elementType": "geometry",
-    "stylers": [{ "color": "#f5f5f5" }]
-  },
-  {
-    "elementType": "labels.icon",
-    "stylers": [{ "visibility": "off" }]
-  },
-  {
-    "elementType": "labels.text.fill",
-    "stylers": [{ "color": "#616161" }]
-  },
-  {
-    "elementType": "labels.text.stroke",
-    "stylers": [{ "color": "#f5f5f5" }]
-  },
-  {
-    "featureType": "road",
-    "elementType": "geometry",
-    "stylers": [{ "color": "#ffffff" }]
-  },
-  {
-    "featureType": "road.highway",
-    "elementType": "geometry",
-    "stylers": [{ "color": "#dadada" }]
-  },
-  {
-    "featureType": "water",
-    "elementType": "geometry",
-    "stylers": [{ "color": "#c9c9c9" }]
-  }
-];
 
 
 const TripMap = () => {
@@ -551,7 +518,6 @@ const TripMap = () => {
     const token = await AsyncStorage.getItem('token');
     const body = {
       otp: otp ?? '',
-      // order_id: orderId,
       newStatus: newStatus
     };
     console.log(body, orderId)
