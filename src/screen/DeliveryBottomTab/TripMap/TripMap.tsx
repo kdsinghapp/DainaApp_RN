@@ -590,13 +590,13 @@ const TripMap = () => {
                 origin={pickup}
                 destination={dropoff}
                 apikey={GOOGLE_MAPS_APIKEY}
-                strokeWidth={0}
-                strokeColor="transparent"
+                strokeWidth={5}
+                strokeColor="#9CA3AF"
+                lineDashPattern={[5, 5]}
                 lineCap="round"
                 lineJoin="round"
                 precision="high"
                 mode="DRIVING"
-                optimizeWaypoints={true}
                 onReady={result => {
                   setDirectionsFailed(false);
 
@@ -620,8 +620,9 @@ const TripMap = () => {
             {pickupToDropoffValid && directionsFailed && (
               <Polyline
                 coordinates={[pickup, dropoff]}
-                strokeWidth={0}
-                strokeColor="transparent"
+                strokeWidth={5}
+                strokeColor="#9CA3AF"
+                lineDashPattern={[5, 5]}
                 lineCap="round"
                 lineJoin="round"
               />
@@ -632,13 +633,12 @@ const TripMap = () => {
                 origin={driverCoordinate}
                 destination={routeDestination}
                 apikey={GOOGLE_MAPS_APIKEY}
-                strokeWidth={0}
-                strokeColor="transparent"
+                strokeWidth={5}
+                strokeColor="#FFCC00"
                 lineCap="round"
                 lineJoin="round"
                 precision="high"
                 mode="DRIVING"
-                optimizeWaypoints={true}
                 onReady={result => {
                   setActiveDirectionsFailed(false);
                   mapRef.current?.fitToCoordinates(result.coordinates, {
@@ -660,8 +660,8 @@ const TripMap = () => {
             {activeRouteValid && activeDirectionsFailed && (
               <Polyline
                 coordinates={[driverCoordinate, routeDestination]}
-                strokeWidth={0}
-                strokeColor="transparent"
+                strokeWidth={5}
+                strokeColor="#FFCC00"
                 lineCap="round"
                 lineJoin="round"
               />

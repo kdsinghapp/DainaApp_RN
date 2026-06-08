@@ -615,8 +615,9 @@ const CourierTrackingScreen = () => {
               destination={dropoff}
               apikey={GOOGLE_MAPS_APIKEY}
               mode="DRIVING"
-              strokeWidth={0}
-              strokeColor="transparent"
+              strokeWidth={5}
+              strokeColor="#9CA3AF"
+              lineDashPattern={[5, 5]}
               lineCap="round"
               lineJoin="round"
               precision="high"
@@ -639,8 +640,9 @@ const CourierTrackingScreen = () => {
           {(!pickupToDropoffValid || fullRouteFailed) && (
             <Polyline
               coordinates={[pickup, dropoff]}
-              strokeWidth={0}
-              strokeColor="transparent"
+              strokeWidth={5}
+              strokeColor="#9CA3AF"
+              lineDashPattern={[5, 5]}
               lineCap="round"
               lineJoin="round"
             />
@@ -654,11 +656,10 @@ const CourierTrackingScreen = () => {
               destination={routeDestForPolyline}
               apikey={GOOGLE_MAPS_APIKEY}
               mode="DRIVING"
-              strokeWidth={0}
-              strokeColor="transparent"
+              strokeWidth={5}
+              strokeColor="#FFCC00"
               lineCap="round"
               lineJoin="round"
-              optimizeWaypoints={true}
               precision="high"
               onReady={(res) => {
                 setActiveRouteFailed(false);
@@ -678,8 +679,8 @@ const CourierTrackingScreen = () => {
           {routePointsValid && activeRouteFailed && (
             <Polyline
               coordinates={[routeOrigin, routeDestForPolyline]}
-              strokeWidth={0}
-              strokeColor="transparent"
+              strokeWidth={5}
+              strokeColor="#FFCC00"
               lineCap="round"
               lineJoin="round"
             />
