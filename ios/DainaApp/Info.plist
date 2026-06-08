@@ -33,19 +33,18 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>This app needs camera access to take photos for your parcel or profile.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>This app needs your current location to show you on the map, track delivery, and find nearby services.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app needs your location in background to update delivery status and show you on the map.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>This app needs your current location to show you on the map, track delivery, and find nearby services.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>We use your photo library to select profile pictures and images of your parcels.</string>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>We use your photo library to save photos.</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>We use your microphone for video recording if needed.</string>
-
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>We use your photo library to save photos.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We use your photo library to select profile pictures and images of your parcels.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
@@ -91,14 +90,12 @@
 		<string>TT Neoris Trial Variable.ttf</string>
 		<string>Zocial.ttf</string>
 	</array>
-
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
 		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
-
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
