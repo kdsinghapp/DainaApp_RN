@@ -1178,7 +1178,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderRadius: 16,
     gap: 12,
-
+    zIndex: 1000,
   },
   arrivalBadgeIconWrap: {
     width: 36,
