@@ -1409,6 +1409,8 @@ PODS:
     - React-Core
   - react-native-netinfo (11.4.1):
     - React-Core
+  - react-native-otp-verify (1.2.0):
+    - React-Core
   - react-native-render-html (6.3.4):
     - React-Core
   - react-native-safe-area-context (5.6.1):
@@ -2083,6 +2085,7 @@ DEPENDENCIES:
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
+  - react-native-otp-verify (from `../node_modules/react-native-otp-verify`)
   - react-native-render-html (from `../node_modules/react-native-render-html`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-webview (from `../node_modules/react-native-webview`)
@@ -2236,6 +2239,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-maps"
   react-native-netinfo:
     :path: "../node_modules/@react-native-community/netinfo"
+  react-native-otp-verify:
+    :path: "../node_modules/react-native-otp-verify"
   react-native-render-html:
     :path: "../node_modules/react-native-render-html"
   react-native-safe-area-context:
@@ -2389,6 +2394,7 @@ SPEC CHECKSUMS:
   react-native-image-picker: 82a9e4371e48c518a69882b3c54de11134196cd2
   react-native-maps: 622489184d305713b2f576b0cad1375ac75e62a6
   react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
+  react-native-otp-verify: b8f402aceafdad77eba70620209c616f242ff0f1
   react-native-render-html: 5afc4751f1a98621b3009432ef84c47019dcb2bd
   react-native-safe-area-context: 2243039f43d10cb1ea30ec5ac57fc6d1448413f4
   react-native-webview: ff636433437b4c4cacea56fd43e3fb3f6ce94030
