@@ -225,12 +225,10 @@ export const styles = StyleSheet.create({
   logoutBtn: {
     height: 56,
     borderRadius: 16,
-    alignItems: "center",
+    backgroundColor: "white",
     justifyContent: "center",
+    alignItems: "center",
     marginTop: 2,
-    backgroundColor: "#FEF2F2",
-    borderWidth: 1,
-    borderColor: "#FECACA",
     flexDirection: "row",
   },
   logoutText: {

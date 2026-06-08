@@ -252,9 +252,8 @@ const DeliveryProfile: React.FC<Props> = ({
           />
           <ItemDivider />
           <ListItem
-            icon={<Icon name="trash-outline" size={24} color="#EF4444" />}
+            icon={<Icon name="trash-outline" size={24} color={color.primary} />}
             label={strings.DeleteAccount}
-            destructive
             onPress={() => {
               setDeleteModalVisible(true);
             }}

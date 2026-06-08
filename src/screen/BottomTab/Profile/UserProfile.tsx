@@ -255,11 +255,13 @@ const ProfileScreen: React.FC = () => {
                   title: strings.Support
                 })}
               />
+
+
               <MenuItem
                 index={6}
                 isLast
-                destructive
-                icon={<Icon name="trash-outline" size={22} color="#EF4444" />}
+
+                icon={<Icon name="trash-outline" size={22} color={color.primary} />}
                 label={strings.DeleteAccount}
                 onPress={() => {
                   ReactNativeHapticFeedback.trigger("impactMedium", hapticOptions);
@@ -590,12 +592,10 @@ const styles = StyleSheet.create({
   logoutBtn: {
     height: 56,
     borderRadius: 16,
-    backgroundColor: "#FEF2F2",
+    backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 2,
-    borderWidth: 1,
-    borderColor: "#FECACA",
     flexDirection: "row",
   },
   logoutText: {
