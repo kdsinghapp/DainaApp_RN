@@ -306,7 +306,6 @@ const ProfileScreen: React.FC = () => {
         }}
         onCancel={() => setDeleteModalVisible(false)}
       />
-      <LoadingModal visible={isLoading} />
     </SafeAreaView>
   );
 };

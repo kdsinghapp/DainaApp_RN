@@ -288,7 +288,7 @@ const DeliveryProfile: React.FC<Props> = ({
           onCancel={() => setDeleteModalVisible(false)}
         />
       </ScrollView>
-      <LoadingModal visible={isLoading} />
+      {/* <LoadingModal visible={isLoading} /> */}
     </SafeAreaView>
   );
 };
