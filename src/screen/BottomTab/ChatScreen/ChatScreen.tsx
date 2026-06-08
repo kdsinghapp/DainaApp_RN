@@ -122,12 +122,20 @@ const ChatScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { item, chatName } = (route?.params as any) || {};
+
+
+  console.log("item", item)
   const parcelId = item?.parcelId || item?.id || item;
+
+  console.log("parcelId", parcelId)
+
   const [counterModalVisible, setCounterModalVisible] = useState(false);
   const [offerModalVisible, setOfferModalVisible] = useState(false);
   const [isOfferAvailable, setIsOfferAvailable] = useState(true);
   console.log("item", item)
   const userData: any = useSelector((state: any) => state?.auth?.userData);
+  const driverId = item?.driverId || item?.driver?.id || item?.assignedDriver?.id || item?.assignedDriverId || item?.deliveryUser?.id || userData?.id || "";
+  const offerId = item?.offerId || "";
   const [messages, setMessages] = useState<Message[]>([]);
   const rawDatesRef = useRef<Record<string, string>>({});
   const [inputText, setInputText] = useState("");
@@ -244,7 +252,14 @@ const ChatScreen = () => {
 
     try {
       if (showLoading) setLoading(true);
-      const response = await fetch(`${base_url}/chat/${parcelId}/messages`, {
+      let url = `${base_url}/chat/${parcelId}/messages`;
+      let params = [];
+      if (driverId) params.push(`driverId=${driverId}`);
+      if (offerId) params.push(`offerId=${offerId}`);
+      if (params.length > 0) {
+        url += `?${params.join("&")}`;
+      }
+      const response = await fetch(url, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -304,7 +319,9 @@ const ChatScreen = () => {
   // ── 2. Connect WebSocket ──────────────────────────────────────────────────
   useEffect(() => {
     if (!tokenLoaded || !parcelId || !token) return;
-    const wsUrl = `${WebSocket_Url}/chat/${parcelId}?token=${token}`;
+    const wsUrl = driverId
+      ? `${WebSocket_Url}/chat/${parcelId}?token=${token}&driverId=${driverId}`
+      : `${WebSocket_Url}/chat/${parcelId}?token=${token}`;
     // const wsUrl = `${WebSocket_Url}/chat${parcelId}?token=${token}`;
     // const WS_BASE = "wss://aitechnotech.in/DAINA/ws/chat";
 

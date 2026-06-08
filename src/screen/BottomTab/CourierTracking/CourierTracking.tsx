@@ -615,8 +615,8 @@ const CourierTrackingScreen = () => {
               destination={dropoff}
               apikey={GOOGLE_MAPS_APIKEY}
               mode="DRIVING"
-              strokeWidth={5}
-              strokeColor="#FFCC00"
+              strokeWidth={0}
+              strokeColor="transparent"
               lineCap="round"
               lineJoin="round"
               precision="high"
@@ -639,8 +639,8 @@ const CourierTrackingScreen = () => {
           {(!pickupToDropoffValid || fullRouteFailed) && (
             <Polyline
               coordinates={[pickup, dropoff]}
-              strokeWidth={4}
-              strokeColor="#FFCC00"
+              strokeWidth={0}
+              strokeColor="transparent"
               lineCap="round"
               lineJoin="round"
             />
@@ -654,8 +654,8 @@ const CourierTrackingScreen = () => {
               destination={routeDestForPolyline}
               apikey={GOOGLE_MAPS_APIKEY}
               mode="DRIVING"
-              strokeWidth={7}
-              strokeColor={polylineStrokeColor}
+              strokeWidth={0}
+              strokeColor="transparent"
               lineCap="round"
               lineJoin="round"
               optimizeWaypoints={true}
@@ -678,8 +678,8 @@ const CourierTrackingScreen = () => {
           {routePointsValid && activeRouteFailed && (
             <Polyline
               coordinates={[routeOrigin, routeDestForPolyline]}
-              strokeWidth={6}
-              strokeColor={polylineStrokeColor}
+              strokeWidth={0}
+              strokeColor="transparent"
               lineCap="round"
               lineJoin="round"
             />
@@ -693,6 +693,21 @@ const CourierTrackingScreen = () => {
 
       <SafeAreaView style={styles.headerOverlay} edges={["top"]}>
         <CustomHeader label="" />
+        {eta !== "Calculating..." && (
+          <View style={styles.routeSummaryCard}>
+            <View style={styles.routeSummaryIcon}>
+              <Ionicons name="navigate" size={18} color="#F59E0B" />
+            </View>
+            <View style={styles.routeSummaryCopy}>
+              <Text style={styles.routeSummaryLabel}>Estimated Arrival</Text>
+              <Text style={styles.routeSummaryText}>{eta}</Text>
+            </View>
+            <View style={styles.routeSummaryMetric}>
+              <Text style={styles.routeSummaryDistance}>{totalDistanceText}</Text>
+              <Text style={styles.routeSummaryEta}>Distance</Text>
+            </View>
+          </View>
+        )}
       </SafeAreaView>
 
       {/* Rapido-style bottom sheet */}
