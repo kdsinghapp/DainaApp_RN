@@ -9,6 +9,7 @@ import {
   ScrollView,
   RefreshControl,
   Animated,
+  Platform,
 } from "react-native";
 import ReAnimated, { FadeInDown, FadeIn, Layout } from "react-native-reanimated";
 import { SafeAreaView, } from "react-native-safe-area-context";
@@ -135,7 +136,7 @@ const DeliveryHome = () => {
       <View
         style={{
           flex: 1,
-          marginBottom: 70,
+          marginBottom: Platform.OS === "ios" ? 20 : 10,
         }}
       >
 

@@ -168,11 +168,11 @@ const OnlineOfflineButton: React.FC<Props> = ({
   return (
     <View style={styles.container}>
       {/* Status indicator */}
-      <View style={[styles.statusCard, isOnline ? styles.statusCardOnline : styles.statusCardOffline]}>
+      {/* <View style={[styles.statusCard, isOnline ? styles.statusCardOnline : styles.statusCardOffline]}>
         <Text style={[styles.statusText, { color: isOnline ? '#10b981' : '#6b7280' }]}>
           {getStatusLabel()}
         </Text>
-      </View>
+      </View> */}
 
       {/* Swipe Component */}
       <View style={[

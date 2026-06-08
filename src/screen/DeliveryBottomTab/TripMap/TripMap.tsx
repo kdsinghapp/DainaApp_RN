@@ -590,8 +590,8 @@ const TripMap = () => {
                 origin={pickup}
                 destination={dropoff}
                 apikey={GOOGLE_MAPS_APIKEY}
-                strokeWidth={4}
-                strokeColor="rgba(15, 23, 42, 0.22)"
+                strokeWidth={0}
+                strokeColor="transparent"
                 lineCap="round"
                 lineJoin="round"
                 precision="high"
@@ -620,8 +620,8 @@ const TripMap = () => {
             {pickupToDropoffValid && directionsFailed && (
               <Polyline
                 coordinates={[pickup, dropoff]}
-                strokeWidth={4}
-                strokeColor="rgba(15, 23, 42, 0.22)"
+                strokeWidth={0}
+                strokeColor="transparent"
                 lineCap="round"
                 lineJoin="round"
               />
@@ -632,8 +632,8 @@ const TripMap = () => {
                 origin={driverCoordinate}
                 destination={routeDestination}
                 apikey={GOOGLE_MAPS_APIKEY}
-                strokeWidth={7}
-                strokeColor={color.primary}
+                strokeWidth={0}
+                strokeColor="transparent"
                 lineCap="round"
                 lineJoin="round"
                 precision="high"
@@ -660,8 +660,8 @@ const TripMap = () => {
             {activeRouteValid && activeDirectionsFailed && (
               <Polyline
                 coordinates={[driverCoordinate, routeDestination]}
-                strokeWidth={6}
-                strokeColor={color.primary}
+                strokeWidth={0}
+                strokeColor="transparent"
                 lineCap="round"
                 lineJoin="round"
               />
