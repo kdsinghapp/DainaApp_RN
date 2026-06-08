@@ -541,7 +541,7 @@ const TripMap = () => {
         return;
       }
       if (newStatus == STATUS.DELIVERED && deliveryOtp == '') {
-        Alert.alert(strings.EnterDeliveryOTPShared)
+        errorToast(strings.EnterDeliveryOTPShared)
         return;
       }
 
@@ -552,12 +552,13 @@ const TripMap = () => {
         navigation.goBack();
         // You might want to refresh the data here
       } else {
-        Alert.alert(strings.Error, result.message ?? strings.FailedUpdateStatus);
+        errorToast(result.message ?? strings.FailedUpdateStatus)
         // Alert.alert("Success", "Update Status Successfully");
       }
     } catch (error) {
       console.error("Status update error:", error);
-      Alert.alert(strings.Error, strings.SomethingWentWrong);
+      errorToast(strings.SomethingWentWrong)
+
     } finally {
       setActionLoading(false);
     }
