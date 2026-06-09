@@ -12,10 +12,8 @@ import {
   PanResponder,
   ScrollView,
   Platform,
-
 } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
 import MapView, { Marker, AnimatedRegion, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import StatusBarComponent from "../../../compoent/StatusBarCompoent";
@@ -32,8 +30,7 @@ import { successToast } from "../../../utils/customToast";
 import RatingModal from "../../../compoent/RatingModal";
 import strings from "../../../localization/Localization";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
-const { width, height } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 const MAP_STYLE = [
   { "elementType": "geometry", "stylers": [{ "color": "#f5f5f5" }] },
   { "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] },
@@ -58,7 +55,6 @@ const MAP_STYLE = [
 const PANEL_PEEK_HEIGHT = 280;
 const PANEL_OPEN_Y = height * 0.3;
 const PANEL_CLOSED_Y = height - PANEL_PEEK_HEIGHT;
-
 const CourierTrackingScreen = () => {
   const nav = useNavigation();
   const [loading, setLoading] = useState(false);
@@ -115,7 +111,7 @@ const CourierTrackingScreen = () => {
           };
           ws.onmessage = async (event: { data: string | Blob | ArrayBuffer }) => {
             let raw: string;
-            const d = event.data;
+            const d = event?.data;
             if (typeof d === "string") raw = d;
             else if (d && typeof (d as Blob).text === "function") raw = await (d as Blob).text();
             else if (d instanceof ArrayBuffer) raw = new TextDecoder().decode(d);
@@ -1189,13 +1185,11 @@ const styles = StyleSheet.create({
     fontFamily: font.MonolithRegular,
     lineHeight: 20,
   },
-
   driverSection: {
     flexDirection: "row",
     alignItems: "flex-start",
     justifyContent: "space-between",
     padding: 10,
-
   },
   driverCore: { flexDirection: "row", alignItems: "center", flex: 1 },
   avatarWrap: {
