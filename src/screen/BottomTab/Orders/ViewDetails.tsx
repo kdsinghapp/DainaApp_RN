@@ -404,66 +404,54 @@ export default function ViewDetails() {
           }}
         >
           <View style={styles.cardHeader}>
-            <Text style={styles.muted}>{strings.TrackingID}:</Text>
-            <Text style={styles.bold}>{order.trackingId}</Text>
+            <View>
+              <Text style={styles.muted}>{strings.TrackingID}</Text>
+              <Text style={styles.bold}>{order.trackingId}</Text>
+            </View>
+            <View
+              style={[
+                styles.headerStatusPill,
+                { backgroundColor: displayStatusColor },
+              ]}
+            >
+              <Text style={styles.headerStatusText}>{displayStatusLabel}</Text>
+            </View>
           </View>
 
-          <Text style={styles.stepCompleteText}>
-            {strings.formatString(strings.StepXofY, activeIdx + 1, STATUS_STEPS.length)}
-          </Text>
-          {/* Progress Bar */}
-          <View style={styles.trackBase}
-          >
-            <View style={styles.trackLine} />
-            <View style={[styles.trackFill, { width: `${progress * 100}%` }]} />
-            {/* {STATUS_STEPS.map((_, i) => (
-              <View
-                key={i}
-                style={[
-                  styles.dot,
-                  i <= currentIdx ? styles.dotActive : styles.dotInactive,
-                  { left: `${(i / (STATUS_STEPS.length - 1)) * 100}%` },
-                ]}
-              />
-            ))} */}
-
-            {STATUS_STEPS.map((step, i) => {
-              const isActive = i <= activeIdx;
-              return (
-                <View
-                  key={step}
-                  style={[
-                    styles.dot,
-                    isActive ? styles.dotActive : styles.dotInactive,
-                    { left: `${(i / (STATUS_STEPS.length - 1)) * 100}%` },
-                  ]}
-                />
-              );
-            })}
+          <View style={styles.progressSection}>
+            <View style={styles.progressHeaderRow}>
+              <Text style={styles.stepCompleteText}>
+                {strings.formatString(strings.StepXofY, activeIdx + 1, STATUS_STEPS.length)}
+              </Text>
+              <Text style={styles.progressPercent}>{Math.round(progress * 100)}%</Text>
+            </View>
+            <View style={styles.trackBase}>
+              <View style={styles.trackLine} />
+              <View style={[styles.trackFill, { width: `${progress * 100}%` }]} />
+              {STATUS_STEPS.map((step, i) => {
+                const isActive = i <= activeIdx;
+                return (
+                  <View
+                    key={step}
+                    style={[
+                      styles.dot,
+                      isActive ? styles.dotActive : styles.dotInactive,
+                      { left: `${(i / (STATUS_STEPS.length - 1)) * 100}%` },
+                    ]}
+                  />
+                );
+              })}
+            </View>
           </View>
 
-          {/* City Info */}
-          {/* <TouchableOpacity style={styles.row}
-            onPress={() => {
-              if (statusNorm === STATUS.PENDING) {
-                (navigation as any).navigate(ScreenNameEnum.OfferOR, {
-                  id: { parcel: parcel }
-                })
-              } else {
-                (navigation as any).navigate(ScreenNameEnum.CourierTrackingScreen, {
-                  item: parcel
-                })
-              }
-            }}
-          > */}
           <TouchableOpacity
             style={[
               styles.row,
-              (statusNorm === STATUS.DELIVERED || hasCounterOffered) && { opacity: 0.5 } // thoda fade dikhe
+              (statusNorm === STATUS.DELIVERED || hasCounterOffered) && { opacity: 0.55 }
             ]}
             disabled={statusNorm === STATUS.DELIVERED || hasCounterOffered}
             onPress={() => {
-              if (statusNorm === STATUS.DELIVERED || hasCounterOffered) return; // extra safety
+              if (statusNorm === STATUS.DELIVERED || hasCounterOffered) return;
 
               if (statusNorm === STATUS.PENDING) {
                 (navigation as any).navigate(ScreenNameEnum.OfferOR, {
@@ -476,24 +464,36 @@ export default function ViewDetails() {
               }
             }}
           >
-            <View style={styles.cityBlock}>
-              <Text style={styles.date}>{order.startDate}</Text>
-              <Text style={styles.city}>{order.fromCity}</Text>
-            </View>
+            <View style={styles.addressTimeline}>
+              <View style={styles.addressItem}>
+                <View style={styles.addressMarkerWrap}>
+                  <View style={styles.fromDot} />
+                  <View style={styles.addressConnectorLine} />
+                </View>
+                <View style={styles.addressContent}>
+                  <View style={styles.addressMetaRow}>
+                    <Text style={styles.routeLabel}>{strings.Pickup}</Text>
+                    <Text style={styles.date}>{order.startDate}</Text>
+                  </View>
+                  <Text style={styles.city}>{order.fromCity || "—"}</Text>
+                </View>
+              </View>
 
-            <View style={[styles.cityBlock, { alignItems: "flex-end" }]}>
-              <Text style={styles.date}>{order.endDate}</Text>
-              <Text style={styles.city}>{order.toCity}</Text>
+              <View style={styles.addressItem}>
+                <View style={styles.addressMarkerWrap}>
+                  <View style={styles.toDot} />
+                </View>
+                <View style={styles.addressContent}>
+                  <View style={styles.addressMetaRow}>
+                    <Text style={styles.routeLabel}>{strings.Drop}</Text>
+                    <Text style={styles.date}>{order.endDate}</Text>
+                  </View>
+                  <Text style={styles.city}>{order.toCity || "—"}</Text>
+                </View>
+              </View>
             </View>
           </TouchableOpacity>
-          <View
-            style={{
-              borderWidth: 0.8,
-              marginTop: 11,
-              borderColor: "#EDEFEE",
-              marginBottom: 10,
-            }}
-          />
+          <View style={styles.cardDivider} />
           <RatingModal
             visible={showRatingModal}
             onClose={closeRatingModal}
@@ -502,23 +502,9 @@ export default function ViewDetails() {
           />
           {/* Footer */}
           <View style={styles.footerRow}>
-            <View
-              style={[
-                styles.pill,
-                activeIdx >= STATUS_STEPS.length - 1 ? styles.pillDone : styles.pillProgress,
-                { backgroundColor: displayStatusColor },
-              ]}
-            >
-              <Text style={styles.pillText}>
-                {displayStatusLabel}
-                {/* {order.status === "pending" ? "Waiting for Driver" : order.status === "packaged"
-                  ? "Still Packaged"
-                  : order.status === "shipped"
-                    ? "In Shipping"
-                    : order.status === "inTransit"
-                      ? "In Transit"
-                      : "Delivered"} */}
-              </Text>
+            <View style={styles.footerInfo}>
+              <Icon name="ellipse" size={8} color={displayStatusColor} />
+              <Text style={styles.footerInfoText}>{displayStatusLabel}</Text>
             </View>
             {statusNorm === STATUS.DELIVERED ? (
               <TouchableOpacity
@@ -526,17 +512,9 @@ export default function ViewDetails() {
                 onPress={() => {
                   setShowRatingModal(true)
                 }}
-                style={{
-                  padding: 5,
-                  borderRadius: 20,
-                  paddingVertical: 7
-                }}>
-                <Text style={[styles.viewDetails, {
-                  color: "white",
-                  fontFamily: font.MonolithRegular
-                }]}
-
-                >
+                style={styles.cardActionButton}>
+                <Icon name="star-outline" size={14} color="#111827" style={styles.actionButtonIcon} />
+                <Text style={styles.viewDetails}>
                   {strings.RateYourDelivery}</Text>
               </TouchableOpacity>
 
@@ -555,18 +533,15 @@ export default function ViewDetails() {
                   }
                 }}
                 activeOpacity={0.5}
-                style={{
-                  padding: 5,
-                  borderRadius: 20,
-                  paddingVertical: 7
-                }}
+                style={styles.cardActionButton}
               >
-                <Text style={[styles.viewDetails, {
-                  color: "white",
-                  fontFamily: font.MonolithRegular
-                }]}
-
-                >
+                <Icon
+                  name={statusNorm === STATUS.PENDING ? "pricetag-outline" : "navigate-outline"}
+                  size={14}
+                  color="#111827"
+                  style={styles.actionButtonIcon}
+                />
+                <Text style={styles.viewDetails}>
                   {statusNorm === STATUS.PENDING ? strings.ViewOffer : strings.TrackDetail}</Text>
               </TouchableOpacity>
             )}
@@ -779,46 +754,164 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: CARD,
     marginHorizontal: 16,
-    marginTop: 10,
-    borderRadius: 16,
-    padding: 14,
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    borderWidth: 1,
-    borderColor: "#eee", shadowColor: "#000",
-
+    marginTop: 12,
+    borderRadius: 20,
+    padding: 16,
 
   },
-  cardHeader: { flexDirection: "row", justifyContent: "space-between", marginBottom: 10 },
-  muted: { color: MUTED, fontFamily: font.MonolithRegular },
-  bold: { color: TEXT, fontFamily: font.MonolithRegular },
+  cardHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 },
+  muted: { color: "#94A3B8", fontFamily: font.MonolithRegular, fontSize: 11, textTransform: "uppercase" },
+  bold: { color: TEXT, fontFamily: font.MonolithRegular, fontSize: 16, marginTop: 3 },
+  headerStatusPill: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 14,
+    maxWidth: 130,
+  },
+  headerStatusText: {
+    color: "#FFFFFF",
+    fontFamily: font.MonolithRegular,
+    fontSize: 11,
+    textTransform: "uppercase",
+    textAlign: "center",
+  },
+  progressSection: {
+    backgroundColor: "#FFFBEB",
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingTop: 11,
+    paddingBottom: 8,
+    marginBottom: 14,
+  },
+  progressHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 5,
+  },
   stepCompleteText: {
-    color: MUTED,
+    color: "#92400E",
     fontSize: 12,
     fontFamily: font.MonolithRegular,
-    marginBottom: 6,
   },
-  trackBase: { height: 24, justifyContent: "center", marginBottom: 10 },
-  trackLine: { position: "absolute", height: 4, backgroundColor: "#E8E8E8", left: 8, right: 8, borderRadius: 4 },
-  trackFill: { position: "absolute", height: 4, backgroundColor: YELLOW, left: 8, borderTopLeftRadius: 4, borderBottomLeftRadius: 4 },
-  dot: { position: "absolute", width: 16, height: 16, marginLeft: -8, borderRadius: 8, top: 4, borderWidth: 3 },
+  progressPercent: {
+    color: "#111827",
+    fontSize: 12,
+    fontFamily: font.MonolithRegular,
+  },
+  trackBase: { height: 28, justifyContent: "center" },
+  trackLine: { position: "absolute", height: 5, backgroundColor: "#E5E7EB", left: 8, right: 8, borderRadius: 4 },
+  trackFill: { position: "absolute", height: 5, backgroundColor: YELLOW, left: 8, borderTopLeftRadius: 4, borderBottomLeftRadius: 4 },
+  dot: { position: "absolute", width: 16, height: 16, marginLeft: -8, borderRadius: 8, top: 6, borderWidth: 3 },
   dotActive: { backgroundColor: YELLOW, borderColor: YELLOW },
   dotInactive: { backgroundColor: "#FFF", borderColor: "#E8E8E8" },
 
-  row: { flexDirection: "row", alignItems: "center", marginBottom: 8 },
-  cityBlock: { flex: 1 },
-  date: { color: MUTED, fontSize: 12, fontFamily: font.MonolithRegular, marginBottom: 4 },
-  city: { color: TEXT, fontSize: 16, fontFamily: font.MonolithRegular },
+  row: {
+    flexDirection: "column",
+    backgroundColor: "#F8FAFC",
+    borderRadius: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 14,
+    marginBottom: 12,
+  },
+  addressTimeline: {
+    width: "100%",
+  },
+  addressItem: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+  addressMarkerWrap: {
+    width: 20,
+    alignItems: "center",
+    paddingTop: 4,
+    marginRight: 10,
+  },
+  addressConnectorLine: {
+    width: 2,
+    minHeight: 38,
+    flex: 1,
+    backgroundColor: "#CBD5E1",
+    marginTop: 6,
+    marginBottom: 6,
+  },
+  addressContent: {
+    flex: 1,
+    minWidth: 0,
+    paddingBottom: 14,
+  },
+  addressMetaRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 10,
+    marginBottom: 5,
+  },
+  routeLabel: {
+    color: "#94A3B8",
+    fontSize: 10,
+    fontFamily: font.MonolithRegular,
+    textTransform: "uppercase",
+    flexShrink: 0,
+  },
+  fromDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: "#10B981",
+    borderWidth: 2,
+    borderColor: "#FFFFFF",
+  },
+  toDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: "#EF4444",
+    borderWidth: 2,
+    borderColor: "#FFFFFF",
+  },
+  date: { color: "#64748B", fontSize: 10, fontFamily: font.MonolithRegular, flexShrink: 1, textAlign: "right" },
+  city: { color: TEXT, fontSize: 13, fontFamily: font.MonolithRegular, lineHeight: 19 },
   playButton: {
     width: 28, height: 28, borderRadius: 14, borderWidth: 1, borderColor: BORDER,
     alignItems: "center", justifyContent: "center", marginHorizontal: 10, backgroundColor: "#FFF",
   },
-  footerRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
-  pill: { paddingVertical: 6, paddingHorizontal: 12, borderRadius: 999 },
+  cardDivider: {
+    height: 1,
+    backgroundColor: "#EDEFEE",
+    marginBottom: 12,
+  },
+  footerRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 12 },
+  footerInfo: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F8FAFC",
+    borderRadius: 14,
+    paddingHorizontal: 10,
+    paddingVertical: 9,
+  },
+  footerInfoText: {
+    marginLeft: 7,
+    color: "#475569",
+    fontFamily: font.MonolithRegular,
+    fontSize: 12,
+    textTransform: "uppercase",
+  },
+  pill: { paddingVertical: 7, paddingHorizontal: 12, borderRadius: 999, flexShrink: 1 },
   pillProgress: { backgroundColor: "#FFCC00" },
   pillDone: { backgroundColor: "#FFCC00" },
   pillText: { fontFamily: font.MonolithRegular, fontSize: 12, color: "white" },
-  viewDetails: { color: "black", fontFamily: font.MonolithRegular, fontSize: 12, },
+  cardActionButton: {
+    backgroundColor: YELLOW,
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+    borderRadius: 18,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  actionButtonIcon: { marginRight: 6 },
+  viewDetails: { color: "#111827", fontFamily: font.MonolithRegular, fontSize: 12 },
 
   sectionTitleRow: { flexDirection: "row", alignItems: "center", marginTop: 18, marginHorizontal: 16, marginBottom: 12 },
   trackingSectionIcon: { width: 28, height: 28, marginRight: 10 },
@@ -838,6 +931,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: "center",
     justifyContent: "center",
+
   },
   stepIconDone: { backgroundColor: YELLOW },
   stepIconPending: { backgroundColor: "#E5E7EB" },

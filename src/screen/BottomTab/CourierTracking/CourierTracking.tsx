@@ -572,6 +572,8 @@ const CourierTrackingScreen = () => {
           customMapStyle={MAP_STYLE}
           mapPadding={{ top: hp(9), right: wp(4), bottom: PANEL_PEEK_HEIGHT + hp(6), left: wp(4) }}
           loadingEnabled
+          loadingIndicatorColor="#FFCC00"
+
           showsUserLocation={false}
           onMapReady={() => setTimeout(() => fitMapToRoute(), 100)}
           onLayout={() => setTimeout(() => fitMapToRoute(), 100)}
@@ -728,7 +730,7 @@ const CourierTrackingScreen = () => {
 
           <View style={styles.locationContent}>
             <View style={styles.routeHeaderRow}>
-              <Text style={styles.routeTitle}>Delivery Route</Text>
+              <Text style={styles.routeTitle}></Text>
               <View style={styles.distancePill}>
                 <Ionicons name="navigate" size={13} color="#111827" />
                 <Text style={styles.distanceText}>{totalDistanceText}</Text>
