@@ -19,7 +19,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MapView, { Marker, AnimatedRegion, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
 import MapViewDirections from "react-native-maps-directions";
 import StatusBarComponent from "../../../compoent/StatusBarCompoent";
-import CustomHeader from "../../../compoent/CustomHeader";
 import { SafeAreaView } from "react-native-safe-area-context";
 import imageIndex from "../../../assets/imageIndex";
 import font from "../../../theme/font";
@@ -150,6 +149,7 @@ const CourierTrackingScreen = () => {
                     finalLon = lat;
                   }
                   const newPoint = { latitude: finalLat, longitude: finalLon };
+                  setHasLiveDriverLocation(true);
                   setCurrentCoordsRef.current?.(newPoint);
                   const region = driverLocationRef.current;
                   if (region) {
@@ -197,12 +197,8 @@ const CourierTrackingScreen = () => {
   }, []);
   const driver = parcel?.assignedDriver ?? item?.assignedDriver;
   const status = parcel?.deliveryStatus ?? item?.deliveryStatus;
-  const staticDriverCoords = {
-    latitude: 33.95,
-    longitude: 117.4028,
-  };
-  const DEFAULT_LAT = 28.6139;
-  const DEFAULT_LNG = 77.209;
+  const DEFAULT_LAT = 22.7176;
+  const DEFAULT_LNG = 75.8577;
   type LatLng = { latitude: number; longitude: number };
   const safeNum = (v: any, fallback: number | null): number | null => {
     if (v == null) return fallback;
@@ -210,29 +206,57 @@ const CourierTrackingScreen = () => {
     return Number.isFinite(n) ? n : fallback;
   };
   const source = parcel ?? item;
-  const getCoords = (latField: any, lonField: any): LatLng | null => {
+  const normalizeCoords = (latField: any, lonField: any): LatLng | null => {
     const v1 = safeNum(latField, null);
     const v2 = safeNum(lonField, null);
     if (v1 === null || v2 === null) return null;
     if (v1 > 60 && v2 < 40) return { latitude: v2, longitude: v1 };
     return { latitude: v1, longitude: v2 };
   };
+  const getCoords = (
+    objectCandidates: any[],
+    coordinatePairs: Array<[any, any]>,
+  ): LatLng | null => {
+    for (const candidate of objectCandidates) {
+      if (!candidate) continue;
+      if (typeof candidate === "object") {
+        const point = normalizeCoords(
+          candidate.latitude ?? candidate.lat,
+          candidate.longitude ?? candidate.lng ?? candidate.lon,
+        );
+        if (point) return point;
+      }
+    }
 
-  const pickup = getCoords(
-    source?.pickupLat ?? source?.pickupLocationLat ?? source?.pickup_location_lat,
-    source?.pickupLon ?? source?.pickupLocationLon ?? source?.pickup_location_lon
-  ) ?? { latitude: DEFAULT_LAT, longitude: DEFAULT_LNG };
+    for (const [latField, lonField] of coordinatePairs) {
+      const point = normalizeCoords(latField, lonField);
+      if (point) return point;
+    }
 
-  const dropoff = getCoords(
-    source?.dropLat ?? source?.dropLocationLat ?? source?.drop_location_lat,
-    source?.dropLon ?? source?.dropLocationLon ?? source?.drop_location_lon
-  ) ?? { latitude: DEFAULT_LAT, longitude: DEFAULT_LNG };
-  const distanceBetween = (a: LatLng, b: LatLng) => {
-    const dLat = a?.latitude - b.latitude;
-    const dLng = a.longitude - b.longitude;
-    return Math.sqrt(dLat * dLat + dLng * dLng);
+    return null;
   };
 
+  const pickupCoords = getCoords(
+    [source?.pickupLat, source?.pickupLocation, source?.pickup],
+    [[
+      source?.pickupLocationLat ?? source?.pickup_location_lat,
+      source?.pickupLon ?? source?.pickupLocationLon ?? source?.pickup_location_lon,
+    ]],
+  );
+
+  const dropoffCoords = getCoords(
+    [source?.droplat, source?.dropLat, source?.dropLocation, source?.drop, source?.deliveryLocation],
+    [[
+      source?.dropLocationLat ?? source?.drop_location_lat,
+      source?.dropLon ?? source?.dropLocationLon ?? source?.drop_location_lon,
+    ]],
+  );
+
+  const pickup = pickupCoords ?? { latitude: DEFAULT_LAT, longitude: DEFAULT_LNG };
+  const dropoff = dropoffCoords ?? {
+    latitude: pickup.latitude + 0.01,
+    longitude: pickup.longitude + 0.01,
+  };
   const toRadians = (value: number) => (value * Math.PI) / 180;
   const getDistanceKm = (a: LatLng, b: LatLng) => {
     const earthRadiusKm = 6371;
@@ -251,13 +275,28 @@ const CourierTrackingScreen = () => {
     if (value < 0.1) return `${Math.round(value * 1000)} m`;
     return `${value.toFixed(value < 10 ? 1 : 0)} km`;
   };
+  const formatDuration = (minutes: number | null) => {
+    if (minutes == null || !Number.isFinite(minutes)) return "—";
+    const rounded = Math.max(1, Math.ceil(minutes));
+    if (rounded < 60) return `${rounded} min`;
+    const hours = Math.floor(rounded / 60);
+    const mins = rounded % 60;
+    return mins ? `${hours}h ${mins}m` : `${hours}h`;
+  };
 
-  const MIN_ROUTE_DISTANCE_DEG = 0.0003;
-  const [distance, setDistance] = useState(0);
+  const isValidLatLng = (point: LatLng | null | undefined) =>
+    Boolean(
+      point &&
+      Number.isFinite(point.latitude) &&
+      Number.isFinite(point.longitude) &&
+      Math.abs(point.latitude) <= 90 &&
+      Math.abs(point.longitude) <= 180,
+    );
   const [totalRouteDistance, setTotalRouteDistance] = useState<number | null>(null);
   const [routeDuration, setRouteDuration] = useState<number | null>(null);
   const [fullRouteFailed, setFullRouteFailed] = useState(false);
-  const [activeRouteFailed, setActiveRouteFailed] = useState(false);
+  const [routeCoordinates, setRouteCoordinates] = useState<LatLng[]>([]);
+  const [hasLiveDriverLocation, setHasLiveDriverLocation] = useState(false);
   const [currentCoords, setCurrentCoords] = useState(() => pickup);
   const [driverLocation] = useState(
     () =>
@@ -284,25 +323,21 @@ const CourierTrackingScreen = () => {
     longitudeDelta: Math.max(0.05, lngSpan),
   };
   const EDGE_PADDING = {
-    top: 48,
-    right: 24,
-    bottom: PANEL_PEEK_HEIGHT + 12,
-    left: 24,
+    top: hp(10),
+    right: wp(10),
+    bottom: PANEL_PEEK_HEIGHT + hp(7),
+    left: wp(10),
   };
   const fitMapToRoute = useCallback(() => {
-    const origin = currentCoords ?? pickup;
-    const points = [origin, pickup, dropoff].filter(
-      (p): p is { latitude: number; longitude: number } =>
-        p != null && typeof p.latitude === "number" && typeof p.longitude === "number",
-    );
+    const points = [pickup, dropoff].filter((p): p is LatLng => isValidLatLng(p));
     if (points.length < 2) return;
     try {
       mapRef.current?.fitToCoordinates(points, {
         edgePadding: {
-          top: hp(7),
-          right: wp(5),
-          bottom: PANEL_PEEK_HEIGHT + hp(2),
-          left: wp(5),
+          top: hp(10),
+          right: wp(10),
+          bottom: PANEL_PEEK_HEIGHT + hp(7),
+          left: wp(10),
         },
         animated: true,
       });
@@ -310,8 +345,6 @@ const CourierTrackingScreen = () => {
       console.warn("fitToCoordinates failed:", e);
     }
   }, [
-    currentCoords?.latitude,
-    currentCoords?.longitude,
     pickup.latitude,
     pickup.longitude,
     dropoff.latitude,
@@ -399,6 +432,7 @@ const CourierTrackingScreen = () => {
               const newPoint = lat > 60 && lon < 40
                 ? { latitude: lon, longitude: lat }
                 : { latitude: lat, longitude: lon };
+              setHasLiveDriverLocation(true);
               setCurrentCoords(newPoint);
               (driverLocation as any)
                 .timing({
@@ -437,50 +471,25 @@ const CourierTrackingScreen = () => {
     };
   }, [parcel?.id, item?.parcelId, item?.id, parcel?.deliveryStatus, item?.deliveryStatus]);
 
-  // Route for polyline: driver → pickup (or driver → dropoff). If origin ≈ destination, show full route pickup → dropoff so polyline always draws.
-  const routeDestination =
-    status === STATUS.ASSIGNED || status === STATUS.GOING_TO_PICKUP ? pickup : dropoff;
-  const routeOriginRaw = currentCoords ?? pickup;
-  const tooClose =
-    distanceBetween(routeOriginRaw, routeDestination) < MIN_ROUTE_DISTANCE_DEG;
-  const isToPickup = status === STATUS.ASSIGNED || status === STATUS.GOING_TO_PICKUP;
-  const routeOrigin = tooClose ? pickup : routeOriginRaw;
-  const routeDestForPolyline = tooClose ? dropoff : routeDestination;
-  const isRouteToPickup =
-    (status === STATUS.ASSIGNED || status === STATUS.GOING_TO_PICKUP) && !tooClose;
-  // Polyline always visible: need distinct points (min distance)
-  const routePointsValid =
-    distanceBetween(routeOrigin, routeDestForPolyline) >= MIN_ROUTE_DISTANCE_DEG;
-  const polylineStrokeColor = "#FFCC00";
   const pickupToDropoffValid = Boolean(
-    pickup?.latitude &&
-    pickup?.longitude &&
-    dropoff?.latitude &&
-    dropoff?.longitude &&
-    Math.abs(pickup.latitude) <= 90 &&
-    Math.abs(pickup.longitude) <= 180 &&
-    Math.abs(dropoff.latitude) <= 90 &&
-    Math.abs(dropoff.longitude) <= 180 &&
-    Number.isFinite(pickup.latitude) &&
-    Number.isFinite(pickup.longitude) &&
-    Number.isFinite(dropoff.latitude) &&
-    Number.isFinite(dropoff.longitude) &&
+    isValidLatLng(pickup) &&
+    isValidLatLng(dropoff) &&
     (pickup.latitude !== dropoff.latitude || pickup.longitude !== dropoff.longitude)
   );
   const totalDistanceText = formatKm(totalRouteDistance ?? getDistanceKm(pickup, dropoff));
+  const routeDurationText = formatDuration(routeDuration);
+  const routeStartLabel = strings?.Pickup || "Pickup";
+  const routeEndLabel = strings?.Drop || "Drop";
 
   useEffect(() => {
     setFullRouteFailed(false);
-    setActiveRouteFailed(false);
+    setRouteCoordinates([]);
+    setRouteDuration(null);
   }, [
     pickup.latitude,
     pickup.longitude,
     dropoff.latitude,
     dropoff.longitude,
-    routeOrigin.latitude,
-    routeOrigin.longitude,
-    routeDestForPolyline.latitude,
-    routeDestForPolyline.longitude,
   ]);
 
   const [statusKey, setStatusKey] = useState<string | null>(null);
@@ -558,17 +567,94 @@ const CourierTrackingScreen = () => {
           ref={mapRef}
           provider={PROVIDER_GOOGLE}
           style={styles.map}
+          mapType="standard"
           initialRegion={initialRegion}
           customMapStyle={MAP_STYLE}
-          mapPadding={{ top: 80, right: 20, bottom: PANEL_PEEK_HEIGHT + 20, left: 20 }}
+          mapPadding={{ top: hp(9), right: wp(4), bottom: PANEL_PEEK_HEIGHT + hp(6), left: wp(4) }}
+          loadingEnabled
+          showsUserLocation={false}
+          onMapReady={() => setTimeout(() => fitMapToRoute(), 100)}
+          onLayout={() => setTimeout(() => fitMapToRoute(), 100)}
         >
+          {/* 1. BACKGROUND ROUTE: Total trip path (Pickup -> Dropoff) */}
+          {routeCoordinates.length > 1 && (
+            <Polyline
+              coordinates={routeCoordinates}
+              strokeWidth={11}
+              strokeColor="rgba(15, 23, 42, 0.18)"
+              lineCap="round"
+              lineJoin="round"
+              zIndex={0}
+            />
+          )}
+
+          {pickupToDropoffValid && fullRouteFailed && (
+            <Polyline
+              coordinates={[pickup, dropoff]}
+              strokeWidth={12}
+              strokeColor="rgba(15, 23, 42, 0.14)"
+              lineCap="round"
+              lineJoin="round"
+              zIndex={0}
+            />
+          )}
+
+          {pickupToDropoffValid && fullRouteFailed && (
+            <Polyline
+              coordinates={[pickup, dropoff]}
+              strokeWidth={7}
+              strokeColor="#FFCC00"
+              lineCap="round"
+              lineJoin="round"
+              zIndex={1}
+            />
+          )}
+
+          {pickupToDropoffValid && (
+            <MapViewDirections
+              key={`full-route-${pickup.latitude.toFixed(5)}-${pickup.longitude.toFixed(5)}-${dropoff.latitude.toFixed(5)}-${dropoff.longitude.toFixed(5)}`}
+              origin={pickup}
+              destination={dropoff}
+              apikey={GOOGLE_MAPS_APIKEY}
+              mode="DRIVING"
+              strokeWidth={6}
+              strokeColor="#FFCC00"
+              lineCap="round"
+              lineJoin="round"
+              precision="high"
+              onReady={(res) => {
+                setFullRouteFailed(false);
+                setTotalRouteDistance(res?.distance ?? null);
+                setRouteDuration(res?.duration ?? null);
+                setEta(formatDuration(res?.duration ?? null));
+                if (res?.coordinates?.length > 1) {
+                  setRouteCoordinates(res.coordinates);
+                  mapRef.current?.fitToCoordinates(res.coordinates, {
+                    edgePadding: EDGE_PADDING,
+                    animated: true,
+                  });
+                }
+              }}
+              onError={(err) => {
+                console.warn("Full route error:", err);
+                setFullRouteFailed(true);
+              }}
+            />
+          )}
+
           {/* Pickup Marker */}
           <Marker
             coordinate={pickup}
-            anchor={{ x: 0.5, y: 0.5 }}
+            anchor={{ x: 0.5, y: 1 }}
             tracksViewChanges={false}
+            title={routeStartLabel}
+            description={pickupAddress}
+            zIndex={10}
           >
-            <View style={styles.pickupMarkerContainer}>
+            <View style={styles.mapMarkerContainer}>
+              <View style={styles.markerLabel}>
+                <Text style={styles.markerLabelText}>{routeStartLabel}</Text>
+              </View>
               <View style={[styles.pinHead, styles.pickupPin]}>
                 <View style={styles.pinIconCircle}>
                   <Ionicons name="cube-outline" size={16} color="#10B981" />
@@ -583,8 +669,14 @@ const CourierTrackingScreen = () => {
             coordinate={dropoff}
             anchor={{ x: 0.5, y: 1 }}
             tracksViewChanges={false}
+            title={routeEndLabel}
+            description={dropoffAddress}
+            zIndex={10}
           >
-            <View style={styles.dropoffMarkerContainer}>
+            <View style={styles.mapMarkerContainer}>
+              <View style={styles.markerLabel}>
+                <Text style={styles.markerLabelText}>{routeEndLabel}</Text>
+              </View>
               <View style={[styles.pinHead, styles.dropPin]}>
                 <View style={styles.pinIconCircle}>
                   <Ionicons name="location-sharp" size={17} color="#EF4444" />
@@ -595,96 +687,20 @@ const CourierTrackingScreen = () => {
           </Marker>
 
           {/* Driver Marker */}
-          <Marker.Animated
-            key="driver-marker"
-            coordinate={driverLocation as any}
-            anchor={{ x: 0.5, y: 0.5 }}
-          >
-            <View style={styles.courierMarker}>
-              <View style={styles.courierPulse} />
-              <View style={styles.courierMarkerInner}>
-                <Image source={imageIndex.caricon} style={styles.courierImage} />
+          {hasLiveDriverLocation && (
+            <Marker.Animated
+              key="driver-marker"
+              coordinate={driverLocation as any}
+              anchor={{ x: 0.5, y: 0.5 }}
+              zIndex={12}
+            >
+              <View style={styles.courierMarker}>
+                <View style={styles.courierPulse} />
+                <View style={styles.courierMarkerInner}>
+                  <Image source={imageIndex.caricon} style={styles.courierImage} />
+                </View>
               </View>
-            </View>
-          </Marker.Animated>
-
-          {/* 1. BACKGROUND ROUTE: Total trip path (Pickup -> Dropoff) */}
-          {pickupToDropoffValid && (
-            <MapViewDirections
-              key={`full-route-${pickup.latitude.toFixed(5)}-${pickup.longitude.toFixed(5)}-${dropoff.latitude.toFixed(5)}-${dropoff.longitude.toFixed(5)}`}
-              origin={pickup}
-              destination={dropoff}
-              apikey={GOOGLE_MAPS_APIKEY}
-              mode="DRIVING"
-              strokeWidth={5}
-              strokeColor="#9CA3AF"
-              lineDashPattern={[5, 5]}
-              lineCap="round"
-              lineJoin="round"
-              precision="high"
-              onReady={(res) => {
-                setFullRouteFailed(false);
-                setTotalRouteDistance(res?.distance ?? null);
-                setRouteDuration(res?.duration ?? null);
-                mapRef.current?.fitToCoordinates(res.coordinates, {
-                  edgePadding: EDGE_PADDING,
-                  animated: true,
-                });
-              }}
-              onError={(err) => {
-                console.warn("Full route error:", err);
-                setFullRouteFailed(true);
-              }}
-            />
-          )}
-
-          {(!pickupToDropoffValid || fullRouteFailed) && (
-            <Polyline
-              coordinates={[pickup, dropoff]}
-              strokeWidth={5}
-              strokeColor="#9CA3AF"
-              lineDashPattern={[5, 5]}
-              lineCap="round"
-              lineJoin="round"
-            />
-          )}
-
-          {/* 2. ACTIVE PROGRESS: Driver's real-time journey */}
-          {routePointsValid && (
-            <MapViewDirections
-              key={`active-progress-${statusNormKey}-${routeOrigin.latitude.toFixed(5)}-${routeOrigin.longitude.toFixed(5)}-${routeDestForPolyline.latitude.toFixed(5)}-${routeDestForPolyline.longitude.toFixed(5)}`}
-              origin={routeOrigin}
-              destination={routeDestForPolyline}
-              apikey={GOOGLE_MAPS_APIKEY}
-              mode="DRIVING"
-              strokeWidth={5}
-              strokeColor="#FFCC00"
-              lineCap="round"
-              lineJoin="round"
-              precision="high"
-              onReady={(res) => {
-                setActiveRouteFailed(false);
-                setDistance(res?.distance ?? 0);
-                setEta(`${Math.ceil(res?.duration ?? 0)} mins`);
-                mapRef.current?.fitToCoordinates(res.coordinates, {
-                  edgePadding: EDGE_PADDING,
-                  animated: true,
-                });
-              }}
-              onError={(err) => {
-                console.warn("Active route error:", err);
-                setActiveRouteFailed(true);
-              }}
-            />
-          )}
-          {routePointsValid && activeRouteFailed && (
-            <Polyline
-              coordinates={[routeOrigin, routeDestForPolyline]}
-              strokeWidth={5}
-              strokeColor="#FFCC00"
-              lineCap="round"
-              lineJoin="round"
-            />
+            </Marker.Animated>
           )}
         </MapView>
 
@@ -694,29 +710,55 @@ const CourierTrackingScreen = () => {
       </View>
 
       <SafeAreaView style={styles.headerOverlay} edges={["top"]}>
-        <CustomHeader label="" />
-        {eta !== "Calculating..." && (
-          <View style={styles.routeSummaryCard}>
-            <View style={styles.routeSummaryIcon}>
-              <Ionicons name="navigate" size={18} color="#F59E0B" />
-            </View>
-            <View style={styles.routeSummaryCopy}>
-              <Text style={styles.routeSummaryLabel}>Estimated Arrival</Text>
-              <Text style={styles.routeSummaryText}>{eta}</Text>
-            </View>
-            <View style={styles.routeSummaryMetric}>
-              <Text style={styles.routeSummaryDistance}>{totalDistanceText}</Text>
-              <Text style={styles.routeSummaryEta}>Distance</Text>
+        <View style={styles.infoCard}>
+          <TouchableOpacity
+            style={styles.backButtonWrap}
+            onPress={() => nav.goBack()}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="chevron-back" size={22} color="#111827" />
+          </TouchableOpacity>
+
+          <View style={styles.locationContent}>
+            <View style={styles.routeHeaderRow}>
+              <Text style={styles.routeTitle}>Delivery Route</Text>
+              <View style={styles.distancePill}>
+                <Ionicons name="navigate" size={13} color="#111827" />
+                <Text style={styles.distanceText}>{totalDistanceText}</Text>
+              </View>
             </View>
           </View>
-        )}
+        </View>
+
       </SafeAreaView>
 
       {/* Rapido-style bottom sheet */}
-      <Animated.View style={[styles.draggablePanel, { top: pan }]}>
+      <View style={[styles.draggablePanel,]}>
         <View {...panResponder.panHandlers} style={styles.dragArea}>
           <View style={styles.handleBar} />
         </View>
+        {eta !== "Calculating..." && (
+          <View style={styles.routeSummaryCard}>
+            <View style={styles.routeSummaryIcon}>
+              <Ionicons name="navigate" size={18} color="#111827" />
+            </View>
+            <View style={styles.routeSummaryCopy}>
+              <Text style={styles.routeSummaryLabel}>Directions Route</Text>
+              <Text style={styles.routeSummaryText}>Pickup to Drop</Text>
+            </View>
+            <View style={styles.routeMetrics}>
+              <View style={styles.routeMetricItem}>
+                <Text style={styles.routeSummaryDistance}>{totalDistanceText}</Text>
+                <Text style={styles.routeSummaryEta}>Distance</Text>
+              </View>
+              <View style={styles.routeMetricDivider} />
+              <View style={styles.routeMetricItem}>
+                <Text style={styles.routeSummaryDistance}>{routeDurationText}</Text>
+                <Text style={styles.routeSummaryEta}>Duration</Text>
+              </View>
+            </View>
+          </View>
+        )}
 
         <ScrollView
           style={styles.scrollContent}
@@ -786,32 +828,8 @@ const CourierTrackingScreen = () => {
 
 
 
-
-          {/* Address Timeline */}
-          <View style={styles.timelineContainer}>
-            <View style={styles.timelineItem}>
-              <View style={styles.timelineGraphic}>
-                <View style={[styles.timelineDot, { backgroundColor: "#FFCC00" }]} />
-                <View style={styles.timelineConnector} />
-              </View>
-              <View style={styles.timelineContent}>
-                <Text style={styles.timelineLabel}>{strings?.Pickup}</Text>
-                <Text style={styles.timelineText} numberOfLines={2}>{pickupAddress || "—"}</Text>
-              </View>
-            </View>
-
-            <View style={[styles.timelineItem, { marginTop: 4 }]}>
-              <View style={styles.timelineGraphic}>
-                <View style={[styles.timelineDot, { backgroundColor: "#FFCC00" }]} />
-              </View>
-              <View style={styles.timelineContent}>
-                <Text style={styles.timelineLabel}>{strings?.Drop}</Text>
-                <Text style={styles.timelineText} numberOfLines={2}>{dropoffAddress || "—"}</Text>
-              </View>
-            </View>
-          </View>
         </ScrollView>
-      </Animated.View>
+      </View>
     </View>
   );
 };
@@ -825,19 +843,110 @@ const styles = StyleSheet.create({
   mapWrap: { flex: 1, width: "100%", minHeight: height * 0.5 },
   map: { ...StyleSheet.absoluteFillObject },
   headerOverlay: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 5 },
-  routeSummaryCard: {
-    position: "absolute",
-    top: Platform.OS === "ios" ? hp(12) : hp(10),
-    left: wp(5),
-    right: wp(5),
-    backgroundColor: "#FFF",
-    borderRadius: 18,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+  infoCard: {
+    alignSelf: "center",
+    minWidth: wp(56),
+    maxWidth: wp(82),
+    marginTop: 8,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 24,
+    paddingHorizontal: 8,
+    paddingVertical: 7,
     flexDirection: "row",
     alignItems: "center",
 
-    zIndex: 4,
+  },
+  backButtonWrap: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#F8FAFC",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    marginRight: 8,
+  },
+  locationContent: { flex: 1 },
+  routeHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 0,
+  },
+  routeTitle: {
+    flex: 1,
+    fontSize: 13,
+    color: "#0F172A",
+    fontFamily: font.MonolithRegular,
+    marginRight: 8,
+  },
+  distancePill: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFF7CC",
+    borderRadius: 13,
+    paddingHorizontal: 8,
+    paddingVertical: 5,
+  },
+  distanceText: {
+    marginLeft: 4,
+    fontSize: 12,
+    color: "#111827",
+    fontFamily: font.MonolithRegular,
+  },
+  locationRow: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    marginBottom: 8,
+  },
+  locationIconWrap: {
+    width: 18,
+    alignItems: "center",
+    marginTop: 2,
+  },
+  locationDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: "#FFFFFF",
+  },
+  connectorLine: {
+    width: 2,
+    height: 30,
+    backgroundColor: "#E5E7EB",
+    marginTop: 4,
+  },
+  locationCopy: {
+    flex: 1,
+    paddingLeft: 8,
+  },
+  locationLabel: {
+    fontSize: 10,
+    color: "#94A3B8",
+    textTransform: "uppercase",
+    fontFamily: font.MonolithRegular,
+    marginBottom: 2,
+  },
+  locationText: {
+    fontSize: 12,
+    color: "#1F2937",
+    fontFamily: font.MonolithRegular,
+    lineHeight: 17,
+  },
+  routeSummaryCard: {
+    marginHorizontal: 18,
+    marginTop: 2,
+    marginBottom: 14,
+    backgroundColor: "#FFF",
+    borderRadius: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 11,
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#F1F5F9",
   },
   routeSummaryIcon: {
     width: 38,
@@ -848,7 +957,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 10,
   },
-  routeSummaryCopy: { flex: 1, paddingRight: 8 },
+  routeSummaryCopy: { flex: 1, paddingRight: 6 },
   routeSummaryLabel: {
     fontSize: 11,
     color: "#94A3B8",
@@ -857,45 +966,68 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   routeSummaryText: {
-    fontSize: 13,
+    fontSize: 15,
     color: "#0F172A",
     fontFamily: font.MonolithRegular,
     lineHeight: 18,
-
-
   },
-  routeSummaryMetric: {
-    alignItems: "flex-end",
-    minWidth: 62,
+  routeMetrics: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F8FAFC",
+    borderRadius: 14,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+  },
+  routeMetricItem: {
+    alignItems: "center",
+    minWidth: 54,
+  },
+  routeMetricDivider: {
+    width: 1,
+    height: 26,
+    backgroundColor: "#E5E7EB",
+    marginHorizontal: 8,
   },
   routeSummaryDistance: {
-    fontSize: 14,
+    fontSize: 13,
     color: "#0F172A",
     fontFamily: font.MonolithRegular,
   },
   routeSummaryEta: {
-    fontSize: 11,
+    fontSize: 10,
     color: "#64748B",
     fontFamily: font.MonolithRegular,
     marginTop: 2,
   },
-  pickupMarkerContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+  mapMarkerContainer: {
+    alignItems: "center",
+    justifyContent: "center",
   },
-  dropoffMarkerContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
+  markerLabel: {
+    backgroundColor: "#111827",
+    borderRadius: 12,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+    marginBottom: 5,
+    maxWidth: 90,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.9)",
+  },
+  markerLabelText: {
+    color: "#FFF",
+    fontSize: 10,
+    fontFamily: font.MonolithRegular,
+    textTransform: "uppercase",
   },
   pinHead: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 3,
     borderColor: "#FFFFFF",
-
   },
   pinIconCircle: {
     width: 26,
@@ -904,6 +1036,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     alignItems: "center",
     justifyContent: "center",
+
   },
   pickupPin: {
     backgroundColor: "#10B981",
@@ -940,9 +1073,9 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: "rgba(255, 204, 0, 0.22)",
+    backgroundColor: "#FFCC00",
     borderWidth: 1,
-    borderColor: "rgba(255, 204, 0, 0.45)",
+    borderColor: "#FFCC00",
   },
   courierMarkerInner: {
     width: 44,
@@ -962,20 +1095,20 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: "100%",
     backgroundColor: "#FFF",
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
     paddingBottom: Platform.OS === "ios" ? 0 : 0,
 
   },
-  dragArea: { width: "100%", paddingVertical: 10, alignItems: "center" },
+  dragArea: { width: "100%", paddingTop: 12, paddingBottom: 8, alignItems: "center" },
   handleBar: {
-    width: 40,
-    height: 4,
-    backgroundColor: "#E0E0E0",
+    width: 42,
+    height: 5,
+    backgroundColor: "#D1D5DB",
     borderRadius: 2,
   },
   scrollContent: { flex: 1 },
-  scrollContentContainer: { paddingHorizontal: 20, paddingBottom: 32 },
+  scrollContentContainer: { paddingHorizontal: 18, paddingBottom: 10 },
   etaHeaderStrip: {
     flexDirection: "row",
     alignItems: "center",
@@ -993,34 +1126,82 @@ const styles = StyleSheet.create({
   etaDistanceValue: { fontSize: 18, color: "#4B5563", fontFamily: font.MonolithRegular },
   etaDistanceUnit: { fontSize: 10, color: "#9CA3AF", marginTop: -2 },
 
-  timelineContainer: {
-    padding: 15,
-    backgroundColor: "#F9FAFB",
-    borderRadius: 20,
+  routeDetailsSection: {
+    marginTop: 14,
+    padding: 16,
+    backgroundColor: "#FFFFFF",
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: "#EEF2F7",
   },
-  timelineItem: { flexDirection: "row" },
-  timelineGraphic: { alignItems: "center", width: 24, marginRight: 12 },
+  sectionHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingBottom: 14,
+    marginBottom: 2,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F1F5F9",
+  },
+  sectionTitle: {
+    fontSize: 15,
+    color: "#111827",
+    fontFamily: font.MonolithRegular,
+  },
+  sectionMetricRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  sectionDistance: {
+    fontSize: 12,
+    color: "#92400E",
+    fontFamily: font.MonolithRegular,
+    backgroundColor: "#FFF7CC",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 12,
+  },
+  sectionDuration: {
+    marginLeft: 6,
+    fontSize: 12,
+    color: "#0F172A",
+    fontFamily: font.MonolithRegular,
+    backgroundColor: "#EEF2FF",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 12,
+  },
+  timelineItem: { flexDirection: "row", paddingTop: 14 },
+  timelineGraphic: { alignItems: "center", width: 28, marginRight: 12 },
   timelineDot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
+    width: 14,
+    height: 14,
+    borderRadius: 7,
     marginTop: 4,
-    borderWidth: 2,
+    borderWidth: 3,
     borderColor: "#FFF",
-
   },
+  pickupTimelineDot: { backgroundColor: "#10B981" },
+  dropTimelineDot: { backgroundColor: "#EF4444" },
   timelineConnector: {
     width: 2,
     flex: 1,
-    backgroundColor: "#E5E7EB",
-    marginVertical: 4,
+    backgroundColor: "#CBD5E1",
+    marginTop: 4,
+    marginBottom: -12,
   },
   timelineContent: { flex: 1, paddingBottom: 16 },
+  timelineContentLast: { paddingBottom: 0 },
+  timelineLabelRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 5,
+  },
   timelineLabel: {
     fontSize: 11,
-    color: "#9CA3AF",
+    color: "#64748B",
     textTransform: "uppercase",
-    marginBottom: 4,
+    marginLeft: 5,
     fontFamily: font.MonolithRegular
   },
   timelineText: {
@@ -1032,25 +1213,27 @@ const styles = StyleSheet.create({
 
   driverSection: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "space-between",
-    paddingBottom: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: "#F3F4F6",
+    padding: 14,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#EEF2F7",
+    borderRadius: 18,
   },
   driverCore: { flexDirection: "row", alignItems: "center", flex: 1 },
   avatarWrap: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: "#F9FAFB",
-    padding: 2,
+    backgroundColor: "#FFF7CC",
+    padding: 3,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: "#FDE68A",
   },
   avatar: { width: "100%", height: "100%", borderRadius: 30 },
-  driverMeta: { marginLeft: 16, flex: 1 },
-  driverName: { fontSize: 18, fontFamily: font.MonolithRegular, color: "#111827", },
+  driverMeta: { marginLeft: 14, flex: 1, paddingRight: 8 },
+  driverName: { fontSize: 17, fontFamily: font.MonolithRegular, color: "#111827" },
   trackingIdText: { fontSize: 13, color: "#6B7280", marginTop: 2, fontFamily: font.MonolithRegular },
   statusBadge: {
     flexDirection: "row",
@@ -1064,25 +1247,27 @@ const styles = StyleSheet.create({
   statusDot: { width: 6, height: 6, borderRadius: 3, marginRight: 6 },
   statusText: { fontSize: 12, fontFamily: font.MonolithRegular, textTransform: "uppercase" },
 
-  driverActionsSide: { alignItems: "flex-end" },
+  driverActionsSide: { alignItems: "flex-end", marginLeft: 10 },
   otpPill: {
-    backgroundColor: "#F3F4F6",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
+    backgroundColor: "#FFF7CC",
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 14,
     alignItems: "center",
     marginBottom: 12,
-    minWidth: 80,
+    minWidth: 86,
+    borderWidth: 1,
+    borderColor: "#FDE68A",
   },
-  otpPillLabel: { fontSize: 10, color: "#9CA3AF", fontFamily: font.MonolithRegular, textTransform: "uppercase" },
+  otpPillLabel: { fontSize: 10, color: "#92400E", fontFamily: font.MonolithRegular, textTransform: "uppercase" },
   otpPillValue: { fontSize: 16, color: "#111827", fontFamily: font.MonolithRegular, marginTop: 1 },
 
   contactRow: { flexDirection: "row", alignItems: "center" },
   circleActionBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "#F9FAFB",
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: "#FFFFFF",
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
