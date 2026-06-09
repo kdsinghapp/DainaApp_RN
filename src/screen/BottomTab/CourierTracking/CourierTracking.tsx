@@ -588,16 +588,16 @@ const CourierTrackingScreen = () => {
             />
           )}
 
-          {pickupToDropoffValid && fullRouteFailed && (
+          {/* {pickupToDropoffValid && fullRouteFailed && (
             <Polyline
               coordinates={[pickup, dropoff]}
-              strokeWidth={12}
-              strokeColor="rgba(15, 23, 42, 0.14)"
+              strokeWidth={1}
+              // strokeColor="rgba(15, 23, 42, 0.14)"
               lineCap="round"
               lineJoin="round"
               zIndex={0}
             />
-          )}
+          )} */}
 
           {pickupToDropoffValid && fullRouteFailed && (
             <Polyline
@@ -716,7 +716,14 @@ const CourierTrackingScreen = () => {
             onPress={() => nav.goBack()}
             activeOpacity={0.8}
           >
-            <Ionicons name="chevron-back" size={22} color="#111827" />
+            <Image source={imageIndex.back}
+
+
+              style={{
+                height: 38,
+                width: 38
+              }}
+            />
           </TouchableOpacity>
 
           <View style={styles.locationContent}>
@@ -746,17 +753,7 @@ const CourierTrackingScreen = () => {
               <Text style={styles.routeSummaryLabel}>Directions Route</Text>
               <Text style={styles.routeSummaryText}>Pickup to Drop</Text>
             </View>
-            <View style={styles.routeMetrics}>
-              <View style={styles.routeMetricItem}>
-                <Text style={styles.routeSummaryDistance}>{totalDistanceText}</Text>
-                <Text style={styles.routeSummaryEta}>Distance</Text>
-              </View>
-              <View style={styles.routeMetricDivider} />
-              <View style={styles.routeMetricItem}>
-                <Text style={styles.routeSummaryDistance}>{routeDurationText}</Text>
-                <Text style={styles.routeSummaryEta}>Duration</Text>
-              </View>
-            </View>
+
           </View>
         )}
 
@@ -801,9 +798,9 @@ const CourierTrackingScreen = () => {
                     {(() => {
                       const s = parcel?.deliveryStatus ?? item?.deliveryStatus;
                       if (s === STATUS.ASSIGNED || s === STATUS.GOING_TO_PICKUP) {
-                        return parcel?.pickupOtp ?? item?.pickupOtp ?? "—";
+                        return parcel?.pickupOtp ?? item?.pickupOtp ?? "";
                       }
-                      return parcel?.deliveryOtp ?? item?.deliveryOtp ?? "—";
+                      return parcel?.deliveryOtp ?? item?.deliveryOtp ?? "";
                     })()}
                   </Text>
                 </View>
@@ -845,26 +842,23 @@ const styles = StyleSheet.create({
   headerOverlay: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 5 },
   infoCard: {
     alignSelf: "center",
-    minWidth: wp(56),
-    maxWidth: wp(82),
+
     marginTop: 8,
     backgroundColor: "#FFFFFF",
-    borderRadius: 24,
+    borderRadius: 20,
     paddingHorizontal: 8,
     paddingVertical: 7,
     flexDirection: "row",
     alignItems: "center",
+    marginHorizontal: 20
 
   },
   backButtonWrap: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "#F8FAFC",
+
+
     alignItems: "center",
     justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
+
     marginRight: 8,
   },
   locationContent: { flex: 1 },
@@ -961,7 +955,6 @@ const styles = StyleSheet.create({
   routeSummaryLabel: {
     fontSize: 11,
     color: "#94A3B8",
-    textTransform: "uppercase",
     fontFamily: font.MonolithRegular,
     marginBottom: 2,
   },
@@ -974,8 +967,6 @@ const styles = StyleSheet.create({
   routeMetrics: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F8FAFC",
-    borderRadius: 14,
     paddingHorizontal: 10,
     paddingVertical: 7,
   },
@@ -1095,17 +1086,17 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: "100%",
     backgroundColor: "#FFF",
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     paddingBottom: Platform.OS === "ios" ? 0 : 0,
 
   },
   dragArea: { width: "100%", paddingTop: 12, paddingBottom: 8, alignItems: "center" },
   handleBar: {
-    width: 42,
-    height: 5,
+    width: 18,
+    height: 4,
     backgroundColor: "#D1D5DB",
-    borderRadius: 2,
+    borderRadius: 20,
   },
   scrollContent: { flex: 1 },
   scrollContentContainer: { paddingHorizontal: 18, paddingBottom: 10 },
@@ -1245,22 +1236,21 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   statusDot: { width: 6, height: 6, borderRadius: 3, marginRight: 6 },
-  statusText: { fontSize: 12, fontFamily: font.MonolithRegular, textTransform: "uppercase" },
+  statusText: { fontSize: 12, fontFamily: font.MonolithRegular, },
 
   driverActionsSide: { alignItems: "flex-end", marginLeft: 10 },
   otpPill: {
-    backgroundColor: "#FFF7CC",
     paddingHorizontal: 14,
     paddingVertical: 7,
     borderRadius: 14,
     alignItems: "center",
     marginBottom: 12,
     minWidth: 86,
-    borderWidth: 1,
+    borderWidth: 0.5,
     borderColor: "#FDE68A",
   },
-  otpPillLabel: { fontSize: 10, color: "#92400E", fontFamily: font.MonolithRegular, textTransform: "uppercase" },
-  otpPillValue: { fontSize: 16, color: "#111827", fontFamily: font.MonolithRegular, marginTop: 1 },
+  otpPillLabel: { fontSize: 10, color: "black", fontFamily: font.MonolithRegular, textTransform: "uppercase" },
+  otpPillValue: { fontSize: 16, color: "black", fontFamily: font.MonolithRegular, marginTop: 1 },
 
   contactRow: { flexDirection: "row", alignItems: "center" },
   circleActionBtn: {
