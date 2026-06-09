@@ -744,18 +744,6 @@ const CourierTrackingScreen = () => {
         <View {...panResponder.panHandlers} style={styles.dragArea}>
           <View style={styles.handleBar} />
         </View>
-        {eta !== "Calculating..." && (
-          <View style={styles.routeSummaryCard}>
-            <View style={styles.routeSummaryIcon}>
-              <Ionicons name="navigate" size={18} color="#111827" />
-            </View>
-            <View style={styles.routeSummaryCopy}>
-              <Text style={styles.routeSummaryLabel}>Directions Route</Text>
-              <Text style={styles.routeSummaryText}>Pickup to Drop</Text>
-            </View>
-
-          </View>
-        )}
 
         <ScrollView
           style={styles.scrollContent}
@@ -1217,10 +1205,8 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: "#FFF7CC",
     padding: 3,
-    borderWidth: 1,
-    borderColor: "#FDE68A",
+
   },
   avatar: { width: "100%", height: "100%", borderRadius: 30 },
   driverMeta: { marginLeft: 14, flex: 1, paddingRight: 8 },
@@ -1254,16 +1240,13 @@ const styles = StyleSheet.create({
 
   contactRow: { flexDirection: "row", alignItems: "center" },
   circleActionBtn: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    backgroundColor: "#FFFFFF",
+
+
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
+
   },
-  actionIcon: { width: 22, height: 22, resizeMode: "contain" },
+  actionIcon: { width: 38, height: 38, resizeMode: "contain" },
 
   vehicleStrip: {
     flexDirection: "row",
