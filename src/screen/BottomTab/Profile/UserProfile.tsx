@@ -84,8 +84,7 @@ const MenuItem = ({ icon, label, onPress, index, isLast, destructive = false }: 
   };
 
   return (
-    <Animated.View
-      entering={FadeInRight.delay(120 + index * 55).duration(350)}
+    <View
       style={[animatedStyle, styles.menuItemContainer]}
     >
       <TouchableOpacity
@@ -103,7 +102,7 @@ const MenuItem = ({ icon, label, onPress, index, isLast, destructive = false }: 
         </View>
         <Icon name="chevron-forward" size={18} color={destructive ? "#EF4444" : "#94A3B8"} />
       </TouchableOpacity>
-    </Animated.View>
+    </View>
   );
 };
 
@@ -158,17 +157,10 @@ const ProfileScreen: React.FC = () => {
         contentContainerStyle={styles.scrollContent}
       >
         <View style={styles.screenHeader}>
-          <Text style={styles.screenTitle}>{strings?.Account || "Account"}</Text>
-          <TouchableOpacity
-            activeOpacity={0.85}
-            style={styles.headerEditBtn}
-            onPress={() => navigation.navigate(ScreenNameEnum.EditProfile)}
-          >
-            <Icon name="create-outline" size={18} color="#111827" />
-          </TouchableOpacity>
+
         </View>
 
-        <Animated.View entering={FadeInDown.duration(450)} style={styles.profileCard}>
+        <View style={styles.profileCard}>
           <View style={styles.profileTopAccent} />
           <View style={styles.profileHeader}>
             <View style={styles.avatarWrap}>
@@ -203,7 +195,7 @@ const ProfileScreen: React.FC = () => {
               )}
             </View>
           </View>
-        </Animated.View>
+        </View>
 
         {/* Menu Sections */}
         <View style={styles.menuContainer}>

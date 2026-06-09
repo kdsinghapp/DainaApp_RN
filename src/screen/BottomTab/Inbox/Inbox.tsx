@@ -125,9 +125,11 @@ const Avatar = ({ uri, name, isOnline = true }: { uri?: string; name?: string; i
   return (
     <View style={styles.avatarContainer}>
       {(!uri || hasError) ? (
-        <View style={[styles.avatar, styles.avatarFallback]}>
-          <Text style={styles.avatarInitials}>{initials}</Text>
-        </View>
+        <Image
+          source={imageIndex.prfile}
+          style={styles.avatar}
+          onError={() => setHasError(true)}
+        />
       ) : (
         <Image
           source={{ uri }}
@@ -440,7 +442,6 @@ const styles = StyleSheet.create({
     width: 58,
     height: 58,
     borderRadius: 29,
-    backgroundColor: "#FFF7CC",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -448,12 +449,9 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: "#F8FAFC",
-    borderWidth: 2,
-    borderColor: "#FFFFFF",
+
   },
   avatarFallback: {
-    backgroundColor: "#FFCC00",
     justifyContent: "center",
     alignItems: "center",
   },
