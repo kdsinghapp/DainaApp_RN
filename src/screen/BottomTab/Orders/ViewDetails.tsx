@@ -760,7 +760,7 @@ const styles = StyleSheet.create({
 
   },
   cardHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 },
-  muted: { color: "#94A3B8", fontFamily: font.MonolithRegular, fontSize: 11, textTransform: "uppercase" },
+  muted: { color: "#94A3B8", fontFamily: font.MonolithRegular, fontSize: 11, },
   bold: { color: TEXT, fontFamily: font.MonolithRegular, fontSize: 16, marginTop: 3 },
   headerStatusPill: {
     paddingHorizontal: 10,
@@ -772,7 +772,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontFamily: font.MonolithRegular,
     fontSize: 11,
-    textTransform: "uppercase",
     textAlign: "center",
   },
   progressSection: {
@@ -851,7 +850,6 @@ const styles = StyleSheet.create({
     color: "#94A3B8",
     fontSize: 10,
     fontFamily: font.MonolithRegular,
-    textTransform: "uppercase",
     flexShrink: 0,
   },
   fromDot: {
@@ -896,7 +894,6 @@ const styles = StyleSheet.create({
     color: "#475569",
     fontFamily: font.MonolithRegular,
     fontSize: 12,
-    textTransform: "uppercase",
   },
   pill: { paddingVertical: 7, paddingHorizontal: 12, borderRadius: 999, flexShrink: 1 },
   pillProgress: { backgroundColor: "#FFCC00" },
@@ -995,6 +992,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: font.MonolithRegular,
     color: "#111827",
+
   },
   pendingSubtitle: {
     fontSize: 12,
