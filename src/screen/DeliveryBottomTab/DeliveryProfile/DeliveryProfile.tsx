@@ -142,17 +142,8 @@ const DeliveryProfile: React.FC<Props> = ({
         contentContainerStyle={styles.container}>
         {/* Header */}
         <View style={styles.headerRow}>
-          <View>
-            <Text style={styles.title}>{strings.Profile}</Text>
-            <Text style={styles.subtitle}>{strings.Delivery || "Delivery"}</Text>
-          </View>
-          <TouchableOpacity
-            activeOpacity={0.85}
-            style={styles.headerEditBtn}
-            onPress={() => navigation.navigate(ScreenNameEnum.EditProfileDeliver)}
-          >
-            <Icon name="create-outline" size={18} color="#111827" />
-          </TouchableOpacity>
+
+
         </View>
 
         {/* Profile card */}
