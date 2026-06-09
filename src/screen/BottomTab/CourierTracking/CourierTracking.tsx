@@ -834,8 +834,6 @@ const styles = StyleSheet.create({
     alignSelf: "center",
 
     marginTop: 8,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 20,
     paddingHorizontal: 8,
     paddingVertical: 7,
     flexDirection: "row",
@@ -1196,11 +1194,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     justifyContent: "space-between",
-    padding: 14,
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "#EEF2F7",
-    borderRadius: 18,
+    padding: 10,
+
   },
   driverCore: { flexDirection: "row", alignItems: "center", flex: 1 },
   avatarWrap: {
