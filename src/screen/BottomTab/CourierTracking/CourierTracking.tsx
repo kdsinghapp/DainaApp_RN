@@ -1060,9 +1060,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 2,
-    borderColor: "#F59E0B",
   },
-  courierImage: { width: 26, height: 26, resizeMode: "contain" },
+  courierImage: { width: 22, height: 22, resizeMode: "contain" },
   draggablePanel: {
     position: "absolute",
     left: 0,
