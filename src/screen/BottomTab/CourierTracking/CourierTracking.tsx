@@ -171,7 +171,7 @@ const CourierTrackingScreen = () => {
           };
           ws.onclose = (event: { reason?: string }) => {
             socketRef.current = null;
-            if (!resolved) reject(new Error(event.reason ?? "Connection closed"));
+            if (!resolved) reject(new Error(event?.reason ?? "Connection closed"));
           };
         } catch (error) {
           reject(error instanceof Error ? error : new Error(String(error)));
@@ -470,7 +470,7 @@ const CourierTrackingScreen = () => {
   const pickupToDropoffValid = Boolean(
     isValidLatLng(pickup) &&
     isValidLatLng(dropoff) &&
-    (pickup.latitude !== dropoff.latitude || pickup.longitude !== dropoff.longitude)
+    (pickup.latitude !== dropoff?.latitude || pickup?.longitude !== dropoff?.longitude)
   );
   const totalDistanceText = formatKm(totalRouteDistance ?? getDistanceKm(pickup, dropoff));
   const routeDurationText = formatDuration(routeDuration);
@@ -795,7 +795,7 @@ const CourierTrackingScreen = () => {
               <View style={styles.contactRow}>
                 <TouchableOpacity
                   style={styles.circleActionBtn}
-                  onPress={() => driver?.phone && Linking.openURL(`tel:${driver.phone}`)}
+                  onPress={() => driver?.phone && Linking.openURL(`tel:${driver?.phone}`)}
                 >
                   <Image source={imageIndex.Calls} style={styles.actionIcon} />
                 </TouchableOpacity>
