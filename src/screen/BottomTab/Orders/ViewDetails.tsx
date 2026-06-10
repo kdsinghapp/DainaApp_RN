@@ -419,12 +419,7 @@ export default function ViewDetails() {
           </View>
 
           <View style={styles.progressSection}>
-            <View style={styles.progressHeaderRow}>
-              <Text style={styles.stepCompleteText}>
-                {strings.formatString(strings.StepXofY, activeIdx + 1, STATUS_STEPS.length)}
-              </Text>
-              <Text style={styles.progressPercent}>{Math.round(progress * 100)}%</Text>
-            </View>
+
             <View style={styles.trackBase}>
               <View style={styles.trackLine} />
               <View style={[styles.trackFill, { width: `${progress * 100}%` }]} />
@@ -488,7 +483,7 @@ export default function ViewDetails() {
                     <Text style={styles.routeLabel}>{strings.Drop}</Text>
                     <Text style={styles.date}>{order.endDate}</Text>
                   </View>
-                  <Text style={styles.city}>{order.toCity || "—"}</Text>
+                  <Text style={styles.city}>{order.toCity || ""}</Text>
                 </View>
               </View>
             </View>
@@ -503,22 +498,9 @@ export default function ViewDetails() {
           {/* Footer */}
           <View style={styles.footerRow}>
             <View style={styles.footerInfo}>
-              <Icon name="ellipse" size={8} color={displayStatusColor} />
               <Text style={styles.footerInfoText}>{displayStatusLabel}</Text>
             </View>
-            {statusNorm === STATUS.DELIVERED ? (
-              <TouchableOpacity
-
-                onPress={() => {
-                  setShowRatingModal(true)
-                }}
-                style={styles.cardActionButton}>
-                <Icon name="star-outline" size={14} color="#111827" style={styles.actionButtonIcon} />
-                <Text style={styles.viewDetails}>
-                  {strings.RateYourDelivery}</Text>
-              </TouchableOpacity>
-
-            ) : hasCounterOffered ? null : (
+            {statusNorm === STATUS.DELIVERED ? null : hasCounterOffered ? null : (
 
               <TouchableOpacity
                 onPress={() => {
@@ -775,8 +757,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   progressSection: {
-    backgroundColor: "#FFFBEB",
-    borderRadius: 16,
     paddingHorizontal: 12,
     paddingTop: 11,
     paddingBottom: 8,
@@ -884,7 +864,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F8FAFC",
     borderRadius: 14,
     paddingHorizontal: 10,
     paddingVertical: 9,

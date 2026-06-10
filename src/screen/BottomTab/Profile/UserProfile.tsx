@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Platform,
   Dimensions,
+  Share,
 } from "react-native";
 import Animated, {
   FadeInDown,
@@ -148,6 +149,17 @@ const ProfileScreen: React.FC = () => {
     }
   };
 
+  const handleShareApp = async () => {
+    ReactNativeHapticFeedback.trigger("impactLight", hapticOptions);
+    try {
+      await Share.share({
+        message: "Check out Daina App! A great app for delivery. Download it from the App Store or Play Store: https://play.google.com/store/apps/details?id=com.DainaApp",
+      });
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
@@ -235,6 +247,13 @@ const ProfileScreen: React.FC = () => {
                   url: 'https://api.daina.tech/privacy-policy',
                   title: strings.PrivacyPolicy
                 })}
+              />
+
+              <MenuItem
+                index={4}
+                icon={<Icon name="share-social-outline" size={22} color={color.primary} />}
+                label={strings.ShareApp || "Suggest to others"}
+                onPress={handleShareApp}
               />
 
               <MenuItem

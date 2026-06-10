@@ -198,6 +198,7 @@ const strings = new LocalizedStrings({
     DocumentShow: "Document Show",
     Wallet: "Wallet",
     Support: "Support",
+    ShareApp: "Suggest to others",
     TodaysEarnings: "Today's Earnings",
     PendingRides: "Pending Rides",
     TodaysRides: "Today's Rides",
@@ -662,6 +663,7 @@ const strings = new LocalizedStrings({
     DocumentShow: "Баримт бичиг харах",
     Wallet: "Түрүүвч",
     Support: "Тусламж",
+    ShareApp: "Бусдад санал болгох",
     RateDelivery: "Хүргэлтийн тариф",
 
     TodaysEarnings: "Өнөөдрийн орлого",
