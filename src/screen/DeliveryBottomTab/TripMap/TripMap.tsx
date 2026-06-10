@@ -61,7 +61,7 @@ const TripMap = () => {
   const parcelIdRef = useRef<string | number | undefined>(item?.parcelId ?? item?.id);
   parcelIdRef.current = parcel?.parcelId ?? parcel?.id ?? item?.parcelId ?? item?.id;
   const canCancel = item?.deliveryStatus &&
-    [STATUS.PENDING, STATUS.ASSIGNED, STATUS.GOING_TO_PICKUP, STATUS.PICKED_UP, STATUS.ON_THE_WAY].includes(item.deliveryStatus);
+    [STATUS?.PENDING, STATUS?.ASSIGNED, STATUS?.GOING_TO_PICKUP, STATUS?.PICKED_UP, STATUS?.ON_THE_WAY].includes(item.deliveryStatus);
 
   useEffect(() => {
     let cancelled = false;
@@ -166,17 +166,17 @@ const TripMap = () => {
 
       const sendLatestPayload = (ws: WebSocket) => {
         const latestPayload = latestDriverLocationPayloadRef.current;
-        if (latestPayload && ws.readyState === WebSocket.OPEN) {
+        if (latestPayload && ws?.readyState === WebSocket.OPEN) {
           ws.send(JSON.stringify(latestPayload));
         }
       };
 
       const existingSocket = driverLocationSocketRef.current;
-      if (existingSocket?.readyState === WebSocket.OPEN) {
+      if (existingSocket?.readyState === WebSocket?.OPEN) {
         sendLatestPayload(existingSocket);
         return;
       }
-      if (existingSocket?.readyState === WebSocket.CONNECTING) {
+      if (existingSocket?.readyState === WebSocket?.CONNECTING) {
         return;
       }
 
@@ -199,7 +199,7 @@ const TripMap = () => {
       };
 
       ws.onclose = () => {
-        if (driverLocationSocketRef.current === ws) {
+        if (driverLocationSocketRef?.current === ws) {
           driverLocationSocketRef.current = null;
         }
       };
@@ -212,7 +212,7 @@ const TripMap = () => {
   useEffect(() => {
     const watchId = Geolocation.watchPosition(
       (position) => {
-        const { latitude, longitude } = position.coords;
+        const { latitude, longitude } = position?.coords;
         syncDriverLocation(latitude, longitude);
         sendDriverLocationViaSocket(latitude, longitude);
       },
@@ -234,7 +234,6 @@ const TripMap = () => {
     };
   }, []);
   useEffect(() => {
-    // setActionLoading(true)
     getDetail()
   }, [])
 
@@ -243,12 +242,10 @@ const TripMap = () => {
       url: `/delivery/my-offers/${parcelId}`
     }
     const res = await GetApi(param, setLoading)
-    if (res.status == 1) {
-      console.log("---")
+    if (res?.status == 1) {
       setParcel(res?.offer?.parcel)
     }
     setActionLoading(false)
-    console.log(res, 'this is res')
   }
 
 
@@ -259,7 +256,7 @@ const TripMap = () => {
 
       case STATUS.ASSIGNED:
         return {
-          title: strings.StartPickup,
+          title: strings?.StartPickup,
           onPress: () => handleStatusUpdate(STATUS.GOING_TO_PICKUP),
           color: STATUS_COLORS[STATUS.GOING_TO_PICKUP], // Fixed
           icon: "car-outline",
@@ -268,7 +265,7 @@ const TripMap = () => {
 
       case STATUS.GOING_TO_PICKUP:
         return {
-          title: strings.MarkPickedUp,
+          title: strings?.MarkPickedUp,
           onPress: () => handleStatusUpdate(STATUS.PICKED_UP),
           color: STATUS_COLORS[STATUS.PICKED_UP], // Fixed
           icon: "cube-outline",
@@ -391,12 +388,12 @@ const TripMap = () => {
   const [directionsFailed, setDirectionsFailed] = useState(false);
   const [activeDirectionsFailed, setActiveDirectionsFailed] = useState(false);
 
-  const pickupAddress = source?.pickupLocation || item?.pickup?.location || strings.PickupLocation;
-  const dropoffAddress = source?.dropLocation || item?.drop?.location || strings.DropLocation;
-  const normalizedPickupAddress = String(pickupAddress).trim().toLowerCase();
-  const normalizedDropoffAddress = String(dropoffAddress).trim().toLowerCase();
+  const pickupAddress = source?.pickupLocation || item?.pickup?.location || strings?.PickupLocation;
+  const dropoffAddress = source?.dropLocation || item?.drop?.location || strings?.DropLocation;
+  const normalizedPickupAddress = String(pickupAddress)?.trim()?.toLowerCase();
+  const normalizedDropoffAddress = String(dropoffAddress)?.trim()?.toLowerCase();
   const sameLocation =
-    normalizedPickupAddress.length > 0 &&
+    normalizedPickupAddress?.length > 0 &&
     normalizedPickupAddress === normalizedDropoffAddress;
 
   const deliveryStatus = item?.deliveryStatus ?? parcel?.deliveryStatus ?? item?.parcel?.deliveryStatus ?? '';
@@ -404,8 +401,8 @@ const TripMap = () => {
   const isToDropoff = deliveryStatus === STATUS.PICKED_UP || deliveryStatus === STATUS.ON_THE_WAY || deliveryStatus === STATUS.ARRIVING;
   const routeDestination = isToPickup ? pickup : dropoff;
   const distanceBetween = (a: LatLng, b: LatLng) => {
-    const dLat = a.latitude - b.latitude;
-    const dLng = a.longitude - b.longitude;
+    const dLat = a?.latitude - b?.latitude;
+    const dLng = a?.longitude - b?.longitude;
     return Math.sqrt(dLat * dLat + dLng * dLng);
   };
 
@@ -413,10 +410,10 @@ const TripMap = () => {
 
   const getDistanceKm = (a: LatLng, b: LatLng) => {
     const earthRadiusKm = 6371;
-    const dLat = toRadians(b.latitude - a.latitude);
-    const dLng = toRadians(b.longitude - a.longitude);
-    const lat1 = toRadians(a.latitude);
-    const lat2 = toRadians(b.latitude);
+    const dLat = toRadians(b?.latitude - a?.latitude);
+    const dLng = toRadians(b?.longitude - a?.longitude);
+    const lat1 = toRadians(a?.latitude);
+    const lat2 = toRadians(b?.latitude);
     const h =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
       Math.cos(lat1) * Math.cos(lat2) *
@@ -438,10 +435,10 @@ const TripMap = () => {
     pickup?.longitude &&
     dropoff?.latitude &&
     dropoff?.longitude &&
-    Math.abs(pickup.latitude) <= 90 &&
-    Math.abs(pickup.longitude) <= 180 &&
-    Math.abs(dropoff.latitude) <= 90 &&
-    Math.abs(dropoff.longitude) <= 180 &&
+    Math.abs(pickup?.latitude) <= 90 &&
+    Math.abs(pickup?.longitude) <= 180 &&
+    Math.abs(dropoff?.latitude) <= 90 &&
+    Math.abs(dropoff?.longitude) <= 180 &&
     Number.isFinite(pickup?.latitude) &&
     Number.isFinite(pickup?.longitude) &&
     Number.isFinite(dropoff?.latitude) &&
@@ -456,7 +453,7 @@ const TripMap = () => {
   useEffect(() => {
     const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
     const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
-    const showSub = Keyboard.addListener(showEvent, (e) => setKeyboardHeight(e.endCoordinates.height));
+    const showSub = Keyboard.addListener(showEvent, (e) => setKeyboardHeight(e?.endCoordinates?.height));
     const hideSub = Keyboard.addListener(hideEvent, () => setKeyboardHeight(0));
     return () => {
       showSub.remove();
@@ -486,13 +483,13 @@ const TripMap = () => {
   const activeRouteValid = Boolean(
     routeDestination?.latitude &&
     routeDestination?.longitude &&
-    Math.abs(driverCoordinate.latitude) <= 90 &&
-    Math.abs(driverCoordinate.longitude) <= 180 &&
-    Math.abs(routeDestination.latitude) <= 90 &&
-    Math.abs(routeDestination.longitude) <= 180 &&
-    Number.isFinite(driverCoordinate.latitude) &&
-    Number.isFinite(driverCoordinate.longitude) &&
-    Number.isFinite(routeDestination.latitude) &&
+    Math.abs(driverCoordinate?.latitude) <= 90 &&
+    Math.abs(driverCoordinate?.longitude) <= 180 &&
+    Math.abs(routeDestination?.latitude) <= 90 &&
+    Math.abs(routeDestination?.longitude) <= 180 &&
+    Number.isFinite(driverCoordinate?.latitude) &&
+    Number.isFinite(driverCoordinate?.longitude) &&
+    Number.isFinite(routeDestination?.latitude) &&
     Number.isFinite(routeDestination.longitude) &&
     distanceBetween(driverCoordinate, routeDestination) >= MIN_DIST &&
     (isToPickup || isToDropoff)
@@ -502,14 +499,14 @@ const TripMap = () => {
     setDirectionsFailed(false);
     setActiveDirectionsFailed(false);
   }, [
-    pickup.latitude,
-    pickup.longitude,
-    dropoff.latitude,
-    dropoff.longitude,
-    driverCoordinate.latitude,
-    driverCoordinate.longitude,
-    routeDestination.latitude,
-    routeDestination.longitude,
+    pickup?.latitude,
+    pickup?.longitude,
+    dropoff?.latitude,
+    dropoff?.longitude,
+    driverCoordinate?.latitude,
+    driverCoordinate?.longitude,
+    routeDestination?.latitude,
+    routeDestination?.longitude,
     deliveryStatus,
   ]);
 
@@ -548,7 +545,7 @@ const TripMap = () => {
       const result = await updateParcelStatus(item?.parcelId || item?.id, newStatus, newStatus == STATUS.DELIVERED ? deliveryOtp : pickupOtp);
       console.log(result)
       if (result.status == 1) {
-        successToast(String(strings.formatString(strings.StatusUpdatedTo, STATUS_LABELS[newStatus])))
+        successToast(String(strings?.formatString(strings.StatusUpdatedTo, STATUS_LABELS[newStatus])))
         navigation.goBack();
         // You might want to refresh the data here
       } else {
@@ -630,7 +627,7 @@ const TripMap = () => {
             )}
             {activeRouteValid && (
               <MapViewDirections
-                key={`active-driver-route-${deliveryStatus}-${driverCoordinate.latitude.toFixed(5)}-${driverCoordinate.longitude.toFixed(5)}-${routeDestination.latitude.toFixed(5)}-${routeDestination.longitude.toFixed(5)}`}
+                key={`active-driver-route-${deliveryStatus}-${driverCoordinate?.latitude.toFixed(5)}-${driverCoordinate?.longitude.toFixed(5)}-${routeDestination?.latitude.toFixed(5)}-${routeDestination?.longitude.toFixed(5)}`}
                 origin={driverCoordinate}
                 destination={routeDestination}
                 apikey={GOOGLE_MAPS_APIKEY}
@@ -713,7 +710,7 @@ const TripMap = () => {
                 <Ionicons name="location-sharp" size={20} color="#FFF" />
               </View>
               <Text style={styles.arrivalBadgeText}>
-                {isToPickup ? strings.ArrivedAtPickup : strings.ArrivedAtDropoff}
+                {isToPickup ? strings?.ArrivedAtPickup : strings?.ArrivedAtDropoff}
               </Text>
             </View>
           )}

@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Easing,
   FlatList,
-  ScrollView,
   RefreshControl,
   Animated,
   Platform,
