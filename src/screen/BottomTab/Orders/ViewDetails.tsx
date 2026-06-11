@@ -470,7 +470,7 @@ export default function ViewDetails() {
                     <Text style={styles.routeLabel}>{strings.Pickup}</Text>
                     <Text style={styles.date}>{order.startDate}</Text>
                   </View>
-                  <Text style={styles.city}>{order.fromCity || "—"}</Text>
+                  <Text style={styles.city}>{order.fromCity || ""}</Text>
                 </View>
               </View>
 
@@ -534,7 +534,28 @@ export default function ViewDetails() {
 
 
         {driver && (
-          <View style={{ marginHorizontal: 20, marginTop: 10, marginBottom: 10 }}>
+          <View style={{
+            marginHorizontal: 20,
+            marginTop: 15,
+            marginBottom: 10,
+
+            backgroundColor: CARD,
+            padding: 8,
+            borderRadius: 15,
+
+            // iOS Shadow
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 4,
+            },
+            shadowOpacity: 0.15,
+            shadowRadius: 8,
+
+
+
+
+          }}>
             <View style={{
               justifyContent: "space-between",
               flexDirection: "row",
@@ -739,6 +760,14 @@ const styles = StyleSheet.create({
     marginTop: 12,
     borderRadius: 20,
     padding: 16,
+    borderColor: '#EFEFEF',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
 
   },
   cardHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 },

@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  Dimensions,
   Image,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -12,6 +11,7 @@ import {
   TextInput,
   Platform,
   Keyboard,
+  ActivityIndicator,
 } from 'react-native';
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
@@ -26,7 +26,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { color } from '../../../constant';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import font from '../../../theme/font';
-import MapViewDirections from 'react-native-maps-directions';
 import { errorToast, successToast } from '../../../utils/customToast';
 import ScreenNameEnum from '../../../routes/screenName.enum';
 import strings from '../../../localization/Localization';
@@ -53,6 +52,7 @@ const TripMap = () => {
     latitude: 33.95,
     longitude: 117.4028,
   });
+  const [hasDriverLocation, setHasDriverLocation] = useState(false);
   const locationSocketRef = useRef<WebSocket | null>(null);
   const driverLocationSocketRef = useRef<WebSocket | null>(null);
   const latestDriverLocationPayloadRef = useRef<{ parcelId: number | string; lat: number; lon: number } | null>(null);
@@ -113,6 +113,7 @@ const TripMap = () => {
   }, []);
 
   const syncDriverLocation = async (latitude: number, longitude: number) => {
+    setHasDriverLocation(true);
     setDriverCoords({ latitude, longitude });
 
     const payload = {
@@ -357,39 +358,208 @@ const TripMap = () => {
     return Number.isFinite(n) ? n : fallback;
   };
 
-  const source = parcel || item?.parcel || item;
+  const hasRouteFields = (candidate: any) => Boolean(
+    candidate && (
+      candidate.pickupLat != null ||
+      candidate.pickup_lat != null ||
+      candidate.pickupLocationLat != null ||
+      candidate.pickup_location_lat != null ||
+      candidate.pickup != null ||
+      candidate.pickupCoords != null ||
+      candidate.pickupCoordinate != null ||
+      candidate.dropLat != null ||
+      candidate.droplat != null ||
+      candidate.drop_lat != null ||
+      candidate.dropLocationLat != null ||
+      candidate.drop_location_lat != null ||
+      candidate.drop != null ||
+      candidate.dropCoords != null ||
+      candidate.dropCoordinate != null ||
+      candidate.deliveryLocation != null
+    )
+  );
+  const source =
+    [parcel?.parcel, item?.parcel, event?.parcel, parcel, item, event].find(hasRouteFields) ??
+    parcel?.parcel ??
+    item?.parcel ??
+    event?.parcel ??
+    parcel ??
+    item ??
+    event;
   const mapRef = useRef<MapView>(null);
-  // Intelligent coordinate extraction to handle potential API swaps
-  const getCoords = (latField: any, lonField: any): LatLng | null => {
+  const normalizeCoords = (latField: any, lonField: any): LatLng | null => {
     const v1 = safeNum(latField, null);
     const v2 = safeNum(lonField, null);
 
     if (v1 === null || v2 === null) return null;
 
-    // Common heuristic for Indore/India: Lat ~22, Lon ~75
-    // If v1 is > 60 and v2 is < 40, they are swapped (v1 is Lon, v2 is Lat)
+    if (Math.abs(v1) > 90 && Math.abs(v2) <= 90) {
+      return { latitude: v2, longitude: v1 };
+    }
     if (v1 > 60 && v2 < 40) {
       return { latitude: v2, longitude: v1 };
     }
+    if (Math.abs(v1) > 90 || Math.abs(v2) > 180) return null;
     return { latitude: v1, longitude: v2 };
   };
+  const getPointFromCandidate = (candidate: any): LatLng | null => {
+    if (!candidate) return null;
+    if (Array.isArray(candidate) && candidate.length >= 2) {
+      return normalizeCoords(candidate[0], candidate[1]);
+    }
+    if (typeof candidate === "string") {
+      const match = candidate.match(/-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?/);
+      if (!match) return null;
+      const [lat, lon] = match[0].split(",").map((value) => value.trim());
+      return normalizeCoords(lat, lon);
+    }
+    if (typeof candidate !== "object") return null;
 
-  const pickup = getCoords(
-    source?.pickupLat ?? source?.pickupLocationLat ?? source?.pickup_location_lat ?? source?.pickupLat,
-    source?.pickupLon ?? source?.pickupLocationLon ?? source?.pickup_location_lon ?? source?.pickupLon
-  ) || { latitude: DEFAULT_LAT, longitude: DEFAULT_LNG };
+    const directPoint = normalizeCoords(
+      candidate.latitude ?? candidate.lat,
+      candidate.longitude ?? candidate.lng ?? candidate.lon,
+    );
+    if (directPoint) return directPoint;
 
-  const dropoff = getCoords(
-    source?.dropLat ?? source?.dropLocationLat ?? source?.drop_location_lat ?? source?.dropLat,
-    source?.dropLon ?? source?.dropLocationLon ?? source?.drop_location_lon ?? source?.dropLon
-  ) || { latitude: DEFAULT_LAT, longitude: DEFAULT_LNG };
+    const nestedLocation = candidate.location ?? candidate.geometry?.location;
+    if (nestedLocation && nestedLocation !== candidate) {
+      const nestedPoint = getPointFromCandidate(nestedLocation);
+      if (nestedPoint) return nestedPoint;
+    }
+
+    const coordinates = candidate.coordinates ?? candidate.geometry?.coordinates;
+    if (Array.isArray(coordinates) && coordinates.length >= 2) {
+      return normalizeCoords(coordinates[0], coordinates[1]);
+    }
+
+    return null;
+  };
+  const getCoords = (
+    objectCandidates: any[],
+    coordinatePairs: Array<[any, any]>,
+  ): LatLng | null => {
+    for (const candidate of objectCandidates) {
+      const point = getPointFromCandidate(candidate);
+      if (point) return point;
+    }
+
+    for (const [latField, lonField] of coordinatePairs) {
+      const point = normalizeCoords(latField, lonField);
+      if (point) return point;
+    }
+
+    return null;
+  };
+  const getAddressText = (...values: any[]) => {
+    for (const value of values) {
+      if (!value) continue;
+      if (typeof value === "string") return value;
+      if (typeof value === "object") {
+        const text =
+          value.address ??
+          value.location ??
+          value.formattedAddress ??
+          value.formatted_address ??
+          value.description ??
+          value.name;
+        if (text) return String(text);
+      }
+    }
+    return "";
+  };
+  const normalizePointForAddress = (point: LatLng | null, address: any): LatLng | null => {
+    if (!point) return null;
+    const addressText = getAddressText(address).toLowerCase();
+    const looksLikeUsAddress =
+      addressText.includes("usa") ||
+      addressText.includes("united states") ||
+      addressText.includes("san francisco") ||
+      /\bca\b/.test(addressText);
+
+    const looksLikeWestUsCoordinate =
+      point.latitude >= 30 &&
+      point.latitude <= 50 &&
+      point.longitude > 100 &&
+      point.longitude <= 130;
+
+    if ((looksLikeUsAddress || looksLikeWestUsCoordinate) && point.longitude > 0 && point.longitude >= 60 && point.longitude <= 130) {
+      return { ...point, longitude: -point.longitude };
+    }
+
+    return point;
+  };
+  const normalizePointForRoute = (point: LatLng, destination: LatLng, address: any): LatLng => {
+    const normalized = normalizePointForAddress(point, address) ?? point;
+    const sameLongitudeBand = Math.abs(Math.abs(normalized.longitude) - Math.abs(destination.longitude)) <= 35;
+    const sameLatitudeBand = Math.abs(normalized.latitude - destination.latitude) <= 30;
+
+    if (sameLongitudeBand && sameLatitudeBand && destination.longitude < 0 && normalized.longitude > 0) {
+      return { ...normalized, longitude: -normalized.longitude };
+    }
+
+    if (sameLongitudeBand && sameLatitudeBand && destination.longitude > 0 && normalized.longitude < 0) {
+      return { ...normalized, longitude: Math.abs(normalized.longitude) };
+    }
+
+    return normalized;
+  };
+
+  const pickupAddress = getAddressText(
+    source?.pickupLocation,
+    source?.pickup,
+    source?.pickupAddress,
+    source?.pickup_address,
+    item?.pickup?.location,
+    strings?.PickupLocation,
+  );
+  const dropoffAddress = getAddressText(
+    source?.dropLocation,
+    source?.drop,
+    source?.deliveryLocation,
+    source?.dropAddress,
+    source?.drop_address,
+    item?.drop?.location,
+    strings?.DropLocation,
+  );
+
+  const pickupCoords = normalizePointForAddress(getCoords(
+    [source?.pickup, source?.pickupLocation, source?.pickupCoords, source?.pickupCoordinate, source?.pickup_coordinates],
+    [[
+      source?.pickupLat ?? source?.pickup_lat,
+      source?.pickupLon ?? source?.pickupLng ?? source?.pickup_lon ?? source?.pickup_lng,
+    ], [
+      source?.pickupLocationLat ?? source?.pickup_location_lat,
+      source?.pickupLocationLon ?? source?.pickupLocationLng ?? source?.pickup_location_lon ?? source?.pickup_location_lng,
+    ], [
+      source?.sourceLat ?? source?.source_lat,
+      source?.sourceLon ?? source?.sourceLng ?? source?.source_lon ?? source?.source_lng,
+    ]],
+  ), pickupAddress);
+
+  const dropoffCoords = normalizePointForAddress(getCoords(
+    [source?.drop, source?.dropLocation, source?.deliveryLocation, source?.dropCoords, source?.dropCoordinate, source?.drop_coordinates],
+    [[
+      source?.dropLat ?? source?.droplat ?? source?.drop_lat,
+      source?.dropLon ?? source?.dropLng ?? source?.drop_lon ?? source?.drop_lng,
+    ], [
+      source?.dropLocationLat ?? source?.drop_location_lat,
+      source?.dropLocationLon ?? source?.dropLocationLng ?? source?.drop_location_lon ?? source?.drop_location_lng,
+    ], [
+      source?.destinationLat ?? source?.destination_lat,
+      source?.destinationLon ?? source?.destinationLng ?? source?.destination_lon ?? source?.destination_lng,
+    ]],
+  ), dropoffAddress);
+
+  const pickup = pickupCoords || { latitude: DEFAULT_LAT, longitude: DEFAULT_LNG };
+  const dropoff = dropoffCoords || { latitude: DEFAULT_LAT, longitude: DEFAULT_LNG };
   const [currentCoords, setCurrentCoords] = useState(driverCoords);
   const [routeDistanceKm, setRouteDistanceKm] = useState<number | null>(null);
-  const [directionsFailed, setDirectionsFailed] = useState(false);
-  const [activeDirectionsFailed, setActiveDirectionsFailed] = useState(false);
+  const [routeCoordinates, setRouteCoordinates] = useState<LatLng[]>([]);
+  const [activeRouteCoordinates, setActiveRouteCoordinates] = useState<LatLng[]>([]);
+  const [routeLoading, setRouteLoading] = useState(false);
+  const [activeRouteLoading, setActiveRouteLoading] = useState(false);
+  const [routeError, setRouteError] = useState<string | null>(null);
 
-  const pickupAddress = source?.pickupLocation || item?.pickup?.location || strings?.PickupLocation;
-  const dropoffAddress = source?.dropLocation || item?.drop?.location || strings?.DropLocation;
   const normalizedPickupAddress = String(pickupAddress)?.trim()?.toLowerCase();
   const normalizedDropoffAddress = String(dropoffAddress)?.trim()?.toLowerCase();
   const sameLocation =
@@ -426,15 +596,12 @@ const TripMap = () => {
     return `${value.toFixed(value < 10 ? 1 : 0)} km`;
   };
 
-  const orderDistanceKm = routeDistanceKm ?? getDistanceKm(pickup, dropoff);
   const MIN_DIST = 0.0003;
-  const tooClose = distanceBetween(currentCoords, routeDestination) < MIN_DIST;
+  const tooClose = hasDriverLocation && distanceBetween(currentCoords, routeDestination) < MIN_DIST;
   // Full path green→red: show polyline between pickup and dropoff so driver sees where to go
   const pickupToDropoffValid = Boolean(
-    pickup?.latitude &&
-    pickup?.longitude &&
-    dropoff?.latitude &&
-    dropoff?.longitude &&
+    pickupCoords &&
+    dropoffCoords &&
     Math.abs(pickup?.latitude) <= 90 &&
     Math.abs(pickup?.longitude) <= 180 &&
     Math.abs(dropoff?.latitude) <= 90 &&
@@ -445,10 +612,49 @@ const TripMap = () => {
     Number.isFinite(dropoff?.longitude) &&
     (pickup?.latitude !== dropoff?.latitude || pickup?.longitude !== dropoff?.longitude)
   );
+  const orderDistanceText = pickupToDropoffValid ? formatKm(routeDistanceKm ?? getDistanceKm(pickup, dropoff)) : "—";
 
-  useEffect(() => {
-    setCurrentCoords(driverCoords);
-  }, [driverCoords.latitude, driverCoords.longitude]);
+  const isValidLatLng = useCallback((point: LatLng | null | undefined) =>
+    Boolean(
+      point &&
+      Number.isFinite(point.latitude) &&
+      Number.isFinite(point.longitude) &&
+      Math.abs(point.latitude) <= 90 &&
+      Math.abs(point.longitude) <= 180,
+    ), []);
+  const cleanRouteCoordinates = useCallback((coordinates: LatLng[], origin: LatLng, destination: LatLng) => {
+    const cleaned = coordinates.reduce<LatLng[]>((acc, point) => {
+      if (!isValidLatLng(point)) return acc;
+      const last = acc[acc.length - 1];
+      if (
+        last &&
+        Math.abs(last.latitude - point.latitude) < 0.00001 &&
+        Math.abs(last.longitude - point.longitude) < 0.00001
+      ) {
+        return acc;
+      }
+      acc.push(point);
+      return acc;
+    }, []);
+
+    if (cleaned.length < 2) return [];
+
+    const directKm = Math.max(getDistanceKm(origin, destination), 0.1);
+    const routeKm = cleaned.reduce((sum, point, index) => {
+      if (index === 0) return sum;
+      return sum + getDistanceKm(cleaned[index - 1], point);
+    }, 0);
+
+    if (routeKm > directKm * 8 + 80) return [];
+
+    const first = cleaned[0];
+    const last = cleaned[cleaned.length - 1];
+    const withEndpoints = [...cleaned];
+    if (getDistanceKm(origin, first) > 0.05) withEndpoints.unshift(origin);
+    if (getDistanceKm(destination, last) > 0.05) withEndpoints.push(destination);
+
+    return withEndpoints;
+  }, [isValidLatLng]);
 
   useEffect(() => {
     const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
@@ -476,13 +682,21 @@ const TripMap = () => {
     setKeyboardHeight(0);
   };
 
-  const driverCoordinate: LatLng = {
+  const rawDriverCoordinate: LatLng = {
     latitude: safeNum(driverCoords?.latitude, DEFAULT_LAT) ?? DEFAULT_LAT,
     longitude: safeNum(driverCoords?.longitude, DEFAULT_LNG) ?? DEFAULT_LNG,
   };
+  const driverCoordinate = normalizePointForRoute(
+    rawDriverCoordinate,
+    routeDestination,
+    isToPickup ? pickupAddress : dropoffAddress,
+  );
+  useEffect(() => {
+    setCurrentCoords(driverCoordinate);
+  }, [driverCoordinate.latitude, driverCoordinate.longitude]);
   const activeRouteValid = Boolean(
-    routeDestination?.latitude &&
-    routeDestination?.longitude &&
+    hasDriverLocation &&
+    (isToPickup ? pickupCoords : dropoffCoords) &&
     Math.abs(driverCoordinate?.latitude) <= 90 &&
     Math.abs(driverCoordinate?.longitude) <= 180 &&
     Math.abs(routeDestination?.latitude) <= 90 &&
@@ -494,20 +708,239 @@ const TripMap = () => {
     distanceBetween(driverCoordinate, routeDestination) >= MIN_DIST &&
     (isToPickup || isToDropoff)
   );
+  const hasActiveRouteLine = activeRouteCoordinates.length > 1;
+
+  const mapEdgePadding = useMemo(() => ({
+    right: wp(8),
+    bottom: hp(30),
+    left: wp(8),
+    top: hp(8),
+  }), []);
+
+  const initialRegion = useMemo(() => ({
+    latitude: (pickup?.latitude + dropoff?.latitude) / 2,
+    longitude: (pickup?.longitude + dropoff?.longitude) / 2,
+    latitudeDelta: Math.max(0.018, Math.abs(pickup?.latitude - dropoff?.latitude) * 1.15),
+    longitudeDelta: Math.max(0.018, Math.abs(pickup?.longitude - dropoff?.longitude) * 1.15),
+  }), [
+    dropoff?.latitude,
+    dropoff?.longitude,
+    pickup?.latitude,
+    pickup?.longitude,
+  ]);
+
+  const zoomToPoint = useCallback((point: LatLng) => {
+    if (!isValidLatLng(point)) return;
+    setTimeout(() => {
+      mapRef.current?.animateToRegion({
+        ...point,
+        latitudeDelta: 0.012,
+        longitudeDelta: 0.012,
+      }, 450);
+    }, Platform.OS === 'ios' ? 350 : 80);
+  }, [isValidLatLng]);
+
+  const fitMapToPoints = useCallback((points: LatLng[]) => {
+    const validPoints = points.filter((point): point is LatLng => isValidLatLng(point));
+    if (validPoints.length === 1) {
+      zoomToPoint(validPoints[0]);
+      return;
+    }
+    if (validPoints.length < 2) return;
+
+    setTimeout(() => {
+      mapRef.current?.fitToCoordinates(validPoints, {
+        edgePadding: mapEdgePadding,
+        animated: true,
+      });
+    }, Platform.OS === 'ios' ? 350 : 80);
+  }, [isValidLatLng, mapEdgePadding, zoomToPoint]);
+
+  const fetchRoadRoute = useCallback(async (origin: LatLng, destination: LatLng) => {
+    try {
+      const googleUrl =
+        `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}` +
+        `&destination=${destination.latitude},${destination.longitude}&mode=driving&key=${GOOGLE_MAPS_APIKEY}`;
+      const polyline = require("@mapbox/polyline") as {
+        decode: (encoded: string, precision?: number) => Array<[number, number]>;
+      };
+
+      const googleResponse = await fetch(googleUrl);
+      const googleJson = await googleResponse.json();
+      const googleRoute = googleJson?.routes?.[0];
+      const points = googleRoute?.overview_polyline?.points;
+
+      if (points) {
+        const coordinates = cleanRouteCoordinates(
+          polyline.decode(points).map(([latitude, longitude]) => ({ latitude, longitude })),
+          origin,
+          destination,
+        );
+        if (coordinates.length > 1) {
+          const legs = Array.isArray(googleRoute?.legs) ? googleRoute.legs : [];
+          const distance = legs.reduce((sum: number, leg: any) => sum + (Number(leg?.distance?.value) || 0), 0) / 1000;
+
+          return { coordinates, distance };
+        }
+      }
+
+      const osrmUrl =
+        `https://router.project-osrm.org/route/v1/driving/${origin.longitude},${origin.latitude};` +
+        `${destination.longitude},${destination.latitude}?overview=full&geometries=geojson&steps=false`;
+      const osrmResponse = await fetch(osrmUrl);
+      const osrmJson = await osrmResponse.json();
+      const osrmRoute = osrmJson?.routes?.[0];
+      const osrmCoordinates = osrmRoute?.geometry?.coordinates;
+      if (!Array.isArray(osrmCoordinates) || osrmCoordinates.length < 2) return null;
+
+      const coordinates = osrmCoordinates
+        .map(([longitude, latitude]: [number, number]) => ({ latitude, longitude }))
+        .filter((point: LatLng) => isValidLatLng(point));
+      const displayCoordinates = cleanRouteCoordinates(coordinates, origin, destination);
+      if (displayCoordinates.length < 2) return null;
+
+      return {
+        coordinates: displayCoordinates,
+        distance: (Number(osrmRoute?.distance) || 0) / 1000,
+      };
+    } catch (error) {
+      console.warn("Manual route fetch failed:", error);
+      return null;
+    }
+  }, [cleanRouteCoordinates, isValidLatLng]);
+
+  const fitVisibleRoute = useCallback(() => {
+    if (activeRouteCoordinates.length > 1) {
+      fitMapToPoints(activeRouteCoordinates);
+      return;
+    }
+    if (hasDriverLocation) {
+      zoomToPoint(driverCoordinate);
+      return;
+    }
+    if (routeCoordinates.length > 1) {
+      fitMapToPoints(routeCoordinates);
+      return;
+    }
+    if (activeRouteValid) {
+      fitMapToPoints([driverCoordinate, routeDestination]);
+      return;
+    }
+    if (pickupToDropoffValid) {
+      fitMapToPoints([pickup, dropoff]);
+    }
+  }, [
+    activeRouteCoordinates,
+    activeRouteValid,
+    driverCoordinate.latitude,
+    driverCoordinate.longitude,
+    dropoff.latitude,
+    dropoff.longitude,
+    fitMapToPoints,
+    hasDriverLocation,
+    pickup.latitude,
+    pickup.longitude,
+    pickupToDropoffValid,
+    routeCoordinates,
+    routeDestination.latitude,
+    routeDestination.longitude,
+    zoomToPoint,
+  ]);
 
   useEffect(() => {
-    setDirectionsFailed(false);
-    setActiveDirectionsFailed(false);
+    setRouteCoordinates([]);
+    setRouteError(null);
   }, [
     pickup?.latitude,
     pickup?.longitude,
     dropoff?.latitude,
     dropoff?.longitude,
+  ]);
+
+  useEffect(() => {
+    setActiveRouteCoordinates([]);
+  }, [
     driverCoordinate?.latitude,
     driverCoordinate?.longitude,
     routeDestination?.latitude,
     routeDestination?.longitude,
     deliveryStatus,
+    hasDriverLocation,
+  ]);
+
+  useEffect(() => {
+    fitVisibleRoute();
+  }, [fitVisibleRoute]);
+
+  useEffect(() => {
+    if (!pickupToDropoffValid) return;
+    let cancelled = false;
+
+    const loadRoute = async () => {
+      setRouteLoading(true);
+      setRouteError(null);
+      const roadRoute = await fetchRoadRoute(pickup, dropoff);
+      if (cancelled) return;
+      if (!roadRoute || roadRoute.coordinates.length < 2) {
+        setRouteCoordinates([]);
+        setRouteError("Route unavailable");
+        setRouteLoading(false);
+        return;
+      }
+
+      const { coordinates, distance } = roadRoute;
+      setRouteDistanceKm(distance);
+      setRouteCoordinates(coordinates);
+      fitMapToPoints(coordinates);
+      setRouteLoading(false);
+    };
+
+    loadRoute();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    pickupToDropoffValid,
+    pickup.latitude,
+    pickup.longitude,
+    dropoff.latitude,
+    dropoff.longitude,
+    fetchRoadRoute,
+    fitMapToPoints,
+  ]);
+
+  useEffect(() => {
+    if (!activeRouteValid) return;
+    let cancelled = false;
+
+    const loadActiveRoute = async () => {
+      setActiveRouteLoading(true);
+      const roadRoute = await fetchRoadRoute(driverCoordinate, routeDestination);
+      if (cancelled) return;
+      if (!roadRoute || roadRoute.coordinates.length < 2) {
+        setActiveRouteCoordinates([]);
+        setActiveRouteLoading(false);
+        return;
+      }
+
+      const { coordinates } = roadRoute;
+      setActiveRouteCoordinates(coordinates);
+      fitMapToPoints(coordinates);
+      setActiveRouteLoading(false);
+    };
+
+    loadActiveRoute();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    activeRouteValid,
+    driverCoordinate.latitude,
+    driverCoordinate.longitude,
+    routeDestination.latitude,
+    routeDestination.longitude,
+    fetchRoadRoute,
+    fitMapToPoints,
   ]);
 
   const buttonConfig = getButtonConfig();
@@ -574,130 +1007,105 @@ const TripMap = () => {
             mapType='standard'
             ref={mapRef}
             provider={PROVIDER_GOOGLE}
-            style={[styles.mapView, Platform.OS === 'ios' && { height: Dimensions.get('window').height }]}
-            initialRegion={{
-              latitude: (pickup?.latitude + dropoff?.latitude) / 2,
-              longitude: (pickup?.longitude + dropoff?.longitude) / 2,
-              latitudeDelta: Math.max(0.05, Math.abs(pickup?.latitude - dropoff?.latitude) * 1.5),
-              longitudeDelta: Math.max(0.05, Math.abs(pickup?.longitude - dropoff?.longitude) * 1.5),
-            }}
+            style={styles.mapView}
+            initialRegion={initialRegion}
+            loadingEnabled
+            loadingIndicatorColor="#FFCC00"
+            mapPadding={mapEdgePadding}
+            showsBuildings={false}
+            showsTraffic={false}
+            onMapReady={fitVisibleRoute}
+            onLayout={fitVisibleRoute}
           >
-            {pickupToDropoffValid && (
-              <MapViewDirections
-                key={`polyline-pickup-dropoff-${pickup?.latitude.toFixed(5)}-${pickup?.longitude.toFixed(5)}-${dropoff?.latitude.toFixed(5)}-${dropoff?.longitude.toFixed(5)}`}
-                origin={pickup}
-                destination={dropoff}
-                apikey={GOOGLE_MAPS_APIKEY}
-                strokeWidth={5}
-                strokeColor="#9CA3AF"
-                lineDashPattern={[5, 5]}
+            {routeCoordinates.length > 1 && (
+              <Polyline
+                coordinates={routeCoordinates}
+                strokeWidth={hasActiveRouteLine ? 8 : 10}
+                strokeColor="rgba(255, 255, 255, 0.96)"
                 lineCap="round"
                 lineJoin="round"
-                precision="high"
-                mode="DRIVING"
-                onReady={result => {
-                  setDirectionsFailed(false);
+                zIndex={0}
+              />
+            )}
+            {routeCoordinates.length > 1 && (
+              <Polyline
+                coordinates={routeCoordinates}
+                strokeWidth={hasActiveRouteLine ? 4 : 6}
+                strokeColor={hasActiveRouteLine ? "#94A3B8" : "#FFCC00"}
+                lineCap="round"
+                lineJoin="round"
+                zIndex={1}
+              />
+            )}
 
-                  setRouteDistanceKm(result.distance);
-                  mapRef.current?.fitToCoordinates(result.coordinates, {
-                    edgePadding: {
-                      right: wp(15),
-                      bottom: hp(40),
-                      left: wp(15),
-                      top: hp(15),
-                    },
-                    animated: true,
-                  });
-                }}
-                onError={(err) => {
-                  console.warn('MapViewDirections error:', err);
-                  setDirectionsFailed(true);
-                }}
-              />
-            )}
-            {pickupToDropoffValid && directionsFailed && (
+            {activeRouteCoordinates.length > 1 && (
               <Polyline
-                coordinates={[pickup, dropoff]}
-                strokeWidth={5}
-                strokeColor="#9CA3AF"
-                lineDashPattern={[5, 5]}
+                coordinates={activeRouteCoordinates}
+                strokeWidth={10}
+                strokeColor="rgba(255, 255, 255, 0.96)"
                 lineCap="round"
                 lineJoin="round"
+                zIndex={2}
               />
             )}
-            {activeRouteValid && (
-              <MapViewDirections
-                key={`active-driver-route-${deliveryStatus}-${driverCoordinate?.latitude.toFixed(5)}-${driverCoordinate?.longitude.toFixed(5)}-${routeDestination?.latitude.toFixed(5)}-${routeDestination?.longitude.toFixed(5)}`}
-                origin={driverCoordinate}
-                destination={routeDestination}
-                apikey={GOOGLE_MAPS_APIKEY}
-                strokeWidth={5}
+            {activeRouteCoordinates.length > 1 && (
+              <Polyline
+                coordinates={activeRouteCoordinates}
+                strokeWidth={6}
                 strokeColor="#FFCC00"
                 lineCap="round"
                 lineJoin="round"
-                precision="high"
-                mode="DRIVING"
-                onReady={result => {
-                  setActiveDirectionsFailed(false);
-                  mapRef.current?.fitToCoordinates(result.coordinates, {
-                    edgePadding: {
-                      right: wp(15),
-                      bottom: hp(40),
-                      left: wp(15),
-                      top: hp(15),
-                    },
-                    animated: true,
-                  });
-                }}
-                onError={(err) => {
-                  console.warn('Active MapViewDirections error:', err);
-                  setActiveDirectionsFailed(true);
-                }}
+                zIndex={3}
               />
             )}
-            {activeRouteValid && activeDirectionsFailed && (
-              <Polyline
-                coordinates={[driverCoordinate, routeDestination]}
-                strokeWidth={5}
-                strokeColor="#FFCC00"
-                lineCap="round"
-                lineJoin="round"
-              />
+            {pickupCoords && (
+              <Marker coordinate={pickup} title={strings.Pickup} tracksViewChanges={false} anchor={{ x: 0.5, y: 1 }}>
+                <View style={styles.mapMarkerWrap}>
+                  <View style={[styles.pinHead, styles.pickupPin]}>
+                    <View style={styles.pinIconCircle}>
+                      <Ionicons name="cube-outline" size={16} color="#10B981" />
+                    </View>
+                  </View>
+                  <View style={[styles.pinPointer, styles.pickupPointer]} />
+                </View>
+              </Marker>
             )}
-            <Marker coordinate={pickup} title={strings.Pickup} tracksViewChanges={false} anchor={{ x: 0.5, y: 1 }}>
-              <View style={styles.mapMarkerWrap}>
-                <View style={[styles.pinHead, styles.pickupPin]}>
-                  <View style={styles.pinIconCircle}>
-                    <Ionicons name="cube-outline" size={16} color="#10B981" />
+            {dropoffCoords && (
+              <Marker coordinate={dropoff} title={strings.Drop} tracksViewChanges={false} anchor={{ x: 0.5, y: 1 }}>
+                <View style={styles.mapMarkerWrap}>
+                  <View style={[styles.pinHead, styles.dropPin]}>
+                    <View style={styles.pinIconCircle}>
+                      <Ionicons name="location-sharp" size={17} color="#EF4444" />
+                    </View>
+                  </View>
+                  <View style={[styles.pinPointer, styles.dropPointer]} />
+                </View>
+              </Marker>
+            )}
+            {hasDriverLocation && (
+              <Marker
+                key="driver-marker"
+                coordinate={driverCoordinate}
+                anchor={{ x: 0.5, y: 0.5 }}
+                tracksViewChanges={false}
+              >
+                <View style={styles.courierMarker}>
+                  <View style={styles.courierPulse} />
+                  <View style={styles.courierMarkerInner}>
+                    <Image source={imageIndex.deliver} style={styles.courierImage} />
                   </View>
                 </View>
-                <View style={[styles.pinPointer, styles.pickupPointer]} />
-              </View>
-            </Marker>
-            <Marker coordinate={dropoff} title={strings.Drop} tracksViewChanges={false} anchor={{ x: 0.5, y: 1 }}>
-              <View style={styles.mapMarkerWrap}>
-                <View style={[styles.pinHead, styles.dropPin]}>
-                  <View style={styles.pinIconCircle}>
-                    <Ionicons name="location-sharp" size={17} color="#EF4444" />
-                  </View>
-                </View>
-                <View style={[styles.pinPointer, styles.dropPointer]} />
-              </View>
-            </Marker>
-            <Marker
-              key="driver-marker"
-              coordinate={driverCoordinate}
-              anchor={{ x: 0.5, y: 0.5 }}
-              tracksViewChanges={false}
-            >
-              <View style={styles.courierMarker}>
-                <View style={styles.courierPulse} />
-                <View style={styles.courierMarkerInner}>
-                  <Image source={imageIndex.deliver} style={styles.courierImage} />
-                </View>
-              </View>
-            </Marker>
+              </Marker>
+            )}
           </MapView>
+          {(routeLoading || activeRouteLoading || routeError) && (
+            <View style={styles.routeStatusPill} pointerEvents="none">
+              {(routeLoading || activeRouteLoading) ? <ActivityIndicator size="small" color="#111827" /> : null}
+              <Text style={styles.routeStatusText}>
+                {(routeLoading || activeRouteLoading) ? "Loading route" : routeError}
+              </Text>
+            </View>
+          )}
           {sameLocation && (
             <View style={styles.sameLocationBanner}>
               <Ionicons name="alert-circle" size={20} color="#FFF" />
@@ -734,7 +1142,7 @@ const TripMap = () => {
             <Text style={styles.routeTitle}>Order Route</Text>
             <View style={styles.distancePill}>
               <Ionicons name="navigate" size={13} color="#0F172A" />
-              <Text style={styles.distanceText}>{formatKm(orderDistanceKm)}</Text>
+              <Text style={styles.distanceText}>{orderDistanceText}</Text>
             </View>
           </View>
 
@@ -1119,6 +1527,30 @@ const styles = StyleSheet.create({
   mapView: {
     flex: 1,
     width: '100%',
+  },
+  routeStatusPill: {
+    position: "absolute",
+    left: 20,
+    right: 20,
+    bottom: 224,
+    alignSelf: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.96)",
+    borderRadius: 18,
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+    borderWidth: 1,
+    borderColor: "rgba(15, 23, 42, 0.08)",
+    zIndex: 20,
+    elevation: 8,
+  },
+  routeStatusText: {
+    marginLeft: 8,
+    color: "#111827",
+    fontSize: 12,
+    fontFamily: font.MonolithRegular,
   },
   mapMarkerWrap: {
     alignItems: "center",

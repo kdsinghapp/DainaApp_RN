@@ -12,10 +12,10 @@ import {
   PanResponder,
   ScrollView,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MapView, { Marker, AnimatedRegion, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
-import MapViewDirections from "react-native-maps-directions";
 import StatusBarComponent from "../../../compoent/StatusBarCompoent";
 import { SafeAreaView } from "react-native-safe-area-context";
 import imageIndex from "../../../assets/imageIndex";
@@ -31,27 +31,6 @@ import RatingModal from "../../../compoent/RatingModal";
 import strings from "../../../localization/Localization";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 const { height } = Dimensions.get("window");
-const MAP_STYLE = [
-  { "elementType": "geometry", "stylers": [{ "color": "#f5f5f5" }] },
-  { "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] },
-  { "elementType": "labels.text.fill", "stylers": [{ "color": "#616161" }] },
-  { "elementType": "labels.text.stroke", "stylers": [{ "color": "#f5f5f5" }] },
-  { "featureType": "administrative.land_parcel", "elementType": "labels.text.fill", "stylers": [{ "color": "#bdbdbd" }] },
-  { "featureType": "poi", "elementType": "geometry", "stylers": [{ "color": "#eeeeee" }] },
-  { "featureType": "poi", "elementType": "labels.text.fill", "stylers": [{ "color": "#757575" }] },
-  { "featureType": "poi.park", "elementType": "geometry", "stylers": [{ "color": "#e5e5e5" }] },
-  { "featureType": "poi.park", "elementType": "labels.text.fill", "stylers": [{ "color": "#9e9e9e" }] },
-  { "featureType": "road", "elementType": "geometry", "stylers": [{ "color": "#ffffff" }] },
-  { "featureType": "road.arterial", "elementType": "labels.text.fill", "stylers": [{ "color": "#757575" }] },
-  { "featureType": "road.highway", "elementType": "geometry", "stylers": [{ "color": "#dadada" }] },
-  { "featureType": "road.highway", "elementType": "labels.text.fill", "stylers": [{ "color": "#616161" }] },
-  { "featureType": "road.local", "elementType": "labels.text.fill", "stylers": [{ "color": "#9e9e9e" }] },
-  { "featureType": "transit.line", "elementType": "geometry", "stylers": [{ "color": "#e5e5e5" }] },
-  { "featureType": "transit.station", "elementType": "geometry", "stylers": [{ "color": "#eeeeee" }] },
-  { "featureType": "water", "elementType": "geometry", "stylers": [{ "color": "#c9c9c9" }] },
-  { "featureType": "water", "elementType": "labels.text.fill", "stylers": [{ "color": "#9e9e9e" }] }
-];
-
 const PANEL_PEEK_HEIGHT = 280;
 const PANEL_OPEN_Y = height * 0.3;
 const PANEL_CLOSED_Y = height - PANEL_PEEK_HEIGHT;
@@ -60,22 +39,22 @@ const CourierTrackingScreen = () => {
   const [loading, setLoading] = useState(false);
   const isMounted = useRef(true);
   const rou: any = useRoute();
-  const { item } = rou.params || {};
+  const { item, parcel: routeParcel, event } = rou.params || {};
   const [parcel, setParcel] = useState(item ?? null);
   const socketRef = useRef<WebSocket | null>(null);
   const getDetailRef = useRef<() => Promise<void>>(() => Promise.resolve());
-  const parcelIdRef = useRef<number | undefined>(parcel?.id ?? item?.id);
-  const trackingIdRef = useRef<string | number | undefined>(parcel?.trackingId ?? item?.trackingId);
+  const parcelIdRef = useRef<number | undefined>(parcel?.id ?? item?.parcel?.id ?? routeParcel?.id ?? item?.id);
+  const trackingIdRef = useRef<string | number | undefined>(parcel?.trackingId ?? item?.parcel?.trackingId ?? routeParcel?.trackingId ?? item?.trackingId);
   const driverLocationRef = useRef<any>(null);
   const setCurrentCoordsRef = useRef<((c: { latitude: number; longitude: number }) => void) | null>(null);
   const fitMapToRouteRef = useRef<() => void>(() => { });
+  const routeContextRef = useRef<any>(null);
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [ratingSubmitting, setRatingSubmitting] = useState(false);
   const ratingSubmittedRef = useRef(false);
 
-  // console.log("parcel",parcel)
   const getDetail = async () => {
-    const parcelId = parcel?.id ?? item?.id;
+    const parcelId = parcel?.id ?? item?.parcel?.id ?? routeParcel?.id ?? item?.parcelId ?? item?.id;
     if (!parcelId) return;
     const param = { url: `/parcel-details/${parcelId}` };
     const res = await GetApi(param, setLoading);
@@ -84,15 +63,15 @@ const CourierTrackingScreen = () => {
     }
   };
   getDetailRef.current = getDetail;
-  parcelIdRef.current = parcel?.id ?? item?.id;
-  trackingIdRef.current = parcel?.trackingId ?? item?.trackingId;
+  parcelIdRef.current = parcel?.id ?? item?.parcel?.id ?? routeParcel?.id ?? item?.parcelId ?? item?.id;
+  trackingIdRef.current = parcel?.trackingId ?? item?.parcel?.trackingId ?? routeParcel?.trackingId ?? item?.trackingId;
   useEffect(() => {
     isMounted.current = true;
     getDetail();
     return () => {
       isMounted.current = false;
     };
-  }, [item?.id]);
+  }, [item?.id, item?.parcel?.id, item?.parcelId, routeParcel?.id]);
   useEffect(() => {
     let ws: WebSocket | null = null;
     const connectSocket = (token: string) => {
@@ -138,13 +117,18 @@ const CourierTrackingScreen = () => {
                 const lat = parseFloat(data?.lat ?? data?.latitude);
                 const lon = parseFloat(data?.lon ?? data?.lng ?? data?.longitude);
                 if (match && Number.isFinite(lat) && Number.isFinite(lon)) {
-                  let finalLat = lat;
-                  let finalLon = lon;
-                  if (lat > 60 && lon < 40) {
-                    finalLat = lon;
-                    finalLon = lat;
-                  }
-                  const newPoint = { latitude: finalLat, longitude: finalLon };
+                  const rawPoint = normalizeCoords(lat, lon);
+                  if (!rawPoint) return;
+                  const routeContext = routeContextRef.current;
+                  const liveStatus = routeContext?.status;
+                  const routeTarget = [STATUS.ASSIGNED, STATUS.GOING_TO_PICKUP].includes(liveStatus)
+                    ? routeContext?.pickup
+                    : routeContext?.dropoff;
+                  const routeTargetAddress = [STATUS.ASSIGNED, STATUS.GOING_TO_PICKUP].includes(liveStatus)
+                    ? routeContext?.pickupAddress
+                    : routeContext?.dropoffAddress;
+                  if (!routeTarget) return;
+                  const newPoint = normalizePointForRoute(rawPoint, routeTarget, routeTargetAddress);
                   setHasLiveDriverLocation(true);
                   setCurrentCoordsRef.current?.(newPoint);
                   const region = driverLocationRef.current;
@@ -191,8 +175,8 @@ const CourierTrackingScreen = () => {
       socketRef.current = null;
     };
   }, []);
-  const driver = parcel?.assignedDriver ?? item?.assignedDriver;
-  const status = parcel?.deliveryStatus ?? item?.deliveryStatus;
+  const driver = parcel?.assignedDriver ?? item?.parcel?.assignedDriver ?? routeParcel?.assignedDriver ?? item?.assignedDriver;
+  const status = parcel?.deliveryStatus ?? item?.parcel?.deliveryStatus ?? routeParcel?.deliveryStatus ?? item?.deliveryStatus;
   const DEFAULT_LAT = 22.7176;
   const DEFAULT_LNG = 75.8577;
   type LatLng = { latitude: number; longitude: number };
@@ -201,27 +185,83 @@ const CourierTrackingScreen = () => {
     const n = parseFloat(v);
     return Number.isFinite(n) ? n : fallback;
   };
-  const source = parcel ?? item;
+  const hasRouteFields = (candidate: any) => Boolean(
+    candidate && (
+      candidate.pickupLat != null ||
+      candidate.pickup_lat != null ||
+      candidate.pickupLocationLat != null ||
+      candidate.pickup_location_lat != null ||
+      candidate.pickup != null ||
+      candidate.pickupCoords != null ||
+      candidate.pickupCoordinate != null ||
+      candidate.dropLat != null ||
+      candidate.droplat != null ||
+      candidate.drop_lat != null ||
+      candidate.dropLocationLat != null ||
+      candidate.drop_location_lat != null ||
+      candidate.drop != null ||
+      candidate.dropCoords != null ||
+      candidate.dropCoordinate != null ||
+      candidate.deliveryLocation != null
+    )
+  );
+  const source =
+    [parcel?.parcel, item?.parcel, routeParcel, event?.parcel, parcel, item, event].find(hasRouteFields) ??
+    parcel?.parcel ??
+    item?.parcel ??
+    routeParcel ??
+    event?.parcel ??
+    parcel ??
+    item ??
+    event;
   const normalizeCoords = (latField: any, lonField: any): LatLng | null => {
     const v1 = safeNum(latField, null);
     const v2 = safeNum(lonField, null);
     if (v1 === null || v2 === null) return null;
+    if (Math.abs(v1) > 90 && Math.abs(v2) <= 90) return { latitude: v2, longitude: v1 };
     if (v1 > 60 && v2 < 40) return { latitude: v2, longitude: v1 };
+    if (Math.abs(v1) > 90 || Math.abs(v2) > 180) return null;
     return { latitude: v1, longitude: v2 };
+  };
+  const getPointFromCandidate = (candidate: any): LatLng | null => {
+    if (!candidate) return null;
+    if (Array.isArray(candidate) && candidate.length >= 2) {
+      return normalizeCoords(candidate[0], candidate[1]);
+    }
+    if (typeof candidate === "string") {
+      const match = candidate.match(/-?\d+(\.\d+)?\s*,\s*-?\d+(\.\d+)?/);
+      if (!match) return null;
+      const [lat, lon] = match[0].split(",").map((value) => value.trim());
+      return normalizeCoords(lat, lon);
+    }
+    if (typeof candidate !== "object") return null;
+
+    const directPoint = normalizeCoords(
+      candidate.latitude ?? candidate.lat,
+      candidate.longitude ?? candidate.lng ?? candidate.lon,
+    );
+    if (directPoint) return directPoint;
+
+    const nestedLocation = candidate.location ?? candidate.geometry?.location;
+    if (nestedLocation && nestedLocation !== candidate) {
+      const nestedPoint = getPointFromCandidate(nestedLocation);
+      if (nestedPoint) return nestedPoint;
+    }
+
+    const coordinates = candidate.coordinates ?? candidate.geometry?.coordinates;
+    if (Array.isArray(coordinates) && coordinates.length >= 2) {
+      return normalizeCoords(coordinates[0], coordinates[1]);
+    }
+
+    return null;
   };
   const getCoords = (
     objectCandidates: any[],
     coordinatePairs: Array<[any, any]>,
   ): LatLng | null => {
     for (const candidate of objectCandidates) {
-      if (!candidate) continue;
-      if (typeof candidate === "object") {
-        const point = normalizeCoords(
-          candidate.latitude ?? candidate.lat,
-          candidate.longitude ?? candidate.lng ?? candidate.lon,
-        );
-        if (point) return point;
-      }
+      const point = getPointFromCandidate(candidate);
+      if (point) return point;
     }
 
     for (const [latField, lonField] of coordinatePairs) {
@@ -231,27 +271,115 @@ const CourierTrackingScreen = () => {
 
     return null;
   };
+  const getAddressText = (...values: any[]) => {
+    for (const value of values) {
+      if (!value) continue;
+      if (typeof value === "string") return value;
+      if (typeof value === "object") {
+        const text =
+          value.address ??
+          value.location ??
+          value.formattedAddress ??
+          value.formatted_address ??
+          value.description ??
+          value.name;
+        if (text) return String(text);
+      }
+    }
+    return "";
+  };
+  const normalizePointForAddress = (point: LatLng | null, address: any): LatLng | null => {
+    if (!point) return null;
+    const addressText = getAddressText(address).toLowerCase();
+    const looksLikeUsAddress =
+      addressText.includes("usa") ||
+      addressText.includes("united states") ||
+      addressText.includes("san francisco") ||
+      /\bca\b/.test(addressText);
 
-  const pickupCoords = getCoords(
-    [source?.pickupLat, source?.pickupLocation, source?.pickup],
+    const looksLikeWestUsCoordinate =
+      point.latitude >= 30 &&
+      point.latitude <= 50 &&
+      point.longitude > 100 &&
+      point.longitude <= 130;
+
+    if ((looksLikeUsAddress || looksLikeWestUsCoordinate) && point.longitude > 0 && point.longitude >= 60 && point.longitude <= 130) {
+      return { ...point, longitude: -point.longitude };
+    }
+
+    return point;
+  };
+  const normalizePointForRoute = (point: LatLng, destination: LatLng, address: any): LatLng => {
+    const normalized = normalizePointForAddress(point, address) ?? point;
+    const sameLongitudeBand = Math.abs(Math.abs(normalized.longitude) - Math.abs(destination.longitude)) <= 35;
+    const sameLatitudeBand = Math.abs(normalized.latitude - destination.latitude) <= 30;
+
+    if (sameLongitudeBand && sameLatitudeBand && destination.longitude < 0 && normalized.longitude > 0) {
+      return { ...normalized, longitude: -normalized.longitude };
+    }
+
+    if (sameLongitudeBand && sameLatitudeBand && destination.longitude > 0 && normalized.longitude < 0) {
+      return { ...normalized, longitude: Math.abs(normalized.longitude) };
+    }
+
+    return normalized;
+  };
+
+  const pickupAddressForCoords = getAddressText(
+    source?.pickupLocation,
+    source?.pickup,
+    source?.pickupAddress,
+    source?.pickup_address,
+    item?.pickupLocation,
+  );
+  const dropoffAddressForCoords = getAddressText(
+    source?.dropLocation,
+    source?.drop,
+    source?.deliveryLocation,
+    source?.dropAddress,
+    source?.drop_address,
+    item?.dropLocation,
+  );
+
+  const pickupCoords = normalizePointForAddress(getCoords(
+    [source?.pickupLocation, source?.pickup, source?.pickupCoords, source?.pickupCoordinate, source?.pickup_coordinates],
     [[
+      source?.pickupLat ?? source?.pickup_lat,
+      source?.pickupLon ?? source?.pickupLng ?? source?.pickup_lon ?? source?.pickup_lng,
+    ], [
       source?.pickupLocationLat ?? source?.pickup_location_lat,
-      source?.pickupLon ?? source?.pickupLocationLon ?? source?.pickup_location_lon,
+      source?.pickupLocationLon ?? source?.pickupLocationLng ?? source?.pickup_location_lon ?? source?.pickup_location_lng,
+    ], [
+      source?.sourceLat ?? source?.source_lat,
+      source?.sourceLon ?? source?.sourceLng ?? source?.source_lon ?? source?.source_lng,
     ]],
-  );
+  ), pickupAddressForCoords);
 
-  const dropoffCoords = getCoords(
-    [source?.droplat, source?.dropLat, source?.dropLocation, source?.drop, source?.deliveryLocation],
+  const dropoffCoords = normalizePointForAddress(getCoords(
+    [source?.dropLocation, source?.drop, source?.deliveryLocation, source?.dropCoords, source?.dropCoordinate, source?.drop_coordinates],
     [[
+      source?.dropLat ?? source?.droplat ?? source?.drop_lat,
+      source?.dropLon ?? source?.dropLng ?? source?.drop_lon ?? source?.drop_lng,
+    ], [
       source?.dropLocationLat ?? source?.drop_location_lat,
-      source?.dropLon ?? source?.dropLocationLon ?? source?.drop_location_lon,
+      source?.dropLocationLon ?? source?.dropLocationLng ?? source?.drop_location_lon ?? source?.drop_location_lng,
+    ], [
+      source?.destinationLat ?? source?.destination_lat,
+      source?.destinationLon ?? source?.destinationLng ?? source?.destination_lon ?? source?.destination_lng,
     ]],
-  );
+  ), dropoffAddressForCoords);
 
   const pickup = pickupCoords ?? { latitude: DEFAULT_LAT, longitude: DEFAULT_LNG };
   const dropoff = dropoffCoords ?? {
     latitude: pickup.latitude + 0.01,
     longitude: pickup.longitude + 0.01,
+  };
+  routeContextRef.current = {
+    pickup,
+    dropoff,
+    status,
+    pickupAddress: pickupAddressForCoords,
+    dropoffAddress: dropoffAddressForCoords,
   };
   const toRadians = (value: number) => (value * Math.PI) / 180;
   const getDistanceKm = (a: LatLng, b: LatLng) => {
@@ -288,10 +416,99 @@ const CourierTrackingScreen = () => {
       Math.abs(point.latitude) <= 90 &&
       Math.abs(point.longitude) <= 180,
     );
+  const cleanRouteCoordinates = useCallback((coordinates: LatLng[], origin: LatLng, destination: LatLng) => {
+    const cleaned = coordinates.reduce<LatLng[]>((acc, point) => {
+      if (!isValidLatLng(point)) return acc;
+      const last = acc[acc.length - 1];
+      if (
+        last &&
+        Math.abs(last.latitude - point.latitude) < 0.00001 &&
+        Math.abs(last.longitude - point.longitude) < 0.00001
+      ) {
+        return acc;
+      }
+      acc.push(point);
+      return acc;
+    }, []);
+
+    if (cleaned.length < 2) return [];
+
+    const directKm = Math.max(getDistanceKm(origin, destination), 0.1);
+    const routeKm = cleaned.reduce((sum, point, index) => {
+      if (index === 0) return sum;
+      return sum + getDistanceKm(cleaned[index - 1], point);
+    }, 0);
+
+    if (routeKm > directKm * 8 + 80) return [];
+
+    const first = cleaned[0];
+    const last = cleaned[cleaned.length - 1];
+    const withEndpoints = [...cleaned];
+    if (getDistanceKm(origin, first) > 0.05) withEndpoints.unshift(origin);
+    if (getDistanceKm(destination, last) > 0.05) withEndpoints.push(destination);
+
+    return withEndpoints;
+  }, []);
+  const fetchRoadRoute = useCallback(async (origin: LatLng, destination: LatLng) => {
+    try {
+      const googleUrl =
+        `https://maps.googleapis.com/maps/api/directions/json?origin=${origin.latitude},${origin.longitude}` +
+        `&destination=${destination.latitude},${destination.longitude}&mode=driving&key=${GOOGLE_MAPS_APIKEY}`;
+      const polyline = require("@mapbox/polyline") as {
+        decode: (encoded: string, precision?: number) => Array<[number, number]>;
+      };
+
+      const googleResponse = await fetch(googleUrl);
+      const googleJson = await googleResponse.json();
+      const googleRoute = googleJson?.routes?.[0];
+      const points = googleRoute?.overview_polyline?.points;
+
+      if (points) {
+        const coordinates = cleanRouteCoordinates(
+          polyline.decode(points).map(([latitude, longitude]) => ({ latitude, longitude })),
+          origin,
+          destination,
+        );
+        if (coordinates.length > 1) {
+          const legs = Array.isArray(googleRoute?.legs) ? googleRoute.legs : [];
+          const distance = legs.reduce((sum: number, leg: any) => sum + (Number(leg?.distance?.value) || 0), 0) / 1000;
+          const duration = legs.reduce((sum: number, leg: any) => sum + (Number(leg?.duration?.value) || 0), 0) / 60;
+
+          return { coordinates, distance, duration };
+        }
+      }
+
+      const osrmUrl =
+        `https://router.project-osrm.org/route/v1/driving/${origin.longitude},${origin.latitude};` +
+        `${destination.longitude},${destination.latitude}?overview=full&geometries=geojson&steps=false`;
+      const osrmResponse = await fetch(osrmUrl);
+      const osrmJson = await osrmResponse.json();
+      const osrmRoute = osrmJson?.routes?.[0];
+      const osrmCoordinates = osrmRoute?.geometry?.coordinates;
+      if (!Array.isArray(osrmCoordinates) || osrmCoordinates.length < 2) return null;
+
+      const coordinates = osrmCoordinates
+        .map(([longitude, latitude]: [number, number]) => ({ latitude, longitude }))
+        .filter((point: LatLng) => isValidLatLng(point));
+      const displayCoordinates = cleanRouteCoordinates(coordinates, origin, destination);
+      if (displayCoordinates.length < 2) return null;
+
+      return {
+        coordinates: displayCoordinates,
+        distance: (Number(osrmRoute?.distance) || 0) / 1000,
+        duration: (Number(osrmRoute?.duration) || 0) / 60,
+      };
+    } catch (error) {
+      console.warn("Manual route fetch failed:", error);
+      return null;
+    }
+  }, [cleanRouteCoordinates]);
   const [totalRouteDistance, setTotalRouteDistance] = useState<number | null>(null);
   const [routeDuration, setRouteDuration] = useState<number | null>(null);
-  const [fullRouteFailed, setFullRouteFailed] = useState(false);
   const [routeCoordinates, setRouteCoordinates] = useState<LatLng[]>([]);
+  const [activeRouteCoordinates, setActiveRouteCoordinates] = useState<LatLng[]>([]);
+  const [routeLoading, setRouteLoading] = useState(false);
+  const [routeError, setRouteError] = useState<string | null>(null);
   const [hasLiveDriverLocation, setHasLiveDriverLocation] = useState(false);
   const [currentCoords, setCurrentCoords] = useState(() => pickup);
   const [driverLocation] = useState(
@@ -305,8 +522,8 @@ const CourierTrackingScreen = () => {
   driverLocationRef.current = driverLocation;
   setCurrentCoordsRef.current = setCurrentCoords;
   const [eta, setEta] = useState("Calculating...");
-  const pickupAddress = source?.pickupLocation || item?.pickupLocation || strings.PickupLocation;
-  const dropoffAddress = source?.dropLocation || item?.dropLocation || strings.DropLocation;
+  const pickupAddress = pickupAddressForCoords || strings.PickupLocation;
+  const dropoffAddress = dropoffAddressForCoords || strings.DropLocation;
   // Route bounds for initial region and auto-zoom
   const centerLat = (pickup.latitude + dropoff.latitude) / 2;
   const centerLng = (pickup.longitude + dropoff.longitude) / 2;
@@ -325,18 +542,21 @@ const CourierTrackingScreen = () => {
     left: wp(10),
   };
   const fitMapToRoute = useCallback(() => {
-    const points = [pickup, dropoff].filter((p): p is LatLng => isValidLatLng(p));
+    const points = (activeRouteCoordinates.length > 1 ? activeRouteCoordinates : routeCoordinates.length > 1 ? routeCoordinates : [pickupCoords, dropoffCoords])
+      .filter((p): p is LatLng => isValidLatLng(p));
     if (points.length < 2) return;
     try {
-      mapRef.current?.fitToCoordinates(points, {
-        edgePadding: {
-          top: hp(10),
-          right: wp(10),
-          bottom: PANEL_PEEK_HEIGHT + hp(7),
-          left: wp(10),
-        },
-        animated: true,
-      });
+      setTimeout(() => {
+        mapRef.current?.fitToCoordinates(points, {
+          edgePadding: {
+            top: hp(10),
+            right: wp(10),
+            bottom: PANEL_PEEK_HEIGHT + hp(7),
+            left: wp(10),
+          },
+          animated: true,
+        });
+      }, Platform.OS === "ios" ? 350 : 80);
     } catch (e) {
       console.warn("fitToCoordinates failed:", e);
     }
@@ -345,6 +565,10 @@ const CourierTrackingScreen = () => {
     pickup.longitude,
     dropoff.latitude,
     dropoff.longitude,
+    pickupCoords,
+    dropoffCoords,
+    activeRouteCoordinates,
+    routeCoordinates,
   ]);
   fitMapToRouteRef.current = fitMapToRoute;
 
@@ -394,8 +618,8 @@ const CourierTrackingScreen = () => {
   }, [fitMapToRoute]);
 
   useEffect(() => {
-    const parcelId = parcel?.id ?? item?.parcelId ?? item?.id;
-    const currentStatus = parcel?.deliveryStatus ?? item?.deliveryStatus;
+    const parcelId = parcel?.id ?? item?.parcel?.id ?? routeParcel?.id ?? item?.parcelId ?? item?.id;
+    const currentStatus = parcel?.deliveryStatus ?? item?.parcel?.deliveryStatus ?? routeParcel?.deliveryStatus ?? item?.deliveryStatus;
 
     // Only connect if the parcel is in an active tracking state
     const isActive = [STATUS.ASSIGNED, STATUS.GOING_TO_PICKUP, STATUS.PICKED_UP, STATUS.ON_THE_WAY].includes(currentStatus);
@@ -425,9 +649,13 @@ const CourierTrackingScreen = () => {
               const lat = parseFloat(data.lat);
               const lon = parseFloat(data.lon);
               if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
-              const newPoint = lat > 60 && lon < 40
-                ? { latitude: lon, longitude: lat }
-                : { latitude: lat, longitude: lon };
+              const rawPoint = normalizeCoords(lat, lon);
+              if (!rawPoint) return;
+              const routeTarget = [STATUS.ASSIGNED, STATUS.GOING_TO_PICKUP].includes(currentStatus) ? pickup : dropoff;
+              const routeTargetAddress = [STATUS.ASSIGNED, STATUS.GOING_TO_PICKUP].includes(currentStatus)
+                ? pickupAddressForCoords
+                : dropoffAddressForCoords;
+              const newPoint = normalizePointForRoute(rawPoint, routeTarget, routeTargetAddress);
               setHasLiveDriverLocation(true);
               setCurrentCoords(newPoint);
               (driverLocation as any)
@@ -465,27 +693,135 @@ const CourierTrackingScreen = () => {
         socket.close();
       }
     };
-  }, [parcel?.id, item?.parcelId, item?.id, parcel?.deliveryStatus, item?.deliveryStatus]);
+  }, [
+    parcel?.id,
+    item?.parcel?.id,
+    routeParcel?.id,
+    item?.parcelId,
+    item?.id,
+    parcel?.deliveryStatus,
+    item?.parcel?.deliveryStatus,
+    routeParcel?.deliveryStatus,
+    item?.deliveryStatus,
+  ]);
 
+  const hasPickupCoords = isValidLatLng(pickupCoords);
+  const hasDropoffCoords = isValidLatLng(dropoffCoords);
+  const hasRealRouteCoords = hasPickupCoords && hasDropoffCoords;
   const pickupToDropoffValid = Boolean(
+    hasRealRouteCoords &&
     isValidLatLng(pickup) &&
     isValidLatLng(dropoff) &&
     (pickup.latitude !== dropoff?.latitude || pickup?.longitude !== dropoff?.longitude)
   );
-  const totalDistanceText = formatKm(totalRouteDistance ?? getDistanceKm(pickup, dropoff));
+  const totalDistanceText = hasRealRouteCoords ? formatKm(totalRouteDistance ?? getDistanceKm(pickup, dropoff)) : "—";
   const routeDurationText = formatDuration(routeDuration);
   const routeStartLabel = strings?.Pickup || "Pickup";
   const routeEndLabel = strings?.Drop || "Drop";
+  const routeDestination = [STATUS.ASSIGNED, STATUS.GOING_TO_PICKUP].includes(status) ? pickup : dropoff;
+  const routeDestinationAddress = [STATUS.ASSIGNED, STATUS.GOING_TO_PICKUP].includes(status)
+    ? pickupAddress
+    : dropoffAddress;
+  const activeRouteValid = Boolean(
+    hasLiveDriverLocation &&
+    isValidLatLng(currentCoords) &&
+    isValidLatLng(routeDestination) &&
+    getDistanceKm(currentCoords, routeDestination) >= 0.05 &&
+    [STATUS.ASSIGNED, STATUS.GOING_TO_PICKUP, STATUS.PICKED_UP, STATUS.ON_THE_WAY].includes(status)
+  );
 
   useEffect(() => {
-    setFullRouteFailed(false);
+    if (!pickupToDropoffValid) return;
+    let cancelled = false;
+
+    const loadRoute = async () => {
+      setRouteLoading(true);
+      setRouteError(null);
+      const roadRoute = await fetchRoadRoute(pickup, dropoff);
+      if (cancelled) return;
+      if (!roadRoute || roadRoute.coordinates.length < 2) {
+        setRouteCoordinates([]);
+        setRouteError("Route unavailable");
+        setRouteLoading(false);
+        return;
+      }
+
+      const { coordinates, distance, duration } = roadRoute;
+      setTotalRouteDistance(distance);
+      setRouteDuration(duration);
+      setEta(formatDuration(duration));
+      setRouteCoordinates(coordinates);
+      setTimeout(() => {
+        mapRef.current?.fitToCoordinates(coordinates, {
+          edgePadding: EDGE_PADDING,
+          animated: true,
+        });
+      }, 450);
+      setRouteLoading(false);
+    };
+
+    loadRoute();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    pickupToDropoffValid,
+    pickup.latitude,
+    pickup.longitude,
+    dropoff.latitude,
+    dropoff.longitude,
+    fetchRoadRoute,
+  ]);
+
+  useEffect(() => {
     setRouteCoordinates([]);
+    setActiveRouteCoordinates([]);
     setRouteDuration(null);
+    setRouteError(null);
   }, [
     pickup.latitude,
     pickup.longitude,
     dropoff.latitude,
     dropoff.longitude,
+  ]);
+
+  useEffect(() => {
+    if (!activeRouteValid) {
+      setActiveRouteCoordinates([]);
+      return;
+    }
+    let cancelled = false;
+
+    const loadActiveRoute = async () => {
+      const normalizedDriverPoint = normalizePointForRoute(currentCoords, routeDestination, routeDestinationAddress);
+      const roadRoute = await fetchRoadRoute(normalizedDriverPoint, routeDestination);
+      if (cancelled) return;
+      if (!roadRoute || roadRoute.coordinates.length < 2) {
+        setActiveRouteCoordinates([]);
+        return;
+      }
+
+      setActiveRouteCoordinates(roadRoute.coordinates);
+      setTimeout(() => {
+        mapRef.current?.fitToCoordinates(roadRoute.coordinates, {
+          edgePadding: EDGE_PADDING,
+          animated: true,
+        });
+      }, 450);
+    };
+
+    loadActiveRoute();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    activeRouteValid,
+    currentCoords.latitude,
+    currentCoords.longitude,
+    fetchRoadRoute,
+    routeDestination.latitude,
+    routeDestination.longitude,
+    routeDestinationAddress,
   ]);
 
   const [statusKey, setStatusKey] = useState<string | null>(null);
@@ -504,7 +840,9 @@ const CourierTrackingScreen = () => {
     }, [parcel])
   );
 
-  const isDelivered = (parcel?.deliveryStatus ?? item?.deliveryStatus) === "delivered" || (parcel?.deliveryStatus ?? item?.deliveryStatus) === STATUS.DELIVERED;
+  const isDelivered =
+    (parcel?.deliveryStatus ?? item?.parcel?.deliveryStatus ?? routeParcel?.deliveryStatus ?? item?.deliveryStatus) === "delivered" ||
+    (parcel?.deliveryStatus ?? item?.parcel?.deliveryStatus ?? routeParcel?.deliveryStatus ?? item?.deliveryStatus) === STATUS.DELIVERED;
   useEffect(() => {
     if (isDelivered && !ratingSubmittedRef.current) {
       setShowRatingModal(true);
@@ -514,7 +852,7 @@ const CourierTrackingScreen = () => {
   const handleRatingSubmit = useCallback(
     async (rating: number, comment: string) => {
       if (rating < 1) return;
-      const parcelId = parcel?.id ?? item?.id;
+      const parcelId = parcel?.id ?? item?.parcel?.id ?? routeParcel?.id ?? item?.parcelId ?? item?.id;
       if (!parcelId) return;
 
       setRatingSubmitting(true);
@@ -565,11 +903,11 @@ const CourierTrackingScreen = () => {
           style={styles.map}
           mapType="standard"
           initialRegion={initialRegion}
-          customMapStyle={MAP_STYLE}
           mapPadding={{ top: hp(9), right: wp(4), bottom: PANEL_PEEK_HEIGHT + hp(6), left: wp(4) }}
           loadingEnabled
           loadingIndicatorColor="#FFCC00"
-
+          showsBuildings={false}
+          showsTraffic={false}
           showsUserLocation={false}
           onMapReady={() => setTimeout(() => fitMapToRoute(), 100)}
           onLayout={() => setTimeout(() => fitMapToRoute(), 100)}
@@ -578,111 +916,94 @@ const CourierTrackingScreen = () => {
           {routeCoordinates.length > 1 && (
             <Polyline
               coordinates={routeCoordinates}
-              strokeWidth={11}
-              strokeColor="rgba(15, 23, 42, 0.18)"
+              strokeWidth={activeRouteCoordinates.length > 1 ? 8 : 10}
+              strokeColor="rgba(255, 255, 255, 0.96)"
               lineCap="round"
               lineJoin="round"
               zIndex={0}
             />
           )}
 
-          {/* {pickupToDropoffValid && fullRouteFailed && (
+          {routeCoordinates.length > 1 && (
             <Polyline
-              coordinates={[pickup, dropoff]}
-              strokeWidth={1}
-              // strokeColor="rgba(15, 23, 42, 0.14)"
-              lineCap="round"
-              lineJoin="round"
-              zIndex={0}
-            />
-          )} */}
-
-          {pickupToDropoffValid && fullRouteFailed && (
-            <Polyline
-              coordinates={[pickup, dropoff]}
-              strokeWidth={7}
-              strokeColor="#FFCC00"
+              coordinates={routeCoordinates}
+              strokeWidth={activeRouteCoordinates.length > 1 ? 4 : 6}
+              strokeColor={activeRouteCoordinates.length > 1 ? "#94A3B8" : "#FFCC00"}
               lineCap="round"
               lineJoin="round"
               zIndex={1}
             />
           )}
 
-          {pickupToDropoffValid && (
-            <MapViewDirections
-              key={`full-route-${pickup.latitude.toFixed(5)}-${pickup.longitude.toFixed(5)}-${dropoff.latitude.toFixed(5)}-${dropoff.longitude.toFixed(5)}`}
-              origin={pickup}
-              destination={dropoff}
-              apikey={GOOGLE_MAPS_APIKEY}
-              mode="DRIVING"
+          {activeRouteCoordinates.length > 1 && (
+            <Polyline
+              coordinates={activeRouteCoordinates}
+              strokeWidth={10}
+              strokeColor="rgba(255, 255, 255, 0.96)"
+              lineCap="round"
+              lineJoin="round"
+              zIndex={2}
+            />
+          )}
+
+          {activeRouteCoordinates.length > 1 && (
+            <Polyline
+              coordinates={activeRouteCoordinates}
               strokeWidth={6}
               strokeColor="#FFCC00"
               lineCap="round"
               lineJoin="round"
-              precision="high"
-              onReady={(res) => {
-                setFullRouteFailed(false);
-                setTotalRouteDistance(res?.distance ?? null);
-                setRouteDuration(res?.duration ?? null);
-                setEta(formatDuration(res?.duration ?? null));
-                if (res?.coordinates?.length > 1) {
-                  setRouteCoordinates(res.coordinates);
-                  mapRef.current?.fitToCoordinates(res.coordinates, {
-                    edgePadding: EDGE_PADDING,
-                    animated: true,
-                  });
-                }
-              }}
-              onError={(err) => {
-                console.warn("Full route error:", err);
-                setFullRouteFailed(true);
-              }}
+              zIndex={3}
             />
           )}
 
           {/* Pickup Marker */}
-          <Marker
-            coordinate={pickup}
-            anchor={{ x: 0.5, y: 1 }}
-            tracksViewChanges={false}
-            title={routeStartLabel}
-            description={pickupAddress}
-            zIndex={10}
-          >
-            <View style={styles.mapMarkerContainer}>
-              <View style={styles.markerLabel}>
-                <Text style={styles.markerLabelText}>{routeStartLabel}</Text>
-              </View>
-              <View style={[styles.pinHead, styles.pickupPin]}>
-                <View style={styles.pinIconCircle}>
-                  <Ionicons name="cube-outline" size={16} color="#10B981" />
+          {hasPickupCoords && (
+            <Marker
+              coordinate={pickup}
+              anchor={{ x: 0.5, y: 1 }}
+              tracksViewChanges={false}
+              title={routeStartLabel}
+              description={pickupAddress}
+              zIndex={10}
+            >
+              <View style={styles.mapMarkerContainer}>
+                <View style={styles.markerLabel}>
+                  <Text style={styles.markerLabelText}>{routeStartLabel}</Text>
                 </View>
+                <View style={[styles.pinHead, styles.pickupPin]}>
+                  <View style={styles.pinIconCircle}>
+                    <Ionicons name="cube-outline" size={16} color="#10B981" />
+                  </View>
+                </View>
+                <View style={[styles.pinPointer, styles.pickupPointer]} />
               </View>
-              <View style={[styles.pinPointer, styles.pickupPointer]} />
-            </View>
-          </Marker>
+            </Marker>
+          )}
 
           {/* Drop-off Marker */}
-          <Marker
-            coordinate={dropoff}
-            anchor={{ x: 0.5, y: 1 }}
-            tracksViewChanges={false}
-            title={routeEndLabel}
-            description={dropoffAddress}
-            zIndex={10}
-          >
-            <View style={styles.mapMarkerContainer}>
-              <View style={styles.markerLabel}>
-                <Text style={styles.markerLabelText}>{routeEndLabel}</Text>
-              </View>
-              <View style={[styles.pinHead, styles.dropPin]}>
-                <View style={styles.pinIconCircle}>
-                  <Ionicons name="location-sharp" size={17} color="#EF4444" />
+          {hasDropoffCoords && (
+            <Marker
+              coordinate={dropoff}
+              anchor={{ x: 0.5, y: 1 }}
+              tracksViewChanges={false}
+              title={routeEndLabel}
+              description={dropoffAddress}
+              zIndex={10}
+            >
+              <View style={styles.mapMarkerContainer}>
+                <View style={styles.markerLabel}>
+                  <Text style={styles.markerLabelText}>{routeEndLabel}</Text>
                 </View>
+                <View style={[styles.pinHead, styles.dropPin]}>
+                  <View style={styles.pinIconCircle}>
+                    <Ionicons name="location-sharp" size={17} color="#EF4444" />
+                  </View>
+                </View>
+                <View style={[styles.pinPointer, styles.dropPointer]} />
               </View>
-              <View style={[styles.pinPointer, styles.dropPointer]} />
-            </View>
-          </Marker>
+            </Marker>
+          )}
 
           {/* Driver Marker */}
           {hasLiveDriverLocation && (
@@ -702,8 +1023,14 @@ const CourierTrackingScreen = () => {
           )}
         </MapView>
 
-
-
+        {(routeLoading || routeError) && (
+          <View style={styles.routeStatusPill} pointerEvents="none">
+            {routeLoading ? <ActivityIndicator size="small" color="#111827" /> : null}
+            <Text style={styles.routeStatusText}>
+              {routeLoading ? "Loading route" : routeError}
+            </Text>
+          </View>
+        )}
 
       </View>
 
@@ -825,6 +1152,30 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#F5F5F5" },
   mapWrap: { flex: 1, width: "100%", minHeight: height * 0.5 },
   map: { ...StyleSheet.absoluteFillObject },
+  routeStatusPill: {
+    position: "absolute",
+    left: 20,
+    right: 20,
+    bottom: PANEL_PEEK_HEIGHT + 18,
+    alignSelf: "center",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.96)",
+    borderRadius: 18,
+    paddingHorizontal: 14,
+    paddingVertical: 9,
+    borderWidth: 1,
+    borderColor: "rgba(15, 23, 42, 0.08)",
+    zIndex: 20,
+    elevation: 8,
+  },
+  routeStatusText: {
+    marginLeft: 8,
+    color: "#111827",
+    fontSize: 12,
+    fontFamily: font.MonolithRegular,
+  },
   headerOverlay: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 5 },
   infoCard: {
     alignSelf: "center",
