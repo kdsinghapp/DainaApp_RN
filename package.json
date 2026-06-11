@@ -33,6 +33,7 @@
     "react": "19.0.0",
     "react-native": "0.78.0",
     "react-native-confirmation-code-field": "^8.0.1",
+    "react-native-device-info": "^15.0.2",
     "react-native-geocoding": "^0.5.0",
     "react-native-gesture-handler": "^2.25.0",
     "react-native-haptic-feedback": "^2.3.3",

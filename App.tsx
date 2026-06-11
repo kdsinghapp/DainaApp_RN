@@ -11,6 +11,7 @@ import { getLanguage } from './src/localization/localeStorage';
 import strings from './src/localization/Localization';
 import { getMessaging } from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AppUpdateModal from './src/compoent/AppUpdateModal';
 
 
 
@@ -88,6 +89,7 @@ const App: FunctionComponent<any> = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AppNavigator />
+      <AppUpdateModal />
     </QueryClientProvider>
   )
 }
@@ -95,6 +97,5 @@ const App: FunctionComponent<any> = () => {
 
 
 export default App;
-
 
 
