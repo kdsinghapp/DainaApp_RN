@@ -159,6 +159,18 @@ export default function InboxDeliver() {
     )
     : chats;
 
+  const openChat = (item: ChatItem, chatName: string) => {
+    setChats((prevChats) =>
+      prevChats.map((chat) =>
+        chat.parcelId === item.parcelId ? { ...chat, unreadCount: 0 } : chat,
+      ),
+    );
+    navigation.navigate(ScreenNameEnum.ChatScreen, {
+      item: { ...item, unreadCount: 0 },
+      chatName,
+    });
+  };
+
   // ── Render Item ─────────────────────────────────────────────────────────────
 
   const renderItem = ({ item }: { item: ChatItem }) => {
@@ -172,12 +184,7 @@ export default function InboxDeliver() {
       <TouchableOpacity
         style={[styles.chatRow]}
         activeOpacity={0.75}
-        onPress={() =>
-          navigation.navigate(ScreenNameEnum.ChatScreen, {
-            item,
-            chatName: displayName,
-          })
-        }
+        onPress={() => openChat(item, displayName)}
       >
         {/* Left Side: Avatar */}
         <View style={styles.avatarContainer}>

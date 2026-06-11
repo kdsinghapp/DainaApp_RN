@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text, Platform, Image } from 'react-native';
+import { Text, Platform, Image, View } from 'react-native';
 import ScreenNameEnum from '../routes/screenName.enum';
 import HomeStack from './HomeStack';
 import font from '../theme/font';
@@ -11,6 +11,7 @@ import Inbox from '../screen/BottomTab/Inbox/Inbox';
 import UserProfile from '../screen/BottomTab/Profile/UserProfile';
 
 import strings from '../localization/Localization';
+import useUnreadChatCount from '../hooks/useUnreadChatCount';
 
 const Tab = createBottomTabNavigator();
 
@@ -19,6 +20,8 @@ const ICON_SIZE = 26;
 
 export default function TabNavigator() {
   const insets = useSafeAreaInsets();
+  const { unreadChatCount } = useUnreadChatCount();
+  const inboxBadgeText = unreadChatCount > 99 ? '99+' : String(unreadChatCount);
 
   const TAB_CONFIG: any = {
     [ScreenNameEnum.HomeStack]: {
@@ -64,10 +67,12 @@ export default function TabNavigator() {
           ),
           tabBarIcon: ({ focused }) => {
             const Icon = focused ? tab.iconActive : tab.iconInactive;
-            if (typeof Icon === 'function') {
-              return <Icon width={ICON_SIZE} height={ICON_SIZE} />;
-            } else {
-              return (
+            const showBadge = route.name === 'Inbox' && unreadChatCount > 0;
+            return (
+              <View style={{ width: 42, height: 30, alignItems: 'center', justifyContent: 'center' }}>
+                {typeof Icon === 'function' ? (
+                  <Icon width={ICON_SIZE} height={ICON_SIZE} />
+                ) : (
                 <Image
                   source={Icon}
                   style={{
@@ -76,8 +81,39 @@ export default function TabNavigator() {
                     resizeMode: 'contain',
                   }}
                 />
-              );
-            }
+                )}
+                {showBadge ? (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: -3,
+                      right: 2,
+                      minWidth: 18,
+                      height: 18,
+                      paddingHorizontal: unreadChatCount > 9 ? 5 : 0,
+                      borderRadius: 9,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      backgroundColor: '#FFCC00',
+                      borderWidth: 1.5,
+                      borderColor: '#FFFFFF',
+                    }}
+                  >
+                    <Text
+                      allowFontScaling={false}
+                      style={{
+                        color: '#0F172A',
+                        fontSize: 10,
+                        lineHeight: 12,
+                        fontFamily: font.MonolithRegular,
+                      }}
+                    >
+                      {inboxBadgeText}
+                    </Text>
+                  </View>
+                ) : null}
+              </View>
+            );
           },
           tabBarStyle: {
             position: 'absolute',

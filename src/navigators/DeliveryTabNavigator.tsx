@@ -10,9 +10,10 @@ import NewOrderNotificationModal from '../compoent/NewOrderNotificationModal';
 import OfferAcceptedModal from '../compoent/OfferAcceptedModal';
 import InboxDeliver from '../screen/DeliveryBottomTab/InboxDeliver/InboxDeliver';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Platform, Image } from 'react-native';
+import { Platform, Image, View, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DeliveryProvider } from '../context/DeliveryContext';
+import useUnreadChatCount from '../hooks/useUnreadChatCount';
 
 const Tab = createBottomTabNavigator();
 
@@ -21,6 +22,8 @@ const ICON_SIZE = 26;
 
 export default function DeliveryTabNavigator() {
   const insets = useSafeAreaInsets();
+  const { unreadChatCount } = useUnreadChatCount();
+  const inboxBadgeText = unreadChatCount > 99 ? '99+' : String(unreadChatCount);
 
   const TAB_CONFIG: any = {
     Home: {
@@ -78,6 +81,7 @@ export default function DeliveryTabNavigator() {
             },
             tabBarIcon: ({ focused }) => {
               const Icon = focused ? tab?.iconActive : tab?.iconInactive;
+              const showBadge = route.name === 'Inbox' && unreadChatCount > 0;
               const animatedIconStyle = useAnimatedStyle(() => {
                 return {
                   transform: [{ scale: withSpring(focused ? 1.2 : 1) }],
@@ -85,7 +89,17 @@ export default function DeliveryTabNavigator() {
               });
 
               return (
-                <Animated.View style={animatedIconStyle}>
+                <Animated.View
+                  style={[
+                    {
+                      width: 42,
+                      height: 30,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    },
+                    animatedIconStyle,
+                  ]}
+                >
                   {typeof Icon === 'function' ? (
                     <Icon width={ICON_SIZE} height={ICON_SIZE} />
                   ) : (
@@ -98,6 +112,36 @@ export default function DeliveryTabNavigator() {
                       }}
                     />
                   )}
+                  {showBadge ? (
+                    <View
+                      style={{
+                        position: 'absolute',
+                        top: -3,
+                        right: 2,
+                        minWidth: 18,
+                        height: 18,
+                        paddingHorizontal: unreadChatCount > 9 ? 5 : 0,
+                        borderRadius: 9,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: '#FFCC00',
+                        borderWidth: 1.5,
+                        borderColor: '#FFFFFF',
+                      }}
+                    >
+                      <Text
+                        allowFontScaling={false}
+                        style={{
+                          color: '#0F172A',
+                          fontSize: 10,
+                          lineHeight: 12,
+                          fontFamily: font.MonolithRegular,
+                        }}
+                      >
+                        {inboxBadgeText}
+                      </Text>
+                    </View>
+                  ) : null}
                 </Animated.View>
               );
             },

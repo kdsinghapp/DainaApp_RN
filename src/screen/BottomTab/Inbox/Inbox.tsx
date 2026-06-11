@@ -209,6 +209,18 @@ export default function ChatInboxScreen() {
     )
     : chats;
 
+  const openChat = (item: ChatItem, chatName: string) => {
+    setChats((prevChats) =>
+      prevChats.map((chat) =>
+        chat.parcelId === item.parcelId ? { ...chat, unreadCount: 0 } : chat,
+      ),
+    );
+    navigation.navigate(ScreenNameEnum.ChatScreen, {
+      item: { ...item, unreadCount: 0 },
+      chatName,
+    });
+  };
+
   // ── Render Item ─────────────────────────────────────────────────────────────
 
   const renderItem = ({ item }: { item: ChatItem }) => {
@@ -224,12 +236,7 @@ export default function ChatInboxScreen() {
       <TouchableOpacity
         style={[styles.chatRow,]}
         activeOpacity={0.75}
-        onPress={() =>
-          navigation.navigate(ScreenNameEnum.ChatScreen, {
-            item,
-            chatName: driverName,
-          })
-        }
+        onPress={() => openChat(item, driverName)}
       >
         <Avatar uri={avatarUri} name={driverName} isOnline={item.deliveryStatus !== "delivered"} />
 
