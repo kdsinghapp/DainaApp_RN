@@ -222,7 +222,7 @@ export default function ChatInboxScreen() {
     const hasUnread = (item.unreadCount ?? 0) > 0;
     return (
       <TouchableOpacity
-        style={[styles.chatRow, hasUnread && styles.chatRowUnread]}
+        style={[styles.chatRow,]}
         activeOpacity={0.75}
         onPress={() =>
           navigation.navigate(ScreenNameEnum.ChatScreen, {
@@ -243,9 +243,7 @@ export default function ChatInboxScreen() {
             >
               {driverName}
             </Text>
-            {msgTime ? (
-              <Text style={[styles.timeText, hasUnread && styles.timeTextUnread]}>{msgTime}</Text>
-            ) : null}
+
           </View>
 
           <View style={styles.messageFooterRow}>

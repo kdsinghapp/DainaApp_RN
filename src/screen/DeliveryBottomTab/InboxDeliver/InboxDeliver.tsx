@@ -199,9 +199,7 @@ export default function InboxDeliver() {
             >
               {displayName}
             </Text>
-            {msgTime ? (
-              <Text style={[styles.timeText, hasUnread && styles.timeTextUnread]}>{msgTime}</Text>
-            ) : null}
+
           </View>
 
           {/* Footer Row: Last Message & Unread Badge */}
