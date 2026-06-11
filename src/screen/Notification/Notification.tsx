@@ -128,7 +128,7 @@ const NotificationsScreen = () => {
                 const groupedData = groupNotifications(notifications.map(markNotificationReadLocally));
                 setSections(groupedData);
                 AsyncStorage.setItem(LAST_READ_KEY, String(Date.now()));
-                MarkNotificationsAsReadApi({}, () => {});
+                MarkNotificationsAsReadApi({}, () => { });
             }
         } catch (error) {
             console.error("Fetch Notifications Error:", error);
