@@ -14,6 +14,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapViewDirections from 'react-native-maps-directions';
 import Geolocation from '@react-native-community/geolocation';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import LoadingModal from '../../../utils/Loader';
@@ -30,6 +31,13 @@ import { errorToast, successToast } from '../../../utils/customToast';
 import ScreenNameEnum from '../../../routes/screenName.enum';
 import strings from '../../../localization/Localization';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
+const routesMatch = (a: Array<{ latitude: number; longitude: number }>, b: Array<{ latitude: number; longitude: number }>) =>
+  a.length === b.length &&
+  a.every((point, index) => (
+    Math.abs(point.latitude - b[index].latitude) < 0.00001 &&
+    Math.abs(point.longitude - b[index].longitude) < 0.00001
+  ));
 
 
 
@@ -1017,6 +1025,66 @@ const TripMap = () => {
             onMapReady={fitVisibleRoute}
             onLayout={fitVisibleRoute}
           >
+            {pickupToDropoffValid && (
+              <MapViewDirections
+                key={`google-full-${pickup.latitude}-${pickup.longitude}-${dropoff.latitude}-${dropoff.longitude}`}
+                origin={pickup}
+                destination={dropoff}
+                apikey={GOOGLE_MAPS_APIKEY}
+                mode="DRIVING"
+                precision="high"
+                strokeWidth={0}
+                strokeColor="transparent"
+                optimizeWaypoints={false}
+                onReady={(result) => {
+                  const coordinates = cleanRouteCoordinates(result.coordinates || [], pickup, dropoff);
+                  if (coordinates.length > 1 && !routesMatch(routeCoordinates, coordinates)) {
+                    setRouteCoordinates(coordinates);
+                  }
+                  setRouteDistanceKm(result.distance ?? null);
+                  setRouteError(null);
+                  setRouteLoading(false);
+                  if (coordinates.length > 1) {
+                    fitMapToPoints(coordinates);
+                  }
+                }}
+                onError={(errorMessage) => {
+                  console.warn("Google full route error:", errorMessage);
+                  setRouteError("Route unavailable");
+                  setRouteLoading(false);
+                }}
+              />
+            )}
+
+            {activeRouteValid && (
+              <MapViewDirections
+                key={`google-active-${driverCoordinate.latitude}-${driverCoordinate.longitude}-${routeDestination.latitude}-${routeDestination.longitude}`}
+                origin={driverCoordinate}
+                destination={routeDestination}
+                apikey={GOOGLE_MAPS_APIKEY}
+                mode="DRIVING"
+                precision="high"
+                strokeWidth={0}
+                strokeColor="transparent"
+                optimizeWaypoints={false}
+                onReady={(result) => {
+                  const coordinates = cleanRouteCoordinates(result.coordinates || [], driverCoordinate, routeDestination);
+                  if (coordinates.length > 1 && !routesMatch(activeRouteCoordinates, coordinates)) {
+                    setActiveRouteCoordinates(coordinates);
+                  }
+                  if (coordinates.length > 1) {
+                    fitMapToPoints(coordinates);
+                  }
+                  setActiveRouteLoading(false);
+                }}
+                onError={(errorMessage) => {
+                  console.warn("Google active route error:", errorMessage);
+                  setActiveRouteCoordinates([]);
+                  setActiveRouteLoading(false);
+                }}
+              />
+            )}
+
             {routeCoordinates.length > 1 && (
               <Polyline
                 coordinates={routeCoordinates}

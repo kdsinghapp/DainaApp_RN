@@ -208,6 +208,30 @@
         }
       }
     },
+    "react-native-device-info": {
+      "root": "/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-device-info",
+      "name": "react-native-device-info",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-device-info/RNDeviceInfo.podspec",
+          "version": "15.0.2",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-device-info/android",
+          "packageImportPath": "import com.learnium.RNDeviceInfo.RNDeviceInfo;",
+          "packageInstance": "new RNDeviceInfo()",
+          "buildTypes": [],
+          "componentDescriptors": [],
+          "cmakeListsPath": "/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-device-info/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
     "react-native-gesture-handler": {
       "root": "/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-gesture-handler",
       "name": "react-native-gesture-handler",
@@ -887,8 +911,7 @@
         },
         {
           "name": "--terminal <string>",
-          "description": "Launches the Metro Bundler in a new window using the specified terminal path.",
-          "default": "vscode"
+          "description": "Launches the Metro Bundler in a new window using the specified terminal path."
         },
         {
           "name": "--binary-path <string>",
@@ -1047,8 +1070,7 @@
         },
         {
           "name": "--terminal <string>",
-          "description": "Launches the Metro Bundler in a new window using the specified terminal path.",
-          "default": "vscode"
+          "description": "Launches the Metro Bundler in a new window using the specified terminal path."
         },
         {
           "name": "--appId <string>",

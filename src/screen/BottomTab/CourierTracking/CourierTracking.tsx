@@ -16,6 +16,7 @@ import {
 } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MapView, { Marker, AnimatedRegion, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
+import MapViewDirections from "react-native-maps-directions";
 import StatusBarComponent from "../../../compoent/StatusBarCompoent";
 import { SafeAreaView } from "react-native-safe-area-context";
 import imageIndex from "../../../assets/imageIndex";
@@ -34,6 +35,12 @@ const { height } = Dimensions.get("window");
 const PANEL_PEEK_HEIGHT = 280;
 const PANEL_OPEN_Y = height * 0.3;
 const PANEL_CLOSED_Y = height - PANEL_PEEK_HEIGHT;
+const routesMatch = (a: Array<{ latitude: number; longitude: number }>, b: Array<{ latitude: number; longitude: number }>) =>
+  a.length === b.length &&
+  a.every((point, index) => (
+    Math.abs(point.latitude - b[index].latitude) < 0.00001 &&
+    Math.abs(point.longitude - b[index].longitude) < 0.00001
+  ));
 const CourierTrackingScreen = () => {
   const nav = useNavigation();
   const [loading, setLoading] = useState(false);
@@ -912,6 +919,73 @@ const CourierTrackingScreen = () => {
           onMapReady={() => setTimeout(() => fitMapToRoute(), 100)}
           onLayout={() => setTimeout(() => fitMapToRoute(), 100)}
         >
+          {pickupToDropoffValid && (
+            <MapViewDirections
+              key={`google-full-${pickup.latitude}-${pickup.longitude}-${dropoff.latitude}-${dropoff.longitude}`}
+              origin={pickup}
+              destination={dropoff}
+              apikey={GOOGLE_MAPS_APIKEY}
+              mode="DRIVING"
+              precision="high"
+              strokeWidth={0}
+              strokeColor="transparent"
+              optimizeWaypoints={false}
+              onReady={(result) => {
+                const coordinates = cleanRouteCoordinates(result.coordinates || [], pickup, dropoff);
+                if (coordinates.length > 1 && !routesMatch(routeCoordinates, coordinates)) {
+                  setRouteCoordinates(coordinates);
+                }
+                setTotalRouteDistance(result.distance ?? null);
+                setRouteDuration(result.duration ?? null);
+                setEta(formatDuration(result.duration ?? null));
+                setRouteError(null);
+                setRouteLoading(false);
+                if (coordinates.length > 1) {
+                  mapRef.current?.fitToCoordinates(coordinates, {
+                    edgePadding: EDGE_PADDING,
+                    animated: true,
+                  });
+                }
+              }}
+              onError={(errorMessage) => {
+                console.warn("Google full route error:", errorMessage);
+                setRouteError("Route unavailable");
+                setRouteLoading(false);
+              }}
+            />
+          )}
+
+          {activeRouteValid && (
+            <MapViewDirections
+              key={`google-active-${currentCoords.latitude}-${currentCoords.longitude}-${routeDestination.latitude}-${routeDestination.longitude}`}
+              origin={normalizePointForRoute(currentCoords, routeDestination, routeDestinationAddress)}
+              destination={routeDestination}
+              apikey={GOOGLE_MAPS_APIKEY}
+              mode="DRIVING"
+              precision="high"
+              strokeWidth={0}
+              strokeColor="transparent"
+              optimizeWaypoints={false}
+              onReady={(result) => {
+                const start = normalizePointForRoute(currentCoords, routeDestination, routeDestinationAddress);
+                const coordinates = cleanRouteCoordinates(result.coordinates || [], start, routeDestination);
+                if (coordinates.length > 1 && !routesMatch(activeRouteCoordinates, coordinates)) {
+                  setActiveRouteCoordinates(coordinates);
+                }
+                if (coordinates.length > 1) {
+                  mapRef.current?.fitToCoordinates(coordinates, {
+                    edgePadding: EDGE_PADDING,
+                    animated: true,
+                  });
+                }
+              }}
+              onError={(errorMessage) => {
+                console.warn("Google active route error:", errorMessage);
+                setActiveRouteCoordinates([]);
+              }}
+            />
+          )}
+
           {/* 1. BACKGROUND ROUTE: Total trip path (Pickup -> Dropoff) */}
           {routeCoordinates.length > 1 && (
             <Polyline
