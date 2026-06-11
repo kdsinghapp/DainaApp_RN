@@ -197,7 +197,7 @@ export default function DocumentShow() {
             </View>
             <View style={styles.vehicleDetailTextWrap}>
               <Text style={styles.infoLabel}>{strings.VehicleNumber}</Text>
-              <Text style={styles.infoValue}>{data?.vehicleNumber || '--'}</Text>
+              <Text style={styles.infoValue}>{data?.vehicleNumber || ''}</Text>
             </View>
           </View>
 
