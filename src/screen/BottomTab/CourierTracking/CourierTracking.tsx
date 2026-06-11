@@ -1097,14 +1097,7 @@ const CourierTrackingScreen = () => {
           )}
         </MapView>
 
-        {(routeLoading || routeError) && (
-          <View style={styles.routeStatusPill} pointerEvents="none">
-            {routeLoading ? <ActivityIndicator size="small" color="#111827" /> : null}
-            <Text style={styles.routeStatusText}>
-              {routeLoading ? "Loading route" : routeError}
-            </Text>
-          </View>
-        )}
+
 
       </View>
 

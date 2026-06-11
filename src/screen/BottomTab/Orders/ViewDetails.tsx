@@ -8,7 +8,8 @@ import {
   TouchableOpacity,
   Linking,
   Modal,
-  Dimensions
+  Dimensions,
+  Platform
 } from "react-native";
 import StatusBarComponent from "../../../compoent/StatusBarCompoent";
 import CustomHeader from "../../../compoent/CustomHeader";
@@ -543,15 +544,20 @@ export default function ViewDetails() {
             padding: 8,
             borderRadius: 15,
 
-            // iOS Shadow
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 4,
-            },
-            shadowOpacity: 0.15,
-            shadowRadius: 8,
+            ...(Platform.OS === 'android' && {
+              borderWidth: 0.8,
+              borderColor: '#E5E7EB',
+            }),
 
+            ...(Platform.OS === 'ios' && {
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 0,
+                height: 4,
+              },
+              shadowOpacity: 0.15,
+              shadowRadius: 8,
+            }),
 
 
 
@@ -768,6 +774,10 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.08,
     shadowRadius: 4,
+    ...(Platform.OS === 'android' && {
+      borderWidth: 0.8,
+      borderColor: '#E5E7EB',
+    }),
 
   },
   cardHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 },
