@@ -129,7 +129,6 @@ const AllOrder = () => {
             data={filteredRequests}
             style={{
               marginTop: 12,
-              marginBottom: 70,
             }}
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
