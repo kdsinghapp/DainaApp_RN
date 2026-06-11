@@ -34,8 +34,7 @@ const PhoneLogin = () => {
   const [searchText, setSearchText] = useState("");
   const [filteredCountries, setFilteredCountries] = useState(Constcounty);
   const navigation = useNavigation();
-  const [error, setError] = useState(""); // For error message
-
+  const [error, setError] = useState("");
   useEffect(() => {
     getFcmToken()
   }, [])

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -16,45 +16,23 @@ import font from "../theme/font";
 import imageIndex from "../assets/imageIndex";
 import strings from "../localization/Localization";
 import { GOOGLE_MAPS_APIKEY } from "../Api";
-import Geolocation from '@react-native-community/geolocation';
 
 
 const AddressModalInput = ({ modalVisible, setModalVisible, value, onChange, onSelect }: any) => {
   const [searchText, setSearchText] = useState(value || "");
-  const [suggestions, setSuggestions] = useState([]);
+  const [suggestions, setSuggestions] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
-  const [countryCode, setCountryCode] = useState("MN");
+  const [countryCode] = useState("mn");
 
   useEffect(() => {
     if (modalVisible) {
-      detectUserCountry();
+      setSearchText(value || "");
+      setSuggestions([]);
+      setHasSearched(false);
     }
-  }, [modalVisible]);
-
-  const detectUserCountry = () => {
-    Geolocation.getCurrentPosition(
-      async (pos) => {
-        try {
-          const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?latlng=${pos.coords.latitude},${pos.coords.longitude}&key=${GOOGLE_MAPS_APIKEY}`
-          );
-          const data = await response.json();
-          const countryComponent = data.results[0]?.address_components.find((c: any) =>
-            c.types.includes("country")
-          );
-          if (countryComponent) {
-            // setCountryCode(countryComponent.short_name.toLowerCase());
-          }
-        } catch (error) {
-          setCountryCode("mn"); // Fallback to Mongolia
-        }
-      },
-      () => setCountryCode("mn"), // Fallback if GPS fails
-      { enableHighAccuracy: false, timeout: 5000 }
-    );
-  };
+  }, [modalVisible, value]);
 
   /* 2. Fetch Suggestions with Country Filter */
   const fetchSuggestions = async (text: string) => {
@@ -71,9 +49,10 @@ const AddressModalInput = ({ modalVisible, setModalVisible, value, onChange, onS
 
     try {
       // Restriction added via &components=country:XX
+      const countryFilter = countryCode ? `&components=country:${countryCode}` : "";
       const url = `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
         text
-      )}&key=${GOOGLE_MAPS_APIKEY}&types=address&components=country:${countryCode}`;
+      )}&key=${GOOGLE_MAPS_APIKEY}&types=address${countryFilter}`;
 
       const response = await fetch(url);
       const data = await response.json();
@@ -92,19 +71,25 @@ const AddressModalInput = ({ modalVisible, setModalVisible, value, onChange, onS
   };
 
   const handleSelect = async (placeId: string, description: string) => {
-    onChange(description);
-    setModalVisible(false);
+    onChange?.(description);
+    setModalVisible?.(false);
     setSuggestions([]);
     Keyboard.dismiss();
 
     try {
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${GOOGLE_MAPS_APIKEY}`
+        `https://maps.googleapis.com/maps/api/place/details/json?place_id=${encodeURIComponent(placeId)}&key=${GOOGLE_MAPS_APIKEY}`
       );
       const data = await response.json();
       if (data.status === "OK") {
-        const location = data.result.geometry.location;
-        onSelect({ latitude: location.lat, longitude: location.lng });
+        const location = data.result?.geometry?.location;
+        if (location) {
+          onSelect?.({
+            address: description,
+            latitude: location.lat,
+            longitude: location.lng,
+          });
+        }
       }
     } catch (error) {
       console.log("Details Error:", error);
@@ -113,10 +98,10 @@ const AddressModalInput = ({ modalVisible, setModalVisible, value, onChange, onS
 
   return (
     <Modal
-      visible={modalVisible}
+      visible={Boolean(modalVisible)}
       animationType="slide"
       presentationStyle="fullScreen"
-      onRequestClose={() => setModalVisible(false)}
+      onRequestClose={() => setModalVisible?.(false)}
     >
       <StatusBar backgroundColor="#fff" barStyle="dark-content" />
       <View style={styles.container}>
@@ -129,7 +114,7 @@ const AddressModalInput = ({ modalVisible, setModalVisible, value, onChange, onS
             </View>
             <TouchableOpacity
               style={styles.closeButton}
-              onPress={() => setModalVisible(false)}
+              onPress={() => setModalVisible?.(false)}
             >
               <Text style={styles.closeText}>✕</Text>
             </TouchableOpacity>

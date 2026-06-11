@@ -696,15 +696,7 @@ const CreateParcelFrom = () => {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-      {/* 
-      <AddressModalInput
-        value={pickupLocation}
-        modalVisible={pickupModal}
-        setModalVisible={() => setPickupModal(false)}
-        onChange={setPickupLocation}
-        onSelect={(item: any) => handleLocationSelect('pickup', item)}
-        placeholder="Select Pickup Address"
-      /> */}
+
       <AddressModalInput
         value={dropLocation}
         modalVisible={dropModal}

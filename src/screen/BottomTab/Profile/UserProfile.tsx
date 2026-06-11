@@ -148,18 +148,19 @@ const ProfileScreen: React.FC = () => {
       }, 500);
     }
   };
-
   const handleShareApp = async () => {
     ReactNativeHapticFeedback.trigger("impactLight", hapticOptions);
+
     try {
       await Share.share({
-        message: "Check out Daina App! A great app for delivery. Download it from the App Store or Play Store: https://play.google.com/store/apps/details?id=com.DainaApp",
+        message: "Download Daina app: https://apps.apple.com/in/app/daina/id6777900970",
+        url: "https://apps.apple.com/in/app/daina/id6777900970", // iOS
+        title: "Daina",
       });
-    } catch (error: any) {
-      console.log(error.message);
+    } catch (error) {
+      console.log("Share app error:", error);
     }
   };
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
