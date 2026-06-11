@@ -76,6 +76,7 @@ const App: FunctionComponent<any> = () => {
       }
       await NotificationService.createChannel();
       await NotificationService.getFcmToken();
+      await NotificationService.clearBadge();
       const unsubscribe = NotificationService.setupListeners();
       unsubscribeRef.current = unsubscribe;
       console.log('Notifications initialized successfully');
@@ -97,5 +98,4 @@ const App: FunctionComponent<any> = () => {
 
 
 export default App;
-
 

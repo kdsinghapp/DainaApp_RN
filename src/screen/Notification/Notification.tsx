@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, SectionList, ActivityIndicator, TouchableOpacity, RefreshControl, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomHeader from '../../compoent/CustomHeader';
 import { useNavigation } from '@react-navigation/native';
 import strings from '../../localization/Localization';
-import { GetNotifications } from '../../Api/apiRequest';
+import { GetNotifications, MarkNotificationsAsReadApi } from '../../Api/apiRequest';
 import { color } from '../../constant';
 import moment from 'moment';
 import font from '../../theme/font';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+const LAST_READ_KEY = "notifications_last_read_at";
 
 const NotificationItem = ({ item }: any) => {
     const getIconDetails = (type: string) => {
@@ -70,31 +73,42 @@ const NotificationItem = ({ item }: any) => {
     );
 };
 
+const markNotificationReadLocally = (item: any) => ({
+    ...item,
+    isRead: true,
+    is_read: true,
+    read: true,
+    status: String(item?.status || '').toLowerCase() === 'unread' ? 'read' : item?.status,
+});
+
 const NotificationsScreen = () => {
     const navigation = useNavigation();
     const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
-    const [sections, setSections] = useState([]);
+    const [sections, setSections] = useState<any[]>([]);
 
     useEffect(() => {
         fetchNotifications();
     }, []);
 
     const groupNotifications = (data: any[]) => {
+        const todayLabel = (strings as any).Today || 'Today';
+        const yesterdayLabel = (strings as any).Yesterday || 'Yesterday';
+        const earlierLabel = (strings as any).Earlier || 'Earlier';
         const groups: { [key: string]: any[] } = {
-            [strings.Today || 'Today']: [],
-            [strings.Yesterday || 'Yesterday']: [],
-            [strings.Earlier || 'Earlier']: [],
+            [todayLabel]: [],
+            [yesterdayLabel]: [],
+            [earlierLabel]: [],
         };
 
         data.forEach(item => {
             const date = moment(item.createdAt);
             if (date.isSame(moment(), 'day')) {
-                groups[strings.Today || 'Today'].push(item);
+                groups[todayLabel].push(item);
             } else if (date.isSame(moment().subtract(1, 'days'), 'day')) {
-                groups[strings.Yesterday || 'Yesterday'].push(item);
+                groups[yesterdayLabel].push(item);
             } else {
-                groups[strings.Earlier || 'Earlier'].push(item);
+                groups[earlierLabel].push(item);
             }
         });
 
@@ -110,8 +124,11 @@ const NotificationsScreen = () => {
         try {
             const res = await GetNotifications(setLoading);
             if (res && (res.status === 1 || res.status === "1")) {
-                const groupedData = groupNotifications(res.notifications || []);
+                const notifications = Array.isArray(res.notifications) ? res.notifications : [];
+                const groupedData = groupNotifications(notifications.map(markNotificationReadLocally));
                 setSections(groupedData);
+                AsyncStorage.setItem(LAST_READ_KEY, String(Date.now()));
+                MarkNotificationsAsReadApi({}, () => {});
             }
         } catch (error) {
             console.error("Fetch Notifications Error:", error);

@@ -23,6 +23,7 @@ import OrderCard from "../../../compoent/OrderCard";
 import strings from "../../../localization/Localization";
 import { ActivityIndicator } from "react-native";
 import { color } from "../../../constant";
+import useNotificationCount from "../../../hooks/useNotificationCount";
 
 const ShippingScreen = () => {
 
@@ -44,6 +45,7 @@ const ShippingScreen = () => {
     getParceldetailsApi,
   } = useDashboard();
   const [refreshing, setRefreshing] = useState(false);
+  const { notificationCount, markAllNotificationsRead } = useNotificationCount();
 
   const closeOfferAcceptedModal = () => {
     setCounterOfferAcceptedModal({ visible: false, data: null });
@@ -58,8 +60,12 @@ const ShippingScreen = () => {
       <CurrentLocation ref={locationRef} />
       <HomeHeaderBar
         location={currentlocation || address}
-        onNotificationPress={() => navigation.navigate(ScreenNameEnum.NotificationsScreen)}
-        hasNotification={false}
+        onNotificationPress={() => {
+          markAllNotificationsRead();
+          navigation.navigate(ScreenNameEnum.NotificationsScreen);
+        }}
+        hasNotification={notificationCount > 0}
+        notificationCount={notificationCount}
       />
       <View style={{
         marginTop: 11, marginBottom: 5

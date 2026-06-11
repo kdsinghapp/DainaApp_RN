@@ -28,6 +28,7 @@ import strings from "../../../../localization/Localization";
 import OnlineSlideRight from "../../../../compoent/OnlineSlideRight";
 import font from "../../../../theme/font";
 import { slice } from "@tensorflow/tfjs";
+import useNotificationCount from "../../../../hooks/useNotificationCount";
 
 const DeliveryHome = () => {
   const ctx = useDeliveryContext();
@@ -37,6 +38,7 @@ const DeliveryHome = () => {
 
   const [counts, setCounts] = useState<any>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const { notificationCount, markAllNotificationsRead } = useNotificationCount();
 
 
   const fetchCounts = async () => {
@@ -118,8 +120,12 @@ const DeliveryHome = () => {
       <CurrentLocation ref={locationRef} />
       <HomeHeaderBar
         location={currentlocation || address}
-        onNotificationPress={() => navigation.navigate(ScreenNameEnum.NotificationsScreen)}
-        hasNotification={false}
+        onNotificationPress={() => {
+          markAllNotificationsRead();
+          navigation.navigate(ScreenNameEnum.NotificationsScreen);
+        }}
+        hasNotification={notificationCount > 0}
+        notificationCount={notificationCount}
       />
 
       {/* 

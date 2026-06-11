@@ -1002,7 +1002,7 @@ const CancelParcelApi = async (
 };
 
 const MarkNotificationsAsReadApi = async (
-  param: { notificationId?: number | null },
+  param: { notificationId?: number | null } = {},
   setLoading?: (loading: boolean) => void
 ) => {
   try {
@@ -1010,12 +1010,12 @@ const MarkNotificationsAsReadApi = async (
     const token = await AsyncStorage.getItem("token");
 
     let body = "";
-    if (param?.notificationId) {
+    if (param?.notificationId !== undefined && param?.notificationId !== null) {
       body = `notificationId=${encodeURIComponent(param.notificationId)}`;
     }
 
     const response = await fetch(`${base_url}/notifications/mark-read`, {
-      method: "POST",
+      method: "PATCH",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/x-www-form-urlencoded",
