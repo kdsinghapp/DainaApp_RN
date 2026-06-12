@@ -124,7 +124,7 @@ export default function DeliveryTabNavigator() {
                         borderRadius: 9,
                         alignItems: 'center',
                         justifyContent: 'center',
-                        backgroundColor: '#FFCC00',
+                        backgroundColor: '#FF3B30',
                         borderWidth: 1.5,
                         borderColor: '#FFFFFF',
                       }}
@@ -132,7 +132,7 @@ export default function DeliveryTabNavigator() {
                       <Text
                         allowFontScaling={false}
                         style={{
-                          color: '#0F172A',
+                          color: 'white',
                           fontSize: 10,
                           lineHeight: 12,
                           fontFamily: font.MonolithRegular,

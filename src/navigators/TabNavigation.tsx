@@ -94,7 +94,7 @@ export default function TabNavigator() {
                       borderRadius: 9,
                       alignItems: 'center',
                       justifyContent: 'center',
-                      backgroundColor: 'red',
+                      backgroundColor: '#FF3B30',
                       borderWidth: 1.5,
                       borderColor: '#FFFFFF',
                     }}
