@@ -10,10 +10,10 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import DeviceInfo from "react-native-device-info";
 import strings from "../localization/Localization";
 import font from "../theme/font";
 
-const CURRENT_APP_VERSION = "1.0";
 const IOS_APP_ID = "6777900970";
 const IOS_STORE_URL = `https://apps.apple.com/in/app/daina/id${IOS_APP_ID}`;
 const ANDROID_PACKAGE_NAME = "com.DainaApp";
@@ -25,6 +25,8 @@ type UpdateInfo = {
   latestVersion: string;
   storeUrl: string;
 };
+
+const getCurrentAppVersion = () => DeviceInfo.getVersion() || "0.0.0";
 
 const compareVersions = (currentVersion: string, latestVersion: string) => {
   const currentParts = currentVersion.split(".").map((part) => Number(part) || 0);
@@ -76,6 +78,7 @@ const fetchAndroidUpdateInfo = async (): Promise<UpdateInfo | null> => {
 const AppUpdateModal = () => {
   const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
   const [checking, setChecking] = useState(false);
+  const currentAppVersion = useMemo(() => getCurrentAppVersion(), []);
 
   const storeUrl = useMemo(
     () => updateInfo?.storeUrl || (Platform.OS === "ios" ? IOS_STORE_URL : ANDROID_STORE_URL),
@@ -90,11 +93,12 @@ const AppUpdateModal = () => {
       setChecking(true);
 
       try {
+        const currentVersion = getCurrentAppVersion();
         const info = Platform.OS === "ios"
           ? await fetchIosUpdateInfo()
           : await fetchAndroidUpdateInfo();
 
-        if (!info || compareVersions(CURRENT_APP_VERSION, info.latestVersion) !== 1) return;
+        if (!info || compareVersions(currentVersion, info.latestVersion) !== 1) return;
 
         const dismissedVersion = await AsyncStorage.getItem(DISMISSED_UPDATE_VERSION_KEY);
         if (!cancelled && dismissedVersion !== info.latestVersion) {
@@ -162,8 +166,8 @@ const AppUpdateModal = () => {
             <View style={styles.versionBadge}>
               <Text style={styles.versionText}>
                 {strings.formatString
-                  ? String(strings.formatString(strings.VersionUpdateText || "Current {0} - Latest {1}", CURRENT_APP_VERSION, updateInfo.latestVersion))
-                  : `Current ${CURRENT_APP_VERSION} - Latest ${updateInfo.latestVersion}`}
+                  ? String(strings.formatString(strings.VersionUpdateText || "Current {0} - Latest {1}", currentAppVersion, updateInfo.latestVersion))
+                  : `Current ${currentAppVersion} - Latest ${updateInfo.latestVersion}`}
               </Text>
             </View>
           ) : null}
