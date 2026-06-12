@@ -164,7 +164,7 @@ const ProfileSetup = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <StatusBarComponent />
-      <CustomHeader label={strings.Profile} />
+      <CustomHeader label={strings.Profile} hideLeftIcon={type === "otp"} />
 
       <CurrentLocation ref={locationRef} />
 

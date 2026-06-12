@@ -136,7 +136,6 @@ const Verifyotp = async (param: any, setLoading: any, dispatch: any, setGeneralA
 
       const languageId = strings.getLanguage() === 'en' ? 1 : 2;
       await SetLanguageApi({ languageId }, setLoading);
-      console.log("parsedResponse OTP Response:", parsedResponse);
 
       if (parsedResponse?.type === "Delivery") {
         setLoading(false)
