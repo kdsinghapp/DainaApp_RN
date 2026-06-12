@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View, Text, StyleSheet, Dimensions, ActivityIndicator, Platform,
 } from 'react-native';
@@ -9,7 +9,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import strings from '../localization/Localization';
 import { base_url, WebSocket_Url } from '../Api';
 import { GetProfileApi } from '../Api/apiRequest';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { loginSuccess } from '../redux/feature/authSlice';
 import Animated, {
   useSharedValue,
@@ -49,7 +49,6 @@ const OnlineOfflineButton: React.FC<Props> = ({
   const [loading, setLoading] = useState(false);
   const [isProfileLoading, setIsProfileLoading] = useState(false);
 
-  const userData: any = useSelector((state: any) => state.auth.userData);
   const dispatch = useDispatch();
 
   // Reanimated shared values
@@ -162,19 +161,20 @@ const OnlineOfflineButton: React.FC<Props> = ({
   };
 
   const getStatusLabel = () => {
-    return userData?.onlineStatus || (isOnline ? 'Online' : 'Offline');
+    return isOnline ? 'Online' : 'Offline';
   };
+
+  const getStatusMessage = () => {
+    if (loading) return isOnline ? 'Going offline...' : 'Going online...';
+    return isOnline ? 'Ready to receive parcel requests' : 'You are hidden from new requests';
+  };
+
+  const hasLocation = Boolean(coords?.lat && coords?.lon);
+  const accentColor = isOnline ? '#16A34A' : '#F59E0B';
+  const statusIcon = isOnline ? 'truck-fast' : 'pause-circle-outline';
 
   return (
     <View style={styles.container}>
-      {/* Status indicator */}
-      {/* <View style={[styles.statusCard, isOnline ? styles.statusCardOnline : styles.statusCardOffline]}>
-        <Text style={[styles.statusText, { color: isOnline ? '#10b981' : '#6b7280' }]}>
-          {getStatusLabel()}
-        </Text>
-      </View> */}
-
-      {/* Swipe Component */}
       <View style={[
         styles.swipeContainer,
         isOnline ? styles.swipeContainerOnline : styles.swipeContainerOffline
@@ -182,7 +182,12 @@ const OnlineOfflineButton: React.FC<Props> = ({
 
         {/* Track Text */}
         <Animated.View style={[styles.trackContent, textStyle]}>
-          <Text style={[styles.swipeText, { color: isOnline ? '#FFF' : '#3d2000' }]}>
+          <MaterialCommunityIcons
+            name={isOnline ? "arrow-left-circle-outline" : "arrow-right-circle-outline"}
+            size={18}
+            color={isOnline ? '#FFFFFF' : '#111827'}
+          />
+          <Text style={[styles.swipeText, { color: isOnline ? '#FFF' : '#111827' }]}>
             {getStatusText()}
           </Text>
         </Animated.View>
@@ -191,12 +196,12 @@ const OnlineOfflineButton: React.FC<Props> = ({
         <PanGestureHandler onGestureEvent={onGestureEvent} enabled={!loading}>
           <Animated.View style={[styles.handle, handleStyle]}>
             {loading ? (
-              <ActivityIndicator color={isOnline ? '#000' : '#FFCC00'} size="small" />
+              <ActivityIndicator color={isOnline ? '#DC2626' : '#047857'} size="small" />
             ) : (
               <MaterialCommunityIcons
                 name={isOnline ? "power-off" : "power"}
                 size={28}
-                color={isOnline ? '#000' : '#FFCC00'}
+                color={isOnline ? '#DC2626' : '#047857'}
               />
             )}
           </Animated.View>
@@ -212,34 +217,118 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     alignItems: 'center',
-    marginVertical: 24,
-
+    marginVertical: 18,
   },
   statusCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 24,
-    marginBottom: 20,
+    width: BUTTON_WIDTH,
+    padding: 16,
+    borderRadius: 18,
+    marginBottom: 14,
     backgroundColor: '#FFF',
+    borderWidth: 1,
 
   },
-  statusCardOnline: { borderLeftWidth: 3, borderLeftColor: '#10b981' },
-  statusCardOffline: { borderLeftWidth: 3, borderLeftColor: '#6b7280' },
-  dot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    marginRight: 8,
+  statusCardOnline: {
+    borderColor: '#A7F3D0',
+    backgroundColor: '#F0FDF4',
   },
-  dotOnline: { backgroundColor: '#10b981' },
-  dotOffline: { backgroundColor: '#9ca3af' },
-  statusText: {
-    fontSize: 14,
+  statusCardOffline: {
+    borderColor: '#FED7AA',
+    backgroundColor: '#FFFBEB',
+  },
+  statusHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  statusIconWrap: {
+    width: 52,
+    height: 52,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  statusTitleBlock: {
+    flex: 1,
+    minWidth: 0,
+  },
+  statusEyebrow: {
+    color: '#64748B',
+    fontSize: 11,
     fontFamily: font.MonolithRegular,
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
+  },
+  statusTitle: {
+    fontSize: 24,
+    lineHeight: 30,
+    fontFamily: font.MonolithRegular,
+    textTransform: 'uppercase',
+  },
+  liveBadge: {
+    minHeight: 30,
+    borderRadius: 15,
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 6,
+  },
+  liveBadgeText: {
+    fontSize: 11,
+    fontFamily: font.MonolithRegular,
+    textTransform: 'uppercase',
+  },
+  statusMessage: {
+    color: '#334155',
+    fontSize: 13,
+    lineHeight: 20,
+    marginTop: 12,
+    fontFamily: font.MonolithRegular,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 12,
+    gap: 8,
+  },
+  infoChip: {
+    flex: 1,
+    minHeight: 34,
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+  },
+  infoChipReady: {
+    backgroundColor: '#ECFDF5',
+    borderColor: '#BBF7D0',
+  },
+  infoChipWarning: {
+    backgroundColor: '#FFF7ED',
+    borderColor: '#FED7AA',
+  },
+  infoChipMuted: {
+    backgroundColor: '#F8FAFC',
+    borderColor: '#E2E8F0',
+  },
+  infoChipText: {
+    color: '#047857',
+    fontSize: 11,
+    marginLeft: 6,
+    fontFamily: font.MonolithRegular,
+    flexShrink: 1,
+  },
+  infoChipTextWarning: {
+    color: '#B45309',
+  },
+  infoChipTextMuted: {
+    color: '#64748B',
   },
   swipeContainer: {
     width: BUTTON_WIDTH,
@@ -251,6 +340,7 @@ const styles = StyleSheet.create({
   },
   swipeContainerOnline: {
     backgroundColor: '#8B4513',
+
   },
   swipeContainerOffline: {
     backgroundColor: '#FFCC00',
@@ -259,12 +349,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
     left: BUTTON_PADDING,
   },
   swipeText: {
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: font.MonolithRegular,
     textAlign: 'center',
+    marginLeft: 6,
   },
   handle: {
     width: HANDLE_SIZE,
@@ -273,8 +366,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     justifyContent: 'center',
     alignItems: 'center',
-    ...Platform.select({
-      ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.2, shadowRadius: 3 },
-    }),
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+
   },
 });

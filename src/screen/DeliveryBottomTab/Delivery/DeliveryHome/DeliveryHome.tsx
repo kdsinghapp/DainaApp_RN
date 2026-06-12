@@ -34,7 +34,6 @@ const DeliveryHome = () => {
   const ctx = useDeliveryContext();
   if (!ctx) return null;
   const { isLoading, requests, coords, newOrderNotification, fetchAvailableRequests, isOnline, setIsOnline, isConnected } = ctx;
-  // console.log("newOrderNotification",newOrderNotification?.data?.user?.name)
 
   const [counts, setCounts] = useState<any>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -57,14 +56,7 @@ const DeliveryHome = () => {
     setRefreshing(false);
   };
 
-  // useEffect(() => {
-  //   Animated.timing(pillX, {
-  //     toValue: isOnline ? 1 : 0,
-  //     duration: 260,
-  //     easing: Easing.out(Easing.quad),
-  //     useNativeDriver: true,
-  //   }).start();
-  // }, [isOnline]);
+
 
   const listSlide = useRef(new Animated.Value(0)).current;
 
