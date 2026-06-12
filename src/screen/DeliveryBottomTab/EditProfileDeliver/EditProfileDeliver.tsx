@@ -21,7 +21,6 @@ import ImagePickerModal from "../../../compoent/ImagePickerModal";
 import imageIndex from "../../../assets/imageIndex";
 import { GetProfileApi, UpdateProfile } from "../../../Api/apiRequest";
 import { loginSuccess } from "../../../redux/feature/authSlice";
-import LoadingModal from "../../../utils/Loader";
 import { errorToast } from "../../../utils/customToast";
 import ScreenNameEnum from "../../../routes/screenName.enum";
 import strings from "../../../localization/Localization";
@@ -144,8 +143,6 @@ const EditProfileDeliver = () => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBarComponent />
       <CustomHeader label={strings.Profile} />
-      <LoadingModal visible={isLoading} />
-
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}

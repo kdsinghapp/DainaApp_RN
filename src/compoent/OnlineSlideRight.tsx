@@ -97,7 +97,6 @@ const OnlineOfflineButton: React.FC<Props> = ({
         { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' } }
       );
 
-      // WebSocket notification (fire-and-forget)
       try {
         const ws = new WebSocket(`${WebSocket_Url}/driver-live?token=${token}`);
         ws.onopen = () => {
@@ -117,7 +116,6 @@ const OnlineOfflineButton: React.FC<Props> = ({
       }
     } catch (error) {
       console.error('❌ Status Toggle Error:', error);
-      // Reset slider on error
       translateX.value = withSpring(0);
     } finally {
       setLoading(false);
@@ -152,26 +150,12 @@ const OnlineOfflineButton: React.FC<Props> = ({
     return { opacity };
   });
 
-  const dotStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: pulseScale.value }],
-  }));
-
   const getStatusText = () => {
     return isOnline ? strings.SlideToGoOffline : strings.SlideToGoOnline;
   };
 
-  const getStatusLabel = () => {
-    return isOnline ? 'Online' : 'Offline';
-  };
 
-  const getStatusMessage = () => {
-    if (loading) return isOnline ? 'Going offline...' : 'Going online...';
-    return isOnline ? 'Ready to receive parcel requests' : 'You are hidden from new requests';
-  };
 
-  const hasLocation = Boolean(coords?.lat && coords?.lon);
-  const accentColor = isOnline ? '#16A34A' : '#F59E0B';
-  const statusIcon = isOnline ? 'truck-fast' : 'pause-circle-outline';
 
   return (
     <View style={styles.container}>
@@ -180,10 +164,9 @@ const OnlineOfflineButton: React.FC<Props> = ({
         isOnline ? styles.swipeContainerOnline : styles.swipeContainerOffline
       ]}>
 
-        {/* Track Text */}
         <Animated.View style={[styles.trackContent, textStyle]}>
           <MaterialCommunityIcons
-            name={isOnline ? "arrow-left-circle-outline" : "arrow-right-circle-outline"}
+            name={"arrow-right-circle-outline"}
             size={18}
             color={isOnline ? '#FFFFFF' : '#111827'}
           />
@@ -192,7 +175,6 @@ const OnlineOfflineButton: React.FC<Props> = ({
           </Text>
         </Animated.View>
 
-        {/* Handle */}
         <PanGestureHandler onGestureEvent={onGestureEvent} enabled={!loading}>
           <Animated.View style={[styles.handle, handleStyle]}>
             {loading ? (

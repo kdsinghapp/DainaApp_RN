@@ -4,6 +4,7 @@ import {
   Text,
   View,
   StyleSheet,
+  ActivityIndicator,
   StyleProp,
   ViewStyle,
   TextStyle,
@@ -25,6 +26,7 @@ interface CustomButtonProps {
   height?: number;
   onPress?: (event: GestureResponderEvent) => void;
   disable?: boolean;
+  loading?: boolean;
 }
 
 const CustomButton: React.FC<CustomButtonProps> = ({
@@ -37,7 +39,8 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   textStyle,
   height = 55,
   onPress,
-  disable = false
+  disable = false,
+  loading = false
 }) => {
   const alignment: Record<AlignType, 'flex-start' | 'center' | 'flex-end'> = {
     left: 'flex-start',
@@ -54,16 +57,22 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   return (
     <TouchableOpacity
       onPress={onPress}
-      style={[styles.button, buttonStyle, style]}
-      disabled={disable}
+      style={[styles.button, buttonStyle, (disable || loading) && styles.disabledButton, style]}
+      disabled={disable || loading}
     >
       <View style={[styles.content, { justifyContent: alignment[alignItm] }]}>
-        {leftIcon && <View style={styles.icon}>{leftIcon}</View>}
-        <Text
+        {loading ? (
+          <ActivityIndicator color={txtcolor} size="small" />
+        ) : (
+          <>
+            {leftIcon && <View style={styles.icon}>{leftIcon}</View>}
+            <Text
 
-          allowFontScaling={false}
+              allowFontScaling={false}
 
-          style={[styles.text, { color: txtcolor }, textStyle]}>{title}</Text>
+              style={[styles.text, { color: txtcolor }, textStyle]}>{title}</Text>
+          </>
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -73,6 +82,9 @@ const styles = StyleSheet.create({
   button: {
     paddingHorizontal: 20,
     width: '100%',
+  },
+  disabledButton: {
+    opacity: 0.7,
   },
   content: {
     flexDirection: 'row',

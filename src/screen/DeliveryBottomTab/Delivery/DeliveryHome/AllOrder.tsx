@@ -104,15 +104,20 @@ const AllOrder = () => {
     }, [])
   );
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{
+      flex: 1,
+      backgroundColor: "#fff",
+    }}>
       <StatusBarComponent />
       <NewOrderNotificationModal />
+      <CustomHeader label={strings.Order} />
+
       <OfferAcceptedModal />
-      <Animated.View
+      <View
         style={{
           flex: 1,
-          transform: [{ translateX }],
-          opacity: fade,
+          marginHorizontal: 12
+
         }}
       >
 
@@ -138,17 +143,10 @@ const AllOrder = () => {
             initialNumToRender={8}
             maxToRenderPerBatch={8}
             windowSize={7}
-            ListHeaderComponent={
-              <>
-                <CustomHeader label={strings.Order} />
-                <View style={styles.ordersHeader}>
-                  <Text style={styles.sectionTitle1}> Nearby {strings.Order}</Text>
-                </View>
-              </>
-            }
+
             renderItem={({ item, index }) => {
               return (
-                <ReAnimated.View entering={FadeInDown.delay(Math.min(index, 8) * 60)}>
+                <View  >
                   <TouchableOpacity
                     style={styles.card}
                     activeOpacity={0.85}
@@ -194,7 +192,7 @@ const AllOrder = () => {
                       </View>
                     </View>
                   </TouchableOpacity>
-                </ReAnimated.View>
+                </View>
               );
             }}
             ListEmptyComponent={
@@ -209,7 +207,7 @@ const AllOrder = () => {
           />
         )}
 
-      </Animated.View>
+      </View>
     </SafeAreaView>
   );
 };

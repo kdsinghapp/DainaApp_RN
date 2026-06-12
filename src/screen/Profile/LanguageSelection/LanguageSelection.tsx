@@ -257,10 +257,7 @@ const styles = StyleSheet.create({
     borderWidth: 1.6,
     borderColor: 'transparent',
     backgroundColor: '#FFFFFF',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.05,
-    shadowRadius: 10,
+
     marginBottom: 12,
   },
   selectedItem: {
@@ -295,6 +292,7 @@ const styles = StyleSheet.create({
   selectedText: {
     color: '#000',
     fontFamily: font.MonolithRegular,
+
 
   },
   recommendedBadge: {

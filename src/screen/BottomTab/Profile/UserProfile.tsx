@@ -32,7 +32,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 import { GetProfileApi } from "../../../Api/apiRequest";
 import { loginSuccess, logout } from "../../../redux/feature/authSlice";
-import LoadingModal from "../../../utils/Loader";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import strings from "../../../localization/Localization";
 import { color } from "../../../constant";

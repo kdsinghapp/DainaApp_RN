@@ -165,7 +165,7 @@ const ProfileSetup = () => {
     <SafeAreaView style={styles.safeArea}>
       <StatusBarComponent />
       <CustomHeader label={strings.Profile} />
-      <LoadingModal visible={isLoading} />
+
       <CurrentLocation ref={locationRef} />
 
       <KeyboardAvoidingView

@@ -12,7 +12,7 @@ import StatusBarComponent from "../../../compoent/StatusBarCompoent";
 import CustomHeader from "../../../compoent/CustomHeader";
 import CustomButton from "../../../compoent/CustomButton";
 import ScreenNameEnum from "../../../routes/screenName.enum";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DeliveryUploadDocument } from "../../../Api/apiRequest";
 import LoadingModal from "../../../utils/Loader";
@@ -30,6 +30,8 @@ const UploadDocumentsScreen = () => {
   const [vehicleDoc, setVehicleDoc] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigation: any = useNavigation();
+  const route: any = useRoute();
+  const hideHeaderBack = route?.params?.type === "header";
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [activeType, setActiveType] = useState<string | null>(null);
   const [pendingAction, setPendingAction] = useState<string | null>(null);
@@ -118,7 +120,10 @@ const UploadDocumentsScreen = () => {
     const response = await DeliveryUploadDocument(params, setIsLoading);
     console.log("response status ", JSON.stringify(response));
     if (response && response.status == "1") {
-      navigation.replace(ScreenNameEnum.VehicleSetupScreen);
+      navigation.replace(
+        ScreenNameEnum.VehicleSetupScreen,
+        hideHeaderBack ? { type: "header" } : undefined,
+      );
     }
   };
 
@@ -134,6 +139,7 @@ const UploadDocumentsScreen = () => {
       <CustomHeader
         label={strings.UploadDocuments}
         leftPress={() => navigation.goBack()}
+        hideLeftIcon={hideHeaderBack}
       />
       <LoadingModal visible={isLoading} />
 
