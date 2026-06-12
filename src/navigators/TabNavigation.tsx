@@ -73,14 +73,14 @@ export default function TabNavigator() {
                 {typeof Icon === 'function' ? (
                   <Icon width={ICON_SIZE} height={ICON_SIZE} />
                 ) : (
-                <Image
-                  source={Icon}
-                  style={{
-                    width: ICON_SIZE,
-                    height: ICON_SIZE,
-                    resizeMode: 'contain',
-                  }}
-                />
+                  <Image
+                    source={Icon}
+                    style={{
+                      width: ICON_SIZE,
+                      height: ICON_SIZE,
+                      resizeMode: 'contain',
+                    }}
+                  />
                 )}
                 {showBadge ? (
                   <View
@@ -94,7 +94,7 @@ export default function TabNavigator() {
                       borderRadius: 9,
                       alignItems: 'center',
                       justifyContent: 'center',
-                      backgroundColor: '#FFCC00',
+                      backgroundColor: 'red',
                       borderWidth: 1.5,
                       borderColor: '#FFFFFF',
                     }}
@@ -102,7 +102,7 @@ export default function TabNavigator() {
                     <Text
                       allowFontScaling={false}
                       style={{
-                        color: '#0F172A',
+                        color: 'white',
                         fontSize: 10,
                         lineHeight: 12,
                         fontFamily: font.MonolithRegular,
