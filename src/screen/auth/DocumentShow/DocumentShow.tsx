@@ -140,9 +140,7 @@ export default function DocumentShow() {
               <Text style={styles.cardSubtitle}>{strings.DocumentUploaded}</Text>
             </View>
           </View>
-          <View style={[styles.statusBadge, statusInfo.badgeStyle]}>
-            <Text style={[styles.statusText, statusInfo.textStyle]}>{statusInfo.label}</Text>
-          </View>
+
         </View>
 
         <TouchableOpacity
@@ -175,9 +173,7 @@ export default function DocumentShow() {
             <View style={styles.vehicleIconLarge}>
               <Icon name="directions-car" size={32} color="#111827" />
             </View>
-            <View style={[styles.vehicleStatusBadge, statusInfo.badgeStyle]}>
-              <Text style={[styles.statusText, statusInfo.textStyle]}>{statusInfo.label}</Text>
-            </View>
+
           </View>
           <Text style={styles.vehicleHeroLabel}>{strings.VehicleInformation}</Text>
           <Text style={styles.vehiclePlate}>{data?.vehicleNumber || '--'}</Text>
@@ -314,17 +310,6 @@ export default function DocumentShow() {
     fetchDocuments(true);
   };
 
-  const identityDocCount = [
-    documents?.drivingLicense,
-    documents?.idDocument,
-    documents?.vehiclePapers,
-  ].filter(Boolean).length;
-  const completedSections = [
-    identityDocCount > 0,
-    Boolean(vehicleInfo),
-    Boolean(bankInfo),
-  ].filter(Boolean).length;
-
   if (loading && !refreshing) {
     return (
       <View style={styles.center}>
@@ -348,18 +333,6 @@ export default function DocumentShow() {
         }
       >
 
-        <View style={styles.heroCard}>
-          <View style={styles.heroIconWrap}>
-            <Icon name="verified-user" size={30} color="#111827" />
-          </View>
-          <View style={styles.heroTextWrap}>
-            <Text style={styles.heroTitle}>{strings.MyDocuments}</Text>
-            <Text style={styles.heroSubtitle}>{strings.DocumentShowSubtitle}</Text>
-          </View>
-          <View style={styles.heroCountPill}>
-            <Text style={styles.heroCount}>{completedSections}/3</Text>
-          </View>
-        </View>
 
         <View style={styles.tabContainer}>
           {tabs?.map((tab) => (

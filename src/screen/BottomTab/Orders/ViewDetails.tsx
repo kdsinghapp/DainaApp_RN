@@ -257,9 +257,15 @@ export default function ViewDetails() {
             <View style={styles.offersSectionHeader}>
               <View>
                 <Text style={styles.sectionTitle}>{strings.OffersForYourAd || "Offers For Your Ad"}</Text>
-
+                <Text style={styles.offersSectionSubtitle}>
+                  {offers.length === 1
+                    ? strings.CarrierResponseSingular || "1 driver response"
+                    : strings.formatString
+                      ? String(strings.formatString(strings.CarrierResponsePlural || "{0} driver responses", offers.length))
+                      : `${offers.length} driver responses`}
+                </Text>
               </View>
-
+              <Text style={styles.offersCountText}>{offers.length}</Text>
             </View>
             <View style={styles.offersWrap}>
               {offers.map((offer, index) => {
@@ -284,23 +290,22 @@ export default function ViewDetails() {
                     }}
                     disabled={isCounterOffered}
                   >
-                    <View style={[styles.offerAccentLine, isCounterOffered && styles.counterAccentLine]} />
                     <View style={styles.offerTopRow}>
                       <View style={styles.offerCarrierRow}>
-                        <View style={styles.offerAvatar}>
+                        <View style={[styles.offerAvatar, isCounterOffered && styles.counterOfferAvatar]}>
                           <Text style={styles.offerAvatarText}>{carrierInitial}</Text>
                         </View>
                         <View style={styles.offerCarrierTextWrap}>
                           <Text style={styles.offerCarrier} numberOfLines={1}>{carrierName}</Text>
                           <Text style={styles.offerSubText}>
-                            {isCounterOffered ? "Counter offer sent" : strings.OfferInformation || "Offer Information"}
+                            {isCounterOffered ? strings.DriverReplyPending || "Driver reply pending" : strings.OfferInformation || "Offer Information"}
                           </Text>
                         </View>
                       </View>
                       {!!offer?.status && (
                         <View style={[styles.offerStatusPill, isCounterOffered && styles.counterStatusPill]}>
                           <Text style={[styles.offerStatusText, isCounterOffered && styles.counterStatusText]}>
-                            {titleize(offer.status)}
+                            {isCounterOffered ? strings.PendingReply || "Pending Reply" : titleize(offer.status)}
                           </Text>
                         </View>
                       )}
@@ -349,7 +354,9 @@ export default function ViewDetails() {
                     {isCounterOffered ? (
                       <View style={styles.offerLockedFooter}>
                         <Icon name="time-outline" size={16} color="#8A6A00" />
-                        <Text style={styles.offerLockedText}>Waiting for carrier response</Text>
+                        <Text style={styles.offerLockedText}>
+                          {strings.DriverNotRepliedToCounter || "The driver has not replied to your counter offer yet."}
+                        </Text>
                       </View>
                     ) : (
                       <View style={styles.offerActionRow}>
@@ -1084,66 +1091,42 @@ const styles = StyleSheet.create({
   },
   offersSectionHeader: {
     marginHorizontal: 16,
-    marginTop: 18,
-    marginBottom: 12,
+    marginTop: 16,
+    marginBottom: 8,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
   offersSectionSubtitle: {
     marginTop: 4,
-    color: "#64748B",
+    color: "#7C7C7C",
     fontFamily: font.MonolithRegular,
     fontSize: 11,
   },
-  offersCountBadge: {
-    minWidth: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: "#111827",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 10,
-  },
   offersCountText: {
-    color: "#FFFFFF",
+    color: "#7C7C7C",
     fontFamily: font.MonolithRegular,
-    fontSize: 13,
+    fontSize: 12,
   },
   offersWrap: {
     marginHorizontal: 16,
-    gap: 14,
+    gap: 10,
   },
   offerCard: {
     backgroundColor: CARD,
-    borderRadius: 18,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: "#E5E7EB",
-    padding: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
+    padding: 14,
     overflow: "hidden",
   },
   offerCardLocked: {
-    borderColor: "#F4D45E",
-    backgroundColor: "#FFFDF2",
-  },
-  offerAccentLine: {
-    position: "absolute",
-    left: 0,
-    top: 0,
-    bottom: 0,
-    width: 4,
-    backgroundColor: "#111827",
-  },
-  counterAccentLine: {
-    backgroundColor: YELLOW,
+    borderColor: "#F1D660",
+    backgroundColor: "#FFFDF4",
   },
   offerTopRow: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-start",
     justifyContent: "space-between",
     gap: 12,
   },
@@ -1154,19 +1137,23 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   offerAvatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: YELLOW,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
+    backgroundColor: "#F1F5F9",
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: "#F2C200",
+    borderColor: "#E5E7EB",
+  },
+  counterOfferAvatar: {
+    backgroundColor: "#FFF3B0",
+    borderColor: "#F1D660",
   },
   offerAvatarText: {
     color: "#111827",
     fontFamily: font.MonolithRegular,
-    fontSize: 16,
+    fontSize: 15,
   },
   offerCarrierTextWrap: {
     flex: 1,
@@ -1177,50 +1164,50 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   offerSubText: {
-    color: "#64748B",
+    color: "#7C7C7C",
     fontFamily: font.MonolithRegular,
     fontSize: 11,
     marginTop: 3,
   },
   offerStatusPill: {
-    backgroundColor: "#FEF9E7",
+    backgroundColor: "#F3F4F6",
     borderRadius: 999,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderWidth: 1,
-    borderColor: "#F5E7A6",
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    maxWidth: 118,
   },
   counterStatusPill: {
-    backgroundColor: "#111827",
-    borderColor: "#111827",
+    backgroundColor: "#FFF3B0",
+    borderColor: "#F5D447",
   },
   offerStatusText: {
-    color: "#8A6A00",
+    color: "#4B5563",
     fontFamily: font.MonolithRegular,
     fontSize: 10,
+    textAlign: "center",
   },
   counterStatusText: {
-    color: "#FFFFFF",
+    color: "#8A6A00",
   },
   offerAmountStack: {
-    marginTop: 14,
-    borderRadius: 14,
+    marginTop: 12,
+    borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#EEF2F7",
+    borderColor: "#E5E7EB",
     overflow: "hidden",
-    backgroundColor: "#F8FAFC",
+    backgroundColor: "#FAFAFA",
   },
   amountLine: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 12,
-    paddingVertical: 13,
+    paddingHorizontal: 11,
+    paddingVertical: 11,
     gap: 10,
   },
   counterAmountLine: {
     backgroundColor: "#FFF8D9",
     borderTopWidth: 1,
-    borderTopColor: "#F4D45E",
+    borderTopColor: "#F1D660",
   },
   priceIconWrap: {
     width: 28,
@@ -1241,54 +1228,54 @@ const styles = StyleSheet.create({
     minWidth: 0,
   },
   offerLabel: {
-    color: MUTED,
+    color: "#64748B",
     fontFamily: font.MonolithRegular,
-    fontSize: 10,
+    fontSize: 11,
   },
   offerAmount: {
     color: TEXT,
     fontFamily: font.MonolithRegular,
-    fontSize: 17,
+    fontSize: 16,
     textAlign: "right",
     maxWidth: 120,
   },
   messageBox: {
-    marginTop: 14,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 12,
+    marginTop: 10,
+    backgroundColor: "#FAFAFA",
+    borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#F1F5F9",
+    borderColor: "#E5E7EB",
     overflow: "hidden",
   },
   messageRow: {
     paddingHorizontal: 12,
-    paddingVertical: 10,
+    paddingVertical: 11,
   },
   messageDivider: {
     borderTopWidth: 1,
-    borderTopColor: "#F1F5F9",
+    borderTopColor: "#E5EAF0",
   },
   messageLabel: {
-    color: "#94A3B8",
-    fontFamily: font.MonolithRegular,
-    fontSize: 10,
-    marginBottom: 5,
-  },
-  offerMessage: {
-    color: "#4B5563",
-    fontFamily: font.MonolithRegular,
-    fontSize: 12,
-    lineHeight: 18,
-  },
-  counterLabel: {
     color: "#64748B",
     fontFamily: font.MonolithRegular,
     fontSize: 10,
+    marginBottom: 6,
+  },
+  offerMessage: {
+    color: "#374151",
+    fontFamily: font.MonolithRegular,
+    fontSize: 12,
+    lineHeight: 19,
+  },
+  counterLabel: {
+    color: "#8A6A00",
+    fontFamily: font.MonolithRegular,
+    fontSize: 11,
   },
   counterAmount: {
     color: "#111827",
     fontFamily: font.MonolithRegular,
-    fontSize: 17,
+    fontSize: 16,
     textAlign: "right",
     maxWidth: 120,
   },
@@ -1299,14 +1286,13 @@ const styles = StyleSheet.create({
     lineHeight: 18,
   },
   offerActionRow: {
-    marginTop: 14,
+    marginTop: 12,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#F8FAFC",
-    borderRadius: 12,
-    paddingVertical: 10,
-    gap: 4,
+    justifyContent: "space-between",
+    borderTopWidth: 1,
+    borderTopColor: "#E5E7EB",
+    paddingTop: 12,
   },
   offerActionText: {
     color: "#111827",
@@ -1314,19 +1300,22 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   offerLockedFooter: {
-    marginTop: 14,
+    marginTop: 12,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     gap: 7,
     backgroundColor: "#FFF8D9",
-    borderRadius: 12,
+    borderRadius: 10,
+    paddingHorizontal: 12,
     paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: "#F1D660",
   },
   offerLockedText: {
     color: "#8A6A00",
     fontFamily: font.MonolithRegular,
-    fontSize: 11,
+    fontSize: 12,
   },
   noOffersCard: {
     backgroundColor: "#F8FAFC",
