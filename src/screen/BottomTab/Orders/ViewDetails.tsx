@@ -396,7 +396,6 @@ export default function ViewDetails() {
                   })
                 }}
               >
-                <Icon name="search-outline" size={20} color="#111827" style={{ marginRight: 8 }} />
                 <Text style={styles.pendingActionButtonText}>{strings.CheckOffer || "Check Offers"}</Text>
               </TouchableOpacity>
             </View>
@@ -556,15 +555,6 @@ export default function ViewDetails() {
               borderColor: '#E5E7EB',
             }),
 
-            ...(Platform.OS === 'ios' && {
-              shadowColor: '#000',
-              shadowOffset: {
-                width: 0,
-                height: 4,
-              },
-              shadowOpacity: 0.15,
-              shadowRadius: 8,
-            }),
 
 
 
@@ -974,12 +964,11 @@ const styles = StyleSheet.create({
 
   /* Pending Action Card Styles */
   pendingActionCard: {
-    backgroundColor: "#FFFDF2",
     marginHorizontal: 16,
     marginTop: 16,
     borderRadius: 20,
     padding: 20,
-    borderWidth: 1,
+    borderWidth: 0.8,
     borderColor: "#FFCC00",
     shadowColor: "#FFCC00",
     shadowOpacity: 0.15,
@@ -1053,10 +1042,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#FFCC00",
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 4 },
+
   },
   pendingActionButtonText: {
     fontSize: 15,
