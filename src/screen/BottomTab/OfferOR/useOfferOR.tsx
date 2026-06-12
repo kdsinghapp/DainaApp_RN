@@ -67,7 +67,9 @@ export const useOfferOR = () => {
       console.log("result ---- ", result)
 
       if (response.ok) {
-        successToast("Offer accepted successfully!"),
+
+
+        successToast(result?.message),
           navgation.replace(ScreenNameEnum.TabNavigator);
 
       } else {
