@@ -847,9 +847,10 @@ const CourierTrackingScreen = () => {
     }, [parcel])
   );
 
-  const isDelivered =
-    (parcel?.deliveryStatus ?? item?.parcel?.deliveryStatus ?? routeParcel?.deliveryStatus ?? item?.deliveryStatus) === "delivered" ||
-    (parcel?.deliveryStatus ?? item?.parcel?.deliveryStatus ?? routeParcel?.deliveryStatus ?? item?.deliveryStatus) === STATUS.DELIVERED;
+  const deliveryStatus = String(
+    parcel?.deliveryStatus ?? item?.parcel?.deliveryStatus ?? routeParcel?.deliveryStatus ?? item?.deliveryStatus ?? "",
+  ).toLowerCase().trim();
+  const isDelivered = deliveryStatus === STATUS.DELIVERED || deliveryStatus === STATUS.COMPLETED;
   useEffect(() => {
     if (isDelivered && !ratingSubmittedRef.current) {
       setShowRatingModal(true);
