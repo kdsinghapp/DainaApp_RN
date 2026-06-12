@@ -52,16 +52,18 @@ export const styles = StyleSheet.create({
     width: '100%',
   },
   option: {
-    height: 90,
-    borderRadius: 24,
+
+    borderRadius: 20,
     backgroundColor: '#fff',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
+    padding: 12,
 
 
     borderWidth: 1,
     borderColor: "#d6e1f9ff",
+    margin: 2
   },
   optionSelected: {
     borderColor: '#FFCC00',

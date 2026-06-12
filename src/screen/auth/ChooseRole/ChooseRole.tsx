@@ -91,10 +91,10 @@ const ChooseRole = () => {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <Animated.View
+        < View
           style={[
             styles.container,
-            { opacity: fadeAnim, transform: [{ scale: scaleAnim }] },
+
           ]}
         >
           {/* Header Image */}
@@ -121,17 +121,11 @@ const ChooseRole = () => {
                   activeOpacity={0.9}
                   onPress={() => handleSelect(item)}
                 >
-                  <Animated.View
+                  <View
                     style={[
                       styles.option,
                       isSelected && styles.optionSelected,
-                      {
-                        transform: [
-                          {
-                            scale: isSelected ? pulseAnim : 1,
-                          },
-                        ],
-                      },
+
                     ]}
                   >
                     <View style={[styles.iconWrap, isSelected && styles.iconWrapSelected]}>
@@ -160,12 +154,12 @@ const ChooseRole = () => {
                     <View style={[styles.radio, isSelected && styles.radioSelected]}>
                       {isSelected && <View style={styles.radioInner} />}
                     </View>
-                  </Animated.View>
+                  </View>
                 </TouchableOpacity>
               );
             })}
           </View>
-        </Animated.View>
+        </View>
       </ScrollView>
 
       {/* Bottom Button */}

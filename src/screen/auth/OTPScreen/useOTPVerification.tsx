@@ -36,7 +36,7 @@ export const useOtpVerification = (cellCount: number = 4) => {
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({ value, setValue });
   const handleChangeText = (text: string) => {
     setValue(text);
-    setErrorMessage(text.length < cellCount ? strings.Enter4DigitOTP : '');
+    // setErrorMessage(text.length < cellCount ? strings.Enter4DigitOTP : '');
   };
 
   const handleResendOTP = async () => {

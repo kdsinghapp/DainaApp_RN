@@ -301,6 +301,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     borderRadius: 8,
     marginLeft: 8,
+
   },
   recommendedText: {
     fontSize: 10,
