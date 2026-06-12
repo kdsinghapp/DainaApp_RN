@@ -161,7 +161,7 @@ const VehicleSetupScreen = () => {
 
             <Text style={styles.fieldLabel}>{strings.VehicleType}</Text>
             <TouchableOpacity
-              style={[styles.dropdown, vehicleType && styles.inputActive]}
+              style={[styles.dropdown,]}
               onPress={() => setShowDropdown(true)}
               activeOpacity={0.8}
             >
@@ -173,7 +173,7 @@ const VehicleSetupScreen = () => {
                     color={vehicleType ? "#111827" : "#9CA3AF"}
                   />
                 </View>
-                <Text style={[styles.dropdownText, !vehicleType && styles.placeholderText]}>
+                <Text style={[styles.dropdownText,]}>
                   {selectedVehicle?.label || strings.SelectVehicleType}
                 </Text>
               </View>
@@ -181,8 +181,8 @@ const VehicleSetupScreen = () => {
             </TouchableOpacity>
 
             <Text style={styles.fieldLabel}>{strings.VehicleNumber}</Text>
-            <View style={[styles.inputWrap, vehicleNumber && styles.inputActive]}>
-              <View style={[styles.fieldIconBox, vehicleNumber && styles.fieldIconBoxActive]}>
+            <View style={[styles.inputWrap,]}>
+              <View style={[styles.fieldIconBox,]}>
                 <MaterialCommunityIcons
                   name="card-text-outline"
                   size={21}

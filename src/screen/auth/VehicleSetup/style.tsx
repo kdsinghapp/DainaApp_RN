@@ -127,8 +127,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
+
     borderRadius: 16,
     paddingHorizontal: 14,
     height: 62,
@@ -173,8 +172,7 @@ export const styles = StyleSheet.create({
   inputWrap: {
     flexDirection: "row",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
+
     borderRadius: 16,
     paddingHorizontal: 14,
     height: 62,
@@ -195,14 +193,14 @@ export const styles = StyleSheet.create({
   },
   uploadBox: {
     minHeight: 178,
-    borderWidth: 1.5,
-    borderStyle: "dashed",
-    borderColor: "#FFCC00",
+    borderColor: "#CBD5E1",
     borderRadius: 18,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#FFFCF0",
     overflow: "hidden",
+    borderStyle: "solid",
+    backgroundColor: "#F9FAFB",
+
   },
   uploadBoxFilled: {
     height: 214,

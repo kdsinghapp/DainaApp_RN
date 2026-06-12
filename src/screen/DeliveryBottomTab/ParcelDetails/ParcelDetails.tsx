@@ -28,6 +28,8 @@ import font from "../../../theme/font";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { errorToast, successToast } from "../../../utils/customToast";
 import strings from "../../../localization/Localization";
+import NewOrderNotificationModal from "../../../compoent/NewOrderNotificationModal";
+import OfferAcceptedModal from "../../../compoent/OfferAcceptedModal";
 
 const STATUS = {
   PENDING: 'pending',
@@ -222,10 +224,10 @@ const ParcelDetails = () => {
     });
     return () => showSub.remove();
   }, []);
-  console.log("item", item)
 
   return (
     <View style={styles.container}>
+
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={styles.keyboardView}
@@ -238,10 +240,13 @@ const ParcelDetails = () => {
           keyboardShouldPersistTaps="handled"
           keyboardDismissMode="on-drag"
         >
+
+
           <StatusBarComponent />
           <LoadingModal visible={isLoading} />
 
-
+          <NewOrderNotificationModal />
+          <OfferAcceptedModal />
           {fullImageUrl ? (
             <ImageBackground
               source={{
