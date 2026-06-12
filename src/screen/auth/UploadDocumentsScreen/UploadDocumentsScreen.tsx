@@ -133,7 +133,7 @@ const UploadDocumentsScreen = () => {
       <StatusBarComponent />
       <CustomHeader
         label={strings.UploadDocuments}
-        leftPress={() => navigation.navigate(ScreenNameEnum.ProfileSetup)}
+        leftPress={() => navigation.goBack()}
       />
       <LoadingModal visible={isLoading} />
 

@@ -16,6 +16,7 @@ interface Props {
   leftType?: 'svg' | 'png';
   leftPress?: () => void;
   rightIcons?: IconProps[];
+  hideLeftIcon?: boolean;
 }
 
 const CustomHeader: React.FC<Props> = ({
@@ -24,6 +25,7 @@ const CustomHeader: React.FC<Props> = ({
   leftType = 'png',
   leftPress,
   rightIcons = [],
+  hideLeftIcon = false,
 }) => {
   const navigation = useNavigation();
 
@@ -31,13 +33,14 @@ const CustomHeader: React.FC<Props> = ({
     <View style={styles.header}>
       {/* Left Icon */}
       <View style={styles.sideContainer}>
-
-        <TouchableOpacity
-          onPress={leftPress ? leftPress : () => navigation.goBack()}
-          style={styles.iconWrap}
-        >
-          <Image source={imageIndex.back} style={styles.icon} resizeMode="contain" />
-        </TouchableOpacity>
+        {!hideLeftIcon ? (
+          <TouchableOpacity
+            onPress={leftPress ? leftPress : () => navigation.goBack()}
+            style={styles.iconWrap}
+          >
+            <Image source={imageIndex.back} style={styles.icon} resizeMode="contain" />
+          </TouchableOpacity>
+        ) : null}
       </View>
       {/* Title */}
       <View style={styles.centerContainer}>

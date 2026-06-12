@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import StatusBarComponent from "../../../compoent/StatusBarCompoent";
 import CustomHeader from "../../../compoent/CustomHeader";
 import ScreenNameEnum from "../../../routes/screenName.enum";
@@ -28,6 +28,8 @@ const BankSetupScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigation = useNavigation<any>();
+  const route: any = useRoute();
+  const hideHeaderBack = route?.params?.type === "header";
 
   const handleFinish = async () => {
     if (!bankName.trim()) {
@@ -103,7 +105,7 @@ const BankSetupScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
-      <CustomHeader label={strings.BankSetup} />
+      <CustomHeader label={strings.BankSetup} hideLeftIcon={hideHeaderBack} />
 
       <KeyboardAvoidingView
         style={styles.keyboardView}

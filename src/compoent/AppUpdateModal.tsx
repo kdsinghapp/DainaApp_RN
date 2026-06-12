@@ -1,4 +1,3 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
@@ -19,7 +18,7 @@ const IOS_STORE_URL = `https://apps.apple.com/in/app/daina/id${IOS_APP_ID}`;
 const ANDROID_PACKAGE_NAME = "com.DainaApp";
 const ANDROID_STORE_URL = `https://play.google.com/store/apps/details?id=${ANDROID_PACKAGE_NAME}`;
 const ANDROID_VERSION_URL = "";
-const DISMISSED_UPDATE_VERSION_KEY = "dismissed_update_version";
+const ENABLE_UPDATE_CHECK_IN_DEV = false;
 
 type UpdateInfo = {
   latestVersion: string;
@@ -89,7 +88,7 @@ const AppUpdateModal = () => {
     let cancelled = false;
 
     const checkForUpdate = async () => {
-      if (__DEV__) return;
+      if (__DEV__ && !ENABLE_UPDATE_CHECK_IN_DEV) return;
       setChecking(true);
 
       try {
@@ -100,8 +99,7 @@ const AppUpdateModal = () => {
 
         if (!info || compareVersions(currentVersion, info.latestVersion) !== 1) return;
 
-        const dismissedVersion = await AsyncStorage.getItem(DISMISSED_UPDATE_VERSION_KEY);
-        if (!cancelled && dismissedVersion !== info.latestVersion) {
+        if (!cancelled) {
           setUpdateInfo(info);
         }
       } catch (error) {
@@ -118,19 +116,16 @@ const AppUpdateModal = () => {
     };
   }, []);
 
-  const handleClose = async () => {
-    if (updateInfo?.latestVersion) {
-      await AsyncStorage.setItem(DISMISSED_UPDATE_VERSION_KEY, updateInfo.latestVersion);
-    }
-    setUpdateInfo(null);
-  };
-
   const handleUpdate = async () => {
     try {
       await Linking.openURL(storeUrl);
     } catch (error) {
       console.warn("[AppUpdateModal] Open store failed:", error);
     }
+  };
+
+  const handleClose = () => {
+    setUpdateInfo(null);
   };
 
   if (!updateInfo && !checking) return null;
@@ -176,9 +171,6 @@ const AppUpdateModal = () => {
             <Text style={styles.updateButtonText}>{strings.UpdateNow || "Update Now"}</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.laterButton} activeOpacity={0.85} onPress={handleClose}>
-            <Text style={styles.laterButtonText}>{strings.Later || "Later"}</Text>
-          </TouchableOpacity>
         </View>
       </View>
     </Modal>
@@ -222,7 +214,6 @@ const styles = StyleSheet.create({
   closeButtonText: {
     color: "#475569",
     fontSize: 18,
-
     lineHeight: 20,
     fontFamily: font.MonolithRegular
   },
@@ -284,17 +275,6 @@ const styles = StyleSheet.create({
     fontFamily: font.MonolithRegular
     ,
     letterSpacing: 0.3,
-  },
-  laterButton: {
-    marginTop: 14,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  laterButtonText: {
-    color: "#64748B",
-    fontSize: 14,
-    fontFamily: font.MonolithRegular
-
   },
 });
 

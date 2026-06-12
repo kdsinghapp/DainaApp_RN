@@ -122,7 +122,9 @@ const ProfileSetup = () => {
       if (response) {
         await getProfileApi();
         if (userData?.type === "Delivery") {
-          navigation.navigate(ScreenNameEnum.UploadDocumentsScreen);
+          navigation.navigate(ScreenNameEnum.UploadDocumentsScreen, {
+            type: "header"
+          });
         } else {
           navigation.reset({
             index: 0,

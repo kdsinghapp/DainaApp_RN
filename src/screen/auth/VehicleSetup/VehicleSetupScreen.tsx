@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { pickDocument } from "../../../utils/documentPickerHelper";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 import imageIndex from "../../../assets/imageIndex";
 import StatusBarComponent from "../../../compoent/StatusBarCompoent";
@@ -37,6 +37,8 @@ const VehicleSetupScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const navigation = useNavigation<any>();
+  const route: any = useRoute();
+  const hideHeaderBack = route?.params?.type === "header";
   const vehicleOptions = [
     { label: strings.Car, value: "Car", icon: "car" },
     { label: strings.Bike, value: "Bike", icon: "motorbike" },
@@ -127,7 +129,10 @@ const VehicleSetupScreen = () => {
     };
     const response = await DeliveryVehicleDocument(params, setIsLoading);
     if (response?.status == "1") {
-      navigation.replace(ScreenNameEnum.BankSetupScreen);
+      navigation.replace(
+        ScreenNameEnum.BankSetupScreen,
+        hideHeaderBack ? { type: "header" } : undefined,
+      );
     }
   };
 
@@ -138,7 +143,7 @@ const VehicleSetupScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
-      <CustomHeader label={strings.VehicleSetup} />
+      <CustomHeader label={strings.VehicleSetup} hideLeftIcon={hideHeaderBack} />
 
       <KeyboardAvoidingView
         style={styles.keyboardView}
