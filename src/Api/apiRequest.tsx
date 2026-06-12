@@ -698,6 +698,7 @@ const AddParcelApi = async (param: any, setLoading: (loading: boolean) => void) 
     }
   } catch (error) {
     setLoading(false);
+    errorToast("Invalid server response");
 
     console.error("AddParcelApi error:", error);
     return null;
@@ -731,7 +732,7 @@ const GetApi = async (param: any, setLoading: (loading: boolean) => void) => {
     const resText = await response.text();
     const result = JSON.parse(resText);
 
-    // console.log("API RESPONSE:", result);
+    console.log("API RESPONSE:", result);
 
     setLoading(false);
     return result;

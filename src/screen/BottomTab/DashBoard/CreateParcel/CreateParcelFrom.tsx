@@ -28,7 +28,7 @@ import LoadingModal from "../../../../utils/Loader";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AddParcelApi } from "../../../../Api/apiRequest";
 import { styles } from "./style";
-import { errorToast, successToast } from "../../../../utils/customToast";
+import { errorToast } from "../../../../utils/customToast";
 import strings from "../../../../localization/Localization";
 
 const CreateParcelFrom = () => {
@@ -212,7 +212,6 @@ const CreateParcelFrom = () => {
         image
       };
       const response = await AddParcelApi(formDataObj, setIsLoading);
-      console.log("response -- create ", response)
       if (response && (response.status == "1" || response.status == 1)) {
         navgatoon.replace(ScreenNameEnum.NearbyDriversMap, {
           parcelId: response,

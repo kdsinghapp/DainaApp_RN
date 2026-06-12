@@ -7,7 +7,9 @@ const MODAL_CLOSE_DELAY_MS = 400;
 
 const defaultOptions = {
   mediaType: 'photo' as const,
-  quality: 0.8 as const,
+  quality: 0.4 as const,
+  maxWidth: 1000,
+  maxHeight: 1000,
   cameraType: 'back' as const,
 };
 
