@@ -48,8 +48,7 @@ export const styles = StyleSheet.create({
     borderRadius: 22,
     padding: 16,
     marginBottom: 22,
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
+
     overflow: "hidden",
     ...Platform.select({
       ios: {

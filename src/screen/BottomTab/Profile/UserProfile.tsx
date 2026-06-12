@@ -181,17 +181,12 @@ const ProfileScreen: React.FC = () => {
                 source={userData?.image ? { uri: userData?.image } : imageIndex.prfile}
                 style={styles.avatar}
               />
-              <View style={styles.editBadge}>
-                <Icon name="checkmark" size={14} color="#111827" />
-              </View>
+
             </View>
 
             <View style={styles.nameSection}>
               <View style={styles.nameRow}>
                 <Text style={styles.nameText} numberOfLines={1}>{displayName}</Text>
-                <View style={styles.typePill}>
-                  <Text style={styles.typePillText}>{accountType}</Text>
-                </View>
               </View>
               {!!userData?.email && (
                 <View style={styles.profileInfoRow}>
@@ -358,8 +353,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     justifyContent: "center",
     padding: 16,
-    borderWidth: 1,
-    borderColor: "#E2E8F0",
+
     overflow: "hidden",
     ...Platform.select({
       ios: {
