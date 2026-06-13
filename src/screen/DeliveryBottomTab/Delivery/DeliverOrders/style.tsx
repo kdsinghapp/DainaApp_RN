@@ -101,9 +101,7 @@ export const styles = StyleSheet.create({
         shadowOpacity: 0.06,
         shadowRadius: 16,
       },
-      android: {
-        elevation: 2,
-      },
+
     }),
   },
   cardAccent: {

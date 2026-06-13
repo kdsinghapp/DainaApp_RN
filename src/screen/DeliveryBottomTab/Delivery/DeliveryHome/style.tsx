@@ -138,6 +138,7 @@ export const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 12,
     borderWidth: 1,
+
     borderColor: "#E2E8F0",
     overflow: "hidden",
     ...Platform.select({
