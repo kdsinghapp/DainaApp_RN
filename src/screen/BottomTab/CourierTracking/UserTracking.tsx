@@ -12,7 +12,6 @@ import {
   PanResponder,
   ScrollView,
   Platform,
-  ActivityIndicator,
 } from "react-native";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MapView, { Marker, AnimatedRegion, Polyline, PROVIDER_GOOGLE } from "react-native-maps";
@@ -183,7 +182,7 @@ const CourierTrackingScreen = () => {
     };
   }, []);
   const driver = parcel?.assignedDriver ?? item?.parcel?.assignedDriver ?? routeParcel?.assignedDriver ?? item?.assignedDriver;
-  const status = parcel?.deliveryStatus ?? item?.parcel?.deliveryStatus ?? routeParcel?.deliveryStatus ?? item?.deliveryStatus;
+  const status = (parcel?.deliveryStatus ?? item?.parcel?.deliveryStatus ?? routeParcel?.deliveryStatus ?? item?.deliveryStatus ?? '').toString().toLowerCase().trim();
   const DEFAULT_LAT = 22.7176;
   const DEFAULT_LNG = 75.8577;
   type LatLng = { latitude: number; longitude: number };
@@ -381,6 +380,38 @@ const CourierTrackingScreen = () => {
     latitude: pickup.latitude + 0.01,
     longitude: pickup.longitude + 0.01,
   };
+  const driverRouteDestination = [STATUS.ASSIGNED, STATUS.GOING_TO_PICKUP].includes(status) ? pickup : dropoff;
+  const driverRouteDestinationAddress = [STATUS.ASSIGNED, STATUS.GOING_TO_PICKUP].includes(status)
+    ? pickupAddressForCoords
+    : dropoffAddressForCoords;
+  const rawDriverCoords = getCoords(
+    [
+      driver?.currentLocation,
+      driver?.location,
+      driver?.liveLocation,
+      driver?.driverLocation,
+      driver?.coords,
+      driver?.coordinates,
+      driver,
+      parcel?.driverLocation,
+      parcel?.driver_location,
+      item?.driverLocation,
+      item?.driver_location,
+    ],
+    [[
+      driver?.latitude ?? driver?.lat ?? driver?.currentLat ?? driver?.current_lat ?? driver?.driverLat ?? driver?.driver_lat,
+      driver?.longitude ?? driver?.lng ?? driver?.lon ?? driver?.currentLng ?? driver?.current_lng ?? driver?.currentLon ?? driver?.current_lon ?? driver?.driverLng ?? driver?.driver_lng,
+    ], [
+      parcel?.driverLat ?? parcel?.driver_lat,
+      parcel?.driverLng ?? parcel?.driver_lng ?? parcel?.driverLon ?? parcel?.driver_lon,
+    ], [
+      item?.driverLat ?? item?.driver_lat,
+      item?.driverLng ?? item?.driver_lng ?? item?.driverLon ?? item?.driver_lon,
+    ]],
+  );
+  const driverCoords = rawDriverCoords
+    ? normalizePointForRoute(rawDriverCoords, driverRouteDestination, driverRouteDestinationAddress)
+    : null;
   routeContextRef.current = {
     pickup,
     dropoff,
@@ -517,15 +548,17 @@ const CourierTrackingScreen = () => {
   const [routeLoading, setRouteLoading] = useState(false);
   const [routeError, setRouteError] = useState<string | null>(null);
   const [hasLiveDriverLocation, setHasLiveDriverLocation] = useState(false);
-  const [currentCoords, setCurrentCoords] = useState(() => pickup);
+  const [trackingSocketStatus, setTrackingSocketStatus] = useState('init');
+  const [currentCoords, setCurrentCoords] = useState(() => driverCoords ?? pickup);
   const [driverLocation] = useState(
     () =>
       new AnimatedRegion({
-        ...pickup,
+        ...(driverCoords ?? pickup),
         latitudeDelta: 0.01,
         longitudeDelta: 0.01,
       }),
   );
+  const hasDriverLocation = hasLiveDriverLocation || isValidLatLng(driverCoords);
   driverLocationRef.current = driverLocation;
   setCurrentCoordsRef.current = setCurrentCoords;
   const [eta, setEta] = useState("Calculating...");
@@ -549,7 +582,11 @@ const CourierTrackingScreen = () => {
     left: wp(10),
   };
   const fitMapToRoute = useCallback(() => {
-    const points = (activeRouteCoordinates.length > 1 ? activeRouteCoordinates : routeCoordinates.length > 1 ? routeCoordinates : [pickupCoords, dropoffCoords])
+    const points = (activeRouteCoordinates.length > 1
+      ? activeRouteCoordinates
+      : routeCoordinates.length > 1
+        ? [hasDriverLocation ? currentCoords : null, ...routeCoordinates]
+        : [hasDriverLocation ? currentCoords : null, pickupCoords, dropoffCoords])
       .filter((p): p is LatLng => isValidLatLng(p));
     if (points.length < 2) return;
     try {
@@ -574,6 +611,8 @@ const CourierTrackingScreen = () => {
     dropoff.longitude,
     pickupCoords,
     dropoffCoords,
+    hasDriverLocation,
+    currentCoords,
     activeRouteCoordinates,
     routeCoordinates,
   ]);
@@ -608,15 +647,24 @@ const CourierTrackingScreen = () => {
   ).current;
 
   useEffect(() => {
-    setCurrentCoords(pickup);
+    if (hasLiveDriverLocation) return;
+
+    const nextDriverPoint = driverCoords ?? pickup;
+    setCurrentCoords(nextDriverPoint);
     (driverLocation as any).timing({
-      ...pickup,
+      ...nextDriverPoint,
       latitudeDelta: 0.01,
       longitudeDelta: 0.01,
       duration: 0,
       useNativeDriver: false,
     }).start();
-  }, [pickup.latitude, pickup.longitude]);
+  }, [
+    driverCoords?.latitude,
+    driverCoords?.longitude,
+    pickup.latitude,
+    pickup.longitude,
+    hasLiveDriverLocation,
+  ]);
 
   // Auto-zoom once on mount so route + all markers fit
   useEffect(() => {
@@ -626,12 +674,18 @@ const CourierTrackingScreen = () => {
 
   useEffect(() => {
     const parcelId = parcel?.id ?? item?.parcel?.id ?? routeParcel?.id ?? item?.parcelId ?? item?.id;
-    const currentStatus = parcel?.deliveryStatus ?? item?.parcel?.deliveryStatus ?? routeParcel?.deliveryStatus ?? item?.deliveryStatus;
+    const currentStatus = (parcel?.deliveryStatus ?? item?.parcel?.deliveryStatus ?? routeParcel?.deliveryStatus ?? item?.deliveryStatus ?? '').toString().toLowerCase().trim();
 
-    // Only connect if the parcel is in an active tracking state
-    const isActive = [STATUS.ASSIGNED, STATUS.GOING_TO_PICKUP, STATUS.PICKED_UP, STATUS.ON_THE_WAY].includes(currentStatus);
+    // Block only terminal/inactive statuses — connect for everything else
+    const terminalStatuses = [STATUS.DELIVERED, STATUS.COMPLETED, STATUS.CANCELLED];
+    const isTerminal = terminalStatuses.includes(currentStatus);
 
-    if (!parcelId || !isActive) return;
+    console.log('🔍 TRACKING DEBUG:', { parcelId, currentStatus, isTerminal });
+
+    if (!parcelId || isTerminal) {
+      console.log('❌ TRACKING SOCKET NOT CONNECTING:', !parcelId ? 'parcelId is missing' : `status "${currentStatus}" is terminal`);
+      return;
+    }
 
     let socket: WebSocket | null = null;
     let isCancelled = false;
@@ -645,26 +699,34 @@ const CourierTrackingScreen = () => {
 
         socket.onopen = () => {
           console.log("Tracking socket connected for parcel", parcelId);
+          setTrackingSocketStatus(`connected (parcel ${parcelId})`);
         };
 
         socket.onmessage = (e) => {
           try {
             const data = JSON.parse(e.data);
-            // console.log("Tracking socket data:", data);
+            console.log("Tracking socket data:", data);
 
-            if (data?.type === "driver_location" && data?.lat != null && data?.lon != null) {
+            const hasLat = data?.lat != null;
+            const hasLon = data?.lon != null || data?.lng != null || data?.longitude != null;
+            if (data?.type === "driver_location" && hasLat && hasLon) {
               const lat = parseFloat(data.lat);
-              const lon = parseFloat(data.lon);
+              const lon = parseFloat(data.lon ?? data.lng ?? data.longitude);
               if (!Number.isFinite(lat) || !Number.isFinite(lon)) return;
               const rawPoint = normalizeCoords(lat, lon);
               if (!rawPoint) return;
-              const routeTarget = [STATUS.ASSIGNED, STATUS.GOING_TO_PICKUP].includes(currentStatus) ? pickup : dropoff;
-              const routeTargetAddress = [STATUS.ASSIGNED, STATUS.GOING_TO_PICKUP].includes(currentStatus)
-                ? pickupAddressForCoords
-                : dropoffAddressForCoords;
+              const routeContext = routeContextRef.current;
+              const liveStatus = routeContext?.status ?? currentStatus;
+              const routeTarget = [STATUS.ASSIGNED, STATUS.GOING_TO_PICKUP].includes(liveStatus)
+                ? (routeContext?.pickup ?? pickup)
+                : (routeContext?.dropoff ?? dropoff);
+              const routeTargetAddress = [STATUS.ASSIGNED, STATUS.GOING_TO_PICKUP].includes(liveStatus)
+                ? (routeContext?.pickupAddress ?? pickupAddressForCoords)
+                : (routeContext?.dropoffAddress ?? dropoffAddressForCoords);
               const newPoint = normalizePointForRoute(rawPoint, routeTarget, routeTargetAddress);
               setHasLiveDriverLocation(true);
               setCurrentCoords(newPoint);
+              setCurrentCoordsRef.current?.(newPoint);
               (driverLocation as any)
                 .timing({
                   ...newPoint,
@@ -674,6 +736,7 @@ const CourierTrackingScreen = () => {
                   useNativeDriver: false,
                 })
                 .start();
+              setTimeout(() => fitMapToRouteRef.current?.(), 100);
             }
           } catch (err) {
             console.log("Tracking Socket Error:", err);
@@ -682,10 +745,12 @@ const CourierTrackingScreen = () => {
 
         socket.onerror = (e) => {
           console.warn("Tracking socket error:", e);
+          setTrackingSocketStatus('error');
         };
 
         socket.onclose = () => {
           console.log("Tracking socket closed");
+          setTrackingSocketStatus('closed');
         };
       } catch (err) {
         console.warn("Tracking setup error:", err);
@@ -730,11 +795,11 @@ const CourierTrackingScreen = () => {
     ? pickupAddress
     : dropoffAddress;
   const activeRouteValid = Boolean(
-    hasLiveDriverLocation &&
+    hasDriverLocation &&
     isValidLatLng(currentCoords) &&
     isValidLatLng(routeDestination) &&
     getDistanceKm(currentCoords, routeDestination) >= 0.05 &&
-    [STATUS.ASSIGNED, STATUS.GOING_TO_PICKUP, STATUS.PICKED_UP, STATUS.ON_THE_WAY].includes(status)
+    ![STATUS.DELIVERED, STATUS.COMPLETED, STATUS.CANCELLED].includes(status)
   );
 
   useEffect(() => {
@@ -1081,11 +1146,14 @@ const CourierTrackingScreen = () => {
           )}
 
           {/* Driver Marker */}
-          {hasLiveDriverLocation && (
+          {console.log('🚗 DRIVER MARKER DEBUG:', { hasDriverLocation, hasLiveDriverLocation, driverCoords, currentCoords })}
+          {hasDriverLocation && (
             <Marker.Animated
               key="driver-marker"
               coordinate={driverLocation as any}
               anchor={{ x: 0.5, y: 0.5 }}
+              title={strings?.DeliveryAgent || "Driver"}
+              description="Driver location"
               zIndex={12}
             >
               <View style={styles.courierMarker}>
@@ -1101,6 +1169,8 @@ const CourierTrackingScreen = () => {
 
 
       </View>
+
+
 
       <SafeAreaView style={styles.headerOverlay} edges={["top"]}>
         <View style={styles.infoCard}>

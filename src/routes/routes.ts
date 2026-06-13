@@ -14,7 +14,7 @@ import ViewDetails from "../screen/BottomTab/Orders/ViewDetails";
 import EditProfile from "../screen/Profile/EditProfile/EditProfile";
 import ChatScreen from "../screen/BottomTab/ChatScreen/ChatScreen";
 import OrdersPrfile from "../screen/Profile/OrdersPrfile/OrdersPrfile";
-import CourierTrackingScreen from "../screen/BottomTab/CourierTracking/CourierTracking";
+import CourierTrackingScreen from "../screen/BottomTab/CourierTracking/UserTracking";
 import DeliveryTabNavigator from "../navigators/DeliveryTabNavigator";
 import { DeliveryProvider } from "../context/DeliveryContext";
 import TripMap from "../screen/DeliveryBottomTab/TripMap/TripMap";
