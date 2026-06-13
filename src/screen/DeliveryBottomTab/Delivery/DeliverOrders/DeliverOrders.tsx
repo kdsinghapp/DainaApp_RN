@@ -9,6 +9,7 @@ import {
   Easing,
   TouchableOpacity,
 } from "react-native";
+import Icon from "react-native-vector-icons/Ionicons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import StatusBarComponent from "../../../../compoent/StatusBarCompoent";
@@ -19,7 +20,11 @@ import axios from "axios";
 import { base_url } from "../../../../Api";
 import LoadingModal from "../../../../utils/Loader";
 import { styles } from "./style";
-import { STATUS, STATUS_COLORS, STATUS_LABELS } from "../../../../utils/Constant";
+import {
+  STATUS,
+  STATUS_COLORS,
+  STATUS_LABELS,
+} from "../../../../utils/Constant";
 import strings from "../../../../localization/Localization";
 import { errorToast, successToast } from "../../../../utils/customToast";
 import CounterOfferModal from "../../../../compoent/MakeCounterModal";
@@ -54,9 +59,15 @@ const DeliveryHome = () => {
   const [ordersSeed, setordersSeed] = useState<any[]>([]);
   const [isOnline, setIsOnline] = useState(false);
   const [isLoading, setisLoading] = useState(false);
-  const [acceptingOfferId, setAcceptingOfferId] = useState<string | number | null>(null);
-  const [rejectingOfferId, setRejectingOfferId] = useState<string | number | null>(null);
-  const [replyingOfferId, setReplyingOfferId] = useState<string | number | null>(null);
+  const [acceptingOfferId, setAcceptingOfferId] = useState<
+    string | number | null
+  >(null);
+  const [rejectingOfferId, setRejectingOfferId] = useState<
+    string | number | null
+  >(null);
+  const [replyingOfferId, setReplyingOfferId] = useState<
+    string | number | null
+  >(null);
   const [counterReplyOffer, setCounterReplyOffer] = useState<any>(null);
   const pillX = useRef(new Animated.Value(0)).current;
   useEffect(() => {
@@ -115,7 +126,7 @@ const DeliveryHome = () => {
   useFocusEffect(
     useCallback(() => {
       fetchAvailableRequests();
-    }, []),
+    }, [])
   );
   const fetchAvailableRequests = async () => {
     setisLoading(true);
@@ -143,7 +154,7 @@ const DeliveryHome = () => {
 
       console.error(
         "Error fetching available requests:",
-        error?.response?.data || error?.message,
+        error?.response?.data || error?.message
       );
     } finally {
       setisLoading(false);
@@ -152,7 +163,8 @@ const DeliveryHome = () => {
 
   const acceptOffer = async (item: any) => {
     const offerId = item?.offerId ?? item?.id;
-    if (!offerId || acceptingOfferId || rejectingOfferId || replyingOfferId) return;
+    if (!offerId || acceptingOfferId || rejectingOfferId || replyingOfferId)
+      return;
 
     setAcceptingOfferId(offerId);
     try {
@@ -162,22 +174,33 @@ const DeliveryHome = () => {
         return;
       }
 
-      const response = await fetch(`${base_url}/delivery/offers/${offerId}/accept-counter`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({}),
-      });
+      const response = await fetch(
+        `${base_url}/delivery/offers/${offerId}/accept-counter`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({}),
+        }
+      );
 
       const result = await response.json();
       if (response.ok && (result?.status == 1 || result?.success === true)) {
-        successToast(result?.message || strings.OfferAcceptedSuccess || "Offer accepted successfully");
+        successToast(
+          result?.message ||
+          strings.OfferAcceptedSuccess ||
+          "Offer accepted successfully"
+        );
         await fetchAvailableRequests();
       } else {
-        errorToast(result?.message || strings.OfferAcceptFailed || "Failed to accept offer");
+        errorToast(
+          result?.message ||
+          strings.OfferAcceptFailed ||
+          "Failed to accept offer"
+        );
       }
     } catch (error) {
       console.error("Accept offer error:", error);
@@ -189,7 +212,8 @@ const DeliveryHome = () => {
 
   const rejectOffer = async (item: any) => {
     const offerId = item?.offerId ?? item?.id;
-    if (!offerId || acceptingOfferId || rejectingOfferId || replyingOfferId) return;
+    if (!offerId || acceptingOfferId || rejectingOfferId || replyingOfferId)
+      return;
 
     setRejectingOfferId(offerId);
     try {
@@ -199,15 +223,18 @@ const DeliveryHome = () => {
         return;
       }
 
-      const response = await fetch(`${base_url}/delivery/offers/${offerId}/reject-counter`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        body: JSON.stringify({}),
-      });
+      const response = await fetch(
+        `${base_url}/delivery/offers/${offerId}/reject-counter`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({}),
+        }
+      );
 
       const result = await response.json();
       if (response.ok && (result?.status == 1 || result?.success === true)) {
@@ -224,9 +251,14 @@ const DeliveryHome = () => {
     }
   };
 
-  const sendCounterReply = async (item: any, amount: number, message?: string) => {
+  const sendCounterReply = async (
+    item: any,
+    amount: number,
+    message?: string
+  ) => {
     const offerId = item?.offerId ?? item?.id;
-    if (!offerId || acceptingOfferId || rejectingOfferId || replyingOfferId) return;
+    if (!offerId || acceptingOfferId || rejectingOfferId || replyingOfferId)
+      return;
 
     setReplyingOfferId(offerId);
     try {
@@ -242,23 +274,34 @@ const DeliveryHome = () => {
         body.append("message", message.trim());
       }
 
-      const response = await fetch(`${base_url}/delivery/offers/${offerId}/counter-reply`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/x-www-form-urlencoded",
-          Accept: "application/json",
-        },
-        body: body.toString(),
-      });
+      const response = await fetch(
+        `${base_url}/delivery/offers/${offerId}/counter-reply`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/x-www-form-urlencoded",
+            Accept: "application/json",
+          },
+          body: body.toString(),
+        }
+      );
 
       const result = await response.json();
       if (response.ok && (result?.status == 1 || result?.success === true)) {
-        successToast(result?.message || strings.CounterOfferSent || "Counter reply sent successfully");
+        successToast(
+          result?.message ||
+          strings.CounterOfferSent ||
+          "Counter reply sent successfully"
+        );
         setCounterReplyOffer(null);
         await fetchAvailableRequests();
       } else {
-        errorToast(result?.message || strings.CounterOfferFailed || "Failed to send counter reply");
+        errorToast(
+          result?.message ||
+          strings.CounterOfferFailed ||
+          "Failed to send counter reply"
+        );
       }
     } catch (error) {
       console.error("Counter reply error:", error);
@@ -269,7 +312,6 @@ const DeliveryHome = () => {
   };
 
   const renderItem = ({ item }: { item: any }) => {
-
     const st = item?.parcel?.deliveryStatus;
     const statusKey = item?.parcel?.deliveryStatus;
     const statusLabel = STATUS_LABELS[statusKey] || strings?.Unknown;
@@ -285,8 +327,15 @@ const DeliveryHome = () => {
     const isAcceptingThisOffer = acceptingOfferId === offerId;
     const isRejectingThisOffer = rejectingOfferId === offerId;
     const isReplyingThisOffer = replyingOfferId === offerId;
-    const isProcessingThisOffer = isAcceptingThisOffer || isRejectingThisOffer || isReplyingThisOffer;
+    const isProcessingThisOffer =
+      isAcceptingThisOffer || isRejectingThisOffer || isReplyingThisOffer;
     const offerAmountText = offerAmount != null ? `₮ ${offerAmount}` : "";
+    const orderCode =
+      item?.parcel?.trackingId ||
+      item?.trackingId ||
+      item?.parcel?.id ||
+      item?.id ||
+      offerId;
     const getTranslucentColor = (hex: string) => {
       if (!hex || hex === "black") return "rgba(255, 149, 0, 0.08)";
       if (hex.startsWith("#")) {
@@ -310,36 +359,53 @@ const DeliveryHome = () => {
 
           if (st === STATUS.PENDING) {
             navigation.navigate(ScreenNameEnum.ParcelDetails, {
-              item: { ...item, ...item?.parcel }
+              item: { ...item, ...item?.parcel },
             });
-          }
-          else if ([
-            STATUS.ASSIGNED,
-            STATUS.GOING_TO_PICKUP,
-            STATUS.PICKED_UP,
-            STATUS.ON_THE_WAY,
-            STATUS.ARRIVING
-          ].includes(st as any)) {
+          } else if (
+            [
+              STATUS.ASSIGNED,
+              STATUS.GOING_TO_PICKUP,
+              STATUS.PICKED_UP,
+              STATUS.ON_THE_WAY,
+              STATUS.ARRIVING,
+            ].includes(st as any)
+          ) {
             navigation.navigate(ScreenNameEnum.TripMap, {
-              item: { ...item, ...item?.parcel }
+              item: { ...item, ...item?.parcel },
             });
           }
         }}
       >
+        <View style={styles.cardAccent} />
 
         {showAcceptOfferButton && (
           <View style={styles.offerBox}>
             <View style={styles.offerAccent} />
             <View style={styles.offerInfo}>
               <View style={styles.offerHeaderRow}>
-                <Text style={styles.offerEyebrow}>{strings.CounterOfferReceived || "Counter Offer Received"}</Text>
-                <Text style={styles.offerAmount}>{offerAmountText}</Text>
+                <View style={styles.offerIcon}>
+                  <Text style={styles.offerIconText}>₮</Text>
+                </View>
+                <View style={styles.offerHeaderCopy}>
+                  <Text style={styles.offerEyebrow} numberOfLines={1}>
+                    {strings.CounterOfferReceived || "Counter Offer Received"}
+                  </Text>
+                  <Text style={styles.offerTitle} numberOfLines={1}>
+                    {strings.UserOfferedNewPrice}
+                  </Text>
+                </View>
+                <View style={styles.offerAmountPill}>
+                  <Text style={styles.offerAmount} numberOfLines={1}>
+                    {offerAmountText}
+                  </Text>
+                </View>
               </View>
-              <Text style={styles.offerTitle}>{strings.UserOfferedNewPrice}</Text>
               <View style={styles.offerActionsRow}>
-
                 <TouchableOpacity
-                  style={[styles.acceptOfferBtn, isProcessingThisOffer && styles.acceptOfferBtnDisabled]}
+                  style={[
+                    styles.acceptOfferBtn,
+                    isProcessingThisOffer && styles.acceptOfferBtnDisabled,
+                  ]}
                   activeOpacity={0.85}
                   disabled={isProcessingThisOffer}
                   onPress={(event) => {
@@ -347,13 +413,16 @@ const DeliveryHome = () => {
                     acceptOffer(item);
                   }}
                 >
-                  <Text style={styles.acceptOfferText}>
+                  <Text style={styles.acceptOfferText} numberOfLines={1}>
                     {isAcceptingThisOffer ? strings.Processing : strings.Accept}
                   </Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={[styles.cancelOfferBtn, isProcessingThisOffer && styles.acceptOfferBtnDisabled]}
+                  style={[
+                    styles.cancelOfferBtn,
+                    isProcessingThisOffer && styles.acceptOfferBtnDisabled,
+                  ]}
                   activeOpacity={0.85}
                   disabled={isProcessingThisOffer}
                   onPress={(event) => {
@@ -361,13 +430,16 @@ const DeliveryHome = () => {
                     rejectOffer(item);
                   }}
                 >
-                  <Text style={styles.cancelOfferText}>
+                  <Text style={styles.cancelOfferText} numberOfLines={1}>
                     {isRejectingThisOffer ? strings.Processing : strings.Cancel}
                   </Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                  style={[styles.replyOfferBtn, isProcessingThisOffer && styles.acceptOfferBtnDisabled]}
+                  style={[
+                    styles.replyOfferBtn,
+                    isProcessingThisOffer && styles.acceptOfferBtnDisabled,
+                  ]}
                   activeOpacity={0.85}
                   disabled={isProcessingThisOffer}
                   onPress={(event) => {
@@ -375,73 +447,138 @@ const DeliveryHome = () => {
                     setCounterReplyOffer(item);
                   }}
                 >
-                  <Text style={styles.replyOfferText}>
+                  <Text style={styles.replyOfferText} numberOfLines={1}>
                     {isReplyingThisOffer ? strings.Reply : strings.Reply}
                   </Text>
                 </TouchableOpacity>
-
               </View>
-
             </View>
-
-
           </View>
         )}
 
         <View style={styles.cardTop}>
-          <Image
-            source={
-              item?.user?.image
-                ? { uri: item?.user?.image }
-                : imageIndex?.dpuser || { uri: "https://i.pravatar.cc/100" }
-            }
-            style={styles.avatar}
-          />
+          <View style={styles.headerLeft}>
+            <View style={styles.avatarWrap}>
+              <Image
+                source={
+                  item?.user?.image
+                    ? { uri: item?.user?.image }
+                    : imageIndex?.dpuser || { uri: "https://i.pravatar.cc/100" }
+                }
+                style={styles.avatar}
+              />
+            </View>
 
-          <View style={{ flex: 1 }}>
-            <Text style={styles.name} numberOfLines={1}>
-              {item?.user?.firstName}
-            </Text>
-            <Text style={styles.phone} numberOfLines={1}>
-              {item?.user?.phone}
-            </Text>
+            <View style={styles.userInfo}>
+              <View style={styles.userMetaRow}>
+                <Text style={styles.userLabel}>{strings.User || "User"}</Text>
+                {orderCode ? (
+                  <Text style={styles.orderCode} numberOfLines={1}>
+                    #{orderCode}
+                  </Text>
+                ) : null}
+              </View>
+              <Text style={styles.name} numberOfLines={1}>
+                {item?.user?.firstName || strings.Unknown}
+              </Text>
+              {item?.user?.phone ? (
+                <View style={styles.phoneRow}>
+                  <Icon name="call-outline" size={12} color="#64748B" />
+                  <Text style={styles.phone} numberOfLines={1}>
+                    {item?.user?.phone}
+                  </Text>
+                </View>
+              ) : null}
+            </View>
           </View>
 
-          <View style={[styles.statusChip, { backgroundColor: statusBg, borderColor: statusBg }]}>
-            <Text style={[styles.statusText, { color: statusColor }]}>
-              {statusLabel.charAt(0).toUpperCase() + statusLabel.slice(1).toLowerCase()}
-
+          <View
+            style={[
+              styles.statusChip,
+              { backgroundColor: statusBg, borderColor: statusBg },
+            ]}
+          >
+            <Text
+              style={[styles.statusText, { color: statusColor }]}
+              numberOfLines={1}
+            >
+              {statusLabel.charAt(0).toUpperCase() +
+                statusLabel.slice(1).toLowerCase()}
             </Text>
           </View>
         </View>
 
-
-        {/* Pickup / Drop block */}
         <View style={styles.splitter} />
 
         <View style={styles.stopsRow}>
+          <View style={styles.routeHeader}>
+            <Text style={styles.routeTitle}>
+              {strings.PickupAndDrop || "Pickup & Drop"}
+            </Text>
+            <View style={styles.routeBadge}>
+              <Icon name="navigate-outline" size={13} color="#64748B" />
+            </View>
+          </View>
           <View style={styles.timelineContainer}>
             <View style={styles.timelineDotStart} />
             <View style={styles.timelineLine} />
             <View style={styles.timelineDotEnd} />
           </View>
 
-          <View style={{ flex: 1, marginLeft: 12 }}>
-            <Text style={styles.stopLabel}>{strings.PickupLocation}</Text>
-            <Text style={styles.stopValue}  >
-              {item?.parcel?.pickupLocation}
+          <View style={styles.stopsContent}>
+            <View style={styles.stopLabelRow}>
+              <Icon name="radio-button-on" size={10} color="#FFCC00" />
+              <Text style={styles.stopLabel}>
+                {strings.From || strings.PickupLocation}
+              </Text>
+            </View>
+            <Text style={styles.stopValue} numberOfLines={2}>
+              {item?.parcel?.pickupLocation || strings.Unknown}
             </Text>
 
-            <Text style={[styles.stopLabel, { marginTop: 12 }]}>
-              {strings.DropLocation}
-            </Text>
-            <Text style={styles.stopValue} >
-              {item?.parcel?.dropLocation}
+            <View style={[styles.stopLabelRow, styles.dropLabelRow]}>
+              <Icon name="location" size={11} color="#10B981" />
+              <Text style={styles.stopLabel}>
+                {strings.To || strings.DropLocation}
+              </Text>
+            </View>
+            <Text style={styles.stopValue} numberOfLines={2}>
+              {item?.parcel?.dropLocation || strings.Unknown}
             </Text>
           </View>
         </View>
 
+        <View style={styles.footer}>
+          <View style={styles.footerStatusRow}>
+            <View
+              style={[
+                styles.footerStatusDot,
+                {
+                  backgroundColor:
+                    statusColor === "black" ? "#64748B" : statusColor,
+                },
+              ]}
+            />
+            <View style={styles.footerStatusText}>
+              <Text style={styles.footerLabel}>
+                {strings.DeliveryStatus || "Delivery Status"}
+              </Text>
+              <Text
+                style={[styles.footerValue, { color: statusColor }]}
+                numberOfLines={1}
+              >
+                {statusLabel}
+              </Text>
+            </View>
+          </View>
 
+          <View style={styles.viewDetailsButton}>
+            <Text style={styles.viewDetailsText}>
+              {strings.ViewOrder || strings.ViewDetails || "View order"}
+            </Text>
+            <Icon name="arrow-forward" size={16} color="#111827" />
+          </View>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -453,8 +590,11 @@ const DeliveryHome = () => {
       <OfferAcceptedModal />
       <CounterOfferModal
         visible={!!counterReplyOffer}
-        defaultValue={counterReplyOffer?.counterAmount ?? counterReplyOffer?.offerAmount ?? ""}
-
+        defaultValue={
+          counterReplyOffer?.counterAmount ??
+          counterReplyOffer?.offerAmount ??
+          ""
+        }
         min={1}
         max={50000}
         showMessage
@@ -481,7 +621,12 @@ const DeliveryHome = () => {
       <View style={styles.tabs}>
         {TABS.map((tab) => {
           const active = tab === activeTab;
-          const label = tab === "Completed" ? strings.Complete : tab === "Cancelled" ? strings.Canceled : strings.Pending || tab;
+          const label =
+            tab === "Completed"
+              ? strings.Complete
+              : tab === "Cancelled"
+                ? strings.Canceled
+                : strings.Pending || tab;
           return (
             <Pressable
               key={tab}
@@ -506,7 +651,7 @@ const DeliveryHome = () => {
           // data={ordersSeed}
           style={{
             marginTop: 10,
-            marginBottom: 8
+            marginBottom: 8,
           }}
           keyExtractor={(i) => String(i?.id ?? i?.offerId ?? i?.parcel?.id)}
           showsVerticalScrollIndicator={false}
@@ -516,7 +661,10 @@ const DeliveryHome = () => {
             <View style={styles.emptyWrap}>
               <View style={styles.illustrationWrap}>
                 <View style={styles.illustrationBg} />
-                <Image source={imageIndex?.ordePracle} style={styles.emptyIcon} />
+                <Image
+                  source={imageIndex?.ordePracle}
+                  style={styles.emptyIcon}
+                />
               </View>
               <Text style={styles.emptyTitle}>{strings.NoOrder}</Text>
               <Text style={styles.emptySubtitle}>{strings.NoOrdersFound1}</Text>
