@@ -168,6 +168,8 @@ const ChatScreen = () => {
   const [tokenLoaded, setTokenLoaded] = useState(false);
   const wsRef = useRef<WebSocket | null>(null);
   const flatListRef = useRef<FlatList>(null);
+  const hasInitialScrollRef = useRef(false);
+  const [showLatestButton, setShowLatestButton] = useState(false);
 
   // ── Accept Offer ──────────────────────────────────────────────────────────
   const onAcceptOffer = async (id: any) => {
@@ -427,17 +429,29 @@ const ChatScreen = () => {
     };
   }, [parcelId, token, tokenLoaded, markMessagesAsRead]);
 
-  // ── 3. Auto-scroll on new message ────────────────────────────────────────
-  useEffect(() => {
-    if (messages.length === 0) return;
-    const timer = setTimeout(
-      () => flatListRef.current?.scrollToEnd({ animated: true }),
-      100
-    );
-    return () => clearTimeout(timer);
-  }, [messages]);
+  const scrollToLatestMessage = useCallback((animated = true) => {
+    flatListRef.current?.scrollToEnd({ animated });
+    setShowLatestButton(false);
+  }, []);
 
-  // ── 4. Send message ───────────────────────────────────────────────────────
+  const handleMessageScroll = useCallback((event: any) => {
+    const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+    const distanceFromBottom =
+      contentSize.height - layoutMeasurement.height - contentOffset.y;
+    const shouldShow = distanceFromBottom > 140;
+
+    setShowLatestButton((current) =>
+      current === shouldShow ? current : shouldShow
+    );
+  }, []);
+
+  const scrollToLatestOnFirstOpen = useCallback(() => {
+    if (hasInitialScrollRef.current) return;
+    hasInitialScrollRef.current = true;
+    setTimeout(() => scrollToLatestMessage(false), 80);
+  }, [scrollToLatestMessage]);
+
+  // ── 3. Send message ───────────────────────────────────────────────────────
   const sendMessage = useCallback(
     (textOverride?: string) => {
       const sourceText =
@@ -680,28 +694,38 @@ const ChatScreen = () => {
             <Text style={styles.loadingText}>{strings.LoadingMessages}</Text>
           </View>
         ) : (
-          <FlatList
-            ref={flatListRef}
-            data={listItems}
-            renderItem={renderItem}
-            keyExtractor={(i, index) => (i?.id ? String(i.id) : String(index))}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.chatContainer}
-            onContentSizeChange={() =>
-              flatListRef.current?.scrollToEnd({ animated: false })
-            }
-            onLayout={() =>
-              flatListRef.current?.scrollToEnd({ animated: false })
-            }
-            ListEmptyComponent={
-              <View style={styles.emptyContainer}>
-                <Text style={styles.emptyEmoji}>💬</Text>
-                <Text style={styles.emptyText}>
-                  {strings.NoMessagesYetSayHi}
-                </Text>
-              </View>
-            }
-          />
+          <View style={styles.messagesWrap}>
+            <FlatList
+              ref={flatListRef}
+              data={listItems}
+              renderItem={renderItem}
+              keyExtractor={(i, index) => (i?.id ? String(i.id) : String(index))}
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.chatContainer}
+              onScroll={handleMessageScroll}
+              scrollEventThrottle={16}
+              onContentSizeChange={scrollToLatestOnFirstOpen}
+              onLayout={scrollToLatestOnFirstOpen}
+              ListEmptyComponent={
+                <View style={styles.emptyContainer}>
+                  <Text style={styles.emptyEmoji}>💬</Text>
+                  <Text style={styles.emptyText}>
+                    {strings.NoMessagesYetSayHi}
+                  </Text>
+                </View>
+              }
+            />
+            {showLatestButton && messages.length > 0 && (
+              <TouchableOpacity
+                style={styles.latestMessageButton}
+                activeOpacity={0.85}
+                accessibilityLabel={strings.LatestMessages || "Latest messages"}
+                onPress={() => scrollToLatestMessage(true)}
+              >
+                <Ionicons name="chevron-down" size={22} color="#FFCC00" />
+              </TouchableOpacity>
+            )}
+          </View>
         )}
 
         {/* ── Input Box ── */}
@@ -1163,11 +1187,31 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     backgroundColor: "#F8FAFC",
   },
+  messagesWrap: {
+    flex: 1,
+    position: "relative",
+  },
   chatContainer: {
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 18,
     flexGrow: 1,
+  },
+  latestMessageButton: {
+    position: "absolute",
+    right: 16,
+    bottom: 10,
+    width: 38,
+    height: 38,
+    borderRadius: 38,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FFFFFF",
+    borderColor: "#D3D3D3",
+    borderWidth: 1,
+
+
+
   },
   bubbleWrapper: {
     marginVertical: 4,
