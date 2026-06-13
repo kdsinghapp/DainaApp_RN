@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from "react";
 import {
   View,
   Text,
@@ -15,6 +21,7 @@ import {
   LayoutAnimation,
   UIManager,
   Modal,
+  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -32,7 +39,10 @@ import ScreenNameEnum from "../../../routes/screenName.enum";
 import strings from "../../../localization/Localization";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
-if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
+if (
+  Platform.OS === "android" &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
   UIManager.setLayoutAnimationEnabledExperimental(true);
 }
 
@@ -65,7 +75,11 @@ interface WsIncoming {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 const toTimeString = (iso?: string): string => {
-  if (!iso) return new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  if (!iso)
+    return new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   const normalized = iso.endsWith("Z") || iso.includes("+") ? iso : `${iso}Z`;
   return new Date(normalized).toLocaleTimeString([], {
     hour: "2-digit",
@@ -99,7 +113,10 @@ type ListItem =
   | { type: "separator"; id: string; label: string }
   | { type: "message"; id: string; msg: Message };
 
-const buildListItems = (messages: Message[], rawDates: Record<string, string>): ListItem[] => {
+const buildListItems = (
+  messages: Message[],
+  rawDates: Record<string, string>
+): ListItem[] => {
   const items: ListItem[] = [];
   let lastLabel = "";
 
@@ -123,18 +140,24 @@ const ChatScreen = () => {
   const route = useRoute();
   const { item, chatName } = (route?.params as any) || {};
 
-
-  console.log("item", item)
+  console.log("item", item);
   const parcelId = item?.parcelId || item?.id || item;
 
-  console.log("parcelId", parcelId)
+  console.log("parcelId", parcelId);
 
   const [counterModalVisible, setCounterModalVisible] = useState(false);
   const [offerModalVisible, setOfferModalVisible] = useState(false);
   const [isOfferAvailable, setIsOfferAvailable] = useState(true);
-  console.log("item", item)
+  console.log("item", item);
   const userData: any = useSelector((state: any) => state?.auth?.userData);
-  const driverId = item?.driverId || item?.driver?.id || item?.assignedDriver?.id || item?.assignedDriverId || item?.deliveryUser?.id || userData?.id || "";
+  const driverId =
+    item?.driverId ||
+    item?.driver?.id ||
+    item?.assignedDriver?.id ||
+    item?.assignedDriverId ||
+    item?.deliveryUser?.id ||
+    userData?.id ||
+    "";
   const offerId = item?.offerId || "";
   const [messages, setMessages] = useState<Message[]>([]);
   const rawDatesRef = useRef<Record<string, string>>({});
@@ -153,17 +176,20 @@ const ChatScreen = () => {
       if (!storedToken) return;
       // const response = await fetch(`${base_url}/delivery/offers/${offerId}/accept-counter`, {
 
-      const response = await fetch(`${base_url}/delivery/offers/${id}/accept-counter`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${storedToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({}),
-      });
+      const response = await fetch(
+        `${base_url}/delivery/offers/${id}/accept-counter`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${storedToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({}),
+        }
+      );
 
       const result = await response.json();
-      console.log("result 666 ", result)
+      console.log("result 666 ", result);
       if (response.ok) {
         setOfferModalVisible(false);
 
@@ -247,58 +273,63 @@ const ChatScreen = () => {
   }, []);
 
   // ── 1. Fetch existing chat history ────────────────────────────────────────
-  const fetchMessages = useCallback(async (showLoading = true) => {
-    if (!tokenLoaded || !parcelId || !token) return;
+  const fetchMessages = useCallback(
+    async (showLoading = true) => {
+      if (!tokenLoaded || !parcelId || !token) return;
 
-    try {
-      if (showLoading) setLoading(true);
-      let url = `${base_url}/chat/${parcelId}/messages`;
-      let params = [];
-      if (driverId) params.push(`driverId=${driverId}`);
-      if (offerId) params.push(`offerId=${offerId}`);
-      if (params.length > 0) {
-        url += `?${params.join("&")}`;
+      try {
+        if (showLoading) setLoading(true);
+        let url = `${base_url}/chat/${parcelId}/messages`;
+        let params = [];
+        if (driverId) params.push(`driverId=${driverId}`);
+        if (offerId) params.push(`offerId=${offerId}`);
+        if (params.length > 0) {
+          url += `?${params.join("&")}`;
+        }
+        const response = await fetch(url, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          console.error(`HTTP Error: ${response.status}`);
+          return;
+        }
+
+        const json = await response.json();
+        const raw: ApiMessage[] = Array.isArray(json)
+          ? json
+          : json?.messages ?? [];
+        const dates: Record<string, string> = {};
+
+        const mapped: Message[] = raw.map((m) => {
+          const id = String(m.id);
+          dates[id] = m.createdAt;
+          return {
+            id,
+            text: m.message,
+            sender: m.isMine ? "me" : "other",
+            time: toTimeString(m.createdAt),
+            isRead: m.isRead,
+          };
+        });
+
+        rawDatesRef.current = dates;
+        setMessages(mapped);
+
+        if (showLoading) markMessagesAsRead();
+      } catch (error) {
+        console.error("Fetch Messages Error:", error);
+      } finally {
+        if (showLoading) setLoading(false);
       }
-      const response = await fetch(url, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        console.error(`HTTP Error: ${response.status}`);
-        return;
-      }
-
-      const json = await response.json();
-      const raw: ApiMessage[] = Array.isArray(json) ? json : json?.messages ?? [];
-      const dates: Record<string, string> = {};
-
-      const mapped: Message[] = raw.map((m) => {
-        const id = String(m.id);
-        dates[id] = m.createdAt;
-        return {
-          id,
-          text: m.message,
-          sender: m.isMine ? "me" : "other",
-          time: toTimeString(m.createdAt),
-          isRead: m.isRead,
-        };
-      });
-
-      rawDatesRef.current = dates;
-      setMessages(mapped);
-
-      if (showLoading) markMessagesAsRead();
-    } catch (error) {
-      console.error("Fetch Messages Error:", error);
-    } finally {
-      if (showLoading) setLoading(false);
-    }
-  }, [parcelId, token, tokenLoaded, markMessagesAsRead]);
+    },
+    [parcelId, token, tokenLoaded, markMessagesAsRead]
+  );
 
   // Initial fetch and polling for read receipts
   useEffect(() => {
@@ -362,7 +393,8 @@ const ChatScreen = () => {
         // ✅ FIX 3: Skip echoed own messages to avoid duplicates
         if (isMine) return;
 
-        const iso = data.created_at ?? data.timestamp ?? new Date().toISOString();
+        const iso =
+          data.created_at ?? data.timestamp ?? new Date().toISOString();
         const msgId = `ws_${Date.now()}_${Math.random()}`;
         rawDatesRef.current[msgId] = iso;
 
@@ -406,32 +438,37 @@ const ChatScreen = () => {
   }, [messages]);
 
   // ── 4. Send message ───────────────────────────────────────────────────────
-  const sendMessage = useCallback(() => {
-    const trimmed = inputText.trim();
-    if (!trimmed) return;
+  const sendMessage = useCallback(
+    (textOverride?: string) => {
+      const sourceText =
+        typeof textOverride === "string" ? textOverride : inputText;
+      const trimmed = sourceText.trim();
+      if (!trimmed) return;
 
-    const now = new Date().toISOString();
-    const msgId = `me_${Date.now()}`;
-    rawDatesRef.current[msgId] = now;
+      const now = new Date().toISOString();
+      const msgId = `me_${Date.now()}`;
+      rawDatesRef.current[msgId] = now;
 
-    const newMsg: Message = {
-      id: msgId,
-      text: trimmed,
-      sender: "me",
-      time: toTimeString(now),
-      isRead: false,
-    };
+      const newMsg: Message = {
+        id: msgId,
+        text: trimmed,
+        sender: "me",
+        time: toTimeString(now),
+        isRead: false,
+      };
 
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    setMessages((prev) => [...prev, newMsg]);
-    setInputText("");
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      setMessages((prev) => [...prev, newMsg]);
+      setInputText("");
 
-    if (wsRef.current?.readyState === WebSocket.OPEN) {
-      wsRef.current.send(JSON.stringify({ message: trimmed }));
-    } else {
-      console.warn("WebSocket not open — message may not be delivered.");
-    }
-  }, [inputText]);
+      if (wsRef.current?.readyState === WebSocket.OPEN) {
+        wsRef.current.send(JSON.stringify({ message: trimmed }));
+      } else {
+        console.warn("WebSocket not open — message may not be delivered.");
+      }
+    },
+    [inputText]
+  );
 
   // ── Handle Phone Call ─────────────────────────────────────────────────────
   const handleCall = (phone: string | number | undefined) => {
@@ -455,23 +492,68 @@ const ChatScreen = () => {
   // ── Derive agent info ─────────────────────────────────────────────────────
   // ✅ FIX 4: Use chattingWith from API response (passed via route params)
   const chattingWith = item?.chattingWith;
+  const currentRole = String(userData?.type || "").toLowerCase();
+  const isDriverChat = currentRole === "delivery";
 
   const agentName =
     chattingWith?.name ??
     item?.carrierName ??
     item?.parcelOwner?.name ??
     item?.driver?.name ??
-    item?.user?.firstName ?? item?.assignedDriver?.name ?? chatName ?? "Delivery Agent"
+    item?.user?.firstName ??
+    item?.assignedDriver?.name ??
+    chatName ??
+    "Delivery Agent";
   const agentImage =
     chattingWith?.image ??
     item?.deliveryUser?.profile_image ??
     item?.parcelOwner?.image ??
-    item?.driver?.image ?? item?.user?.image ?? item?.assignedDriver?.image
-  null;
+    item?.driver?.image ??
+    item?.user?.image ??
+    item?.assignedDriver?.image ??
+    null;
 
-  const agentPhone = chattingWith?.phone ??
-    item?.parcelOwner?.phone ?? item?.user?.phone ?? item?.assignedDriver?.phone
-  null;
+  const agentPhone =
+    chattingWith?.phone ??
+    item?.parcelOwner?.phone ??
+    item?.user?.phone ??
+    item?.assignedDriver?.phone ??
+    null;
+  const sentMessageTexts = useMemo(
+    () =>
+      new Set(
+        messages
+          .filter((message) => message.sender === "me")
+          .map((message) => message.text.trim().toLowerCase())
+      ),
+    [messages]
+  );
+  const quickMessages = useMemo(() => {
+    const driverMessages = [
+      strings.QuickChatHello || "Hello",
+      strings.QuickDriverWhereAreYou || "Where are you?",
+      strings.QuickDriverComingSoon || "I am coming soon",
+      strings.QuickDriverArriveSoon || "I will arrive shortly",
+      strings.QuickDriverPleaseWait || "Please wait a little",
+      strings.QuickChatPleaseCall || "Please call me",
+      strings.QuickDriverReached || "I have reached",
+      strings.QuickChatThanks || "Thank you",
+    ];
+    const userMessages = [
+      strings.QuickChatHello || "Hello",
+      strings.QuickUserWhereAreYou || "Where are you?",
+      strings.QuickUserWhenArrive || "When will you arrive?",
+      strings.QuickUserCallMe || "Call me once",
+      strings.QuickUserIAmHere || "I am here",
+      strings.QuickUserWaitLittle || "Wait a little",
+      strings.QuickUserParcelSafe || "Please keep parcel safe",
+      strings.QuickChatThanks || "Thank you",
+    ];
+
+    return (isDriverChat ? driverMessages : userMessages).filter(
+      (message) => !sentMessageTexts.has(message.trim().toLowerCase())
+    );
+  }, [isDriverChat, sentMessageTexts]);
   const listItems = buildListItems(messages, rawDatesRef?.current);
 
   const renderItem = ({ item: listItem }: { item: ListItem }) => {
@@ -514,6 +596,11 @@ const ChatScreen = () => {
             isMe ? styles.myMessage : styles.otherMessage,
           ]}
         >
+          {!isMe && (
+            <Text style={styles.senderLabel} numberOfLines={1}>
+              {agentName}
+            </Text>
+          )}
           <Text style={isMe ? styles.myMessageText : styles.otherMessageText}>
             {msg?.text}
           </Text>
@@ -539,13 +626,16 @@ const ChatScreen = () => {
       </View>
     );
   };
-  console.log("item")
+  console.log("item");
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
       {/* ── Header ── */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backBtn}
+        >
           <Image source={imageIndex.back} style={styles.backIcon} />
         </TouchableOpacity>
 
@@ -594,37 +684,66 @@ const ChatScreen = () => {
             ref={flatListRef}
             data={listItems}
             renderItem={renderItem}
-            keyExtractor={(i, index) => i?.id ? String(i.id) : String(index)}
+            keyExtractor={(i, index) => (i?.id ? String(i.id) : String(index))}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.chatContainer}
-            onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: false })}
-            onLayout={() => flatListRef.current?.scrollToEnd({ animated: false })}
+            onContentSizeChange={() =>
+              flatListRef.current?.scrollToEnd({ animated: false })
+            }
+            onLayout={() =>
+              flatListRef.current?.scrollToEnd({ animated: false })
+            }
             ListEmptyComponent={
               <View style={styles.emptyContainer}>
                 <Text style={styles.emptyEmoji}>💬</Text>
-                <Text style={styles.emptyText}>{strings.NoMessagesYetSayHi}</Text>
+                <Text style={styles.emptyText}>
+                  {strings.NoMessagesYetSayHi}
+                </Text>
               </View>
             }
           />
         )}
 
         {/* ── Input Box ── */}
+        {!loading && quickMessages.length > 0 && (
+          <View style={styles.quickReplyWrap}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              keyboardShouldPersistTaps="handled"
+              contentContainerStyle={styles.quickReplyContent}
+            >
+              {quickMessages.map((message) => (
+                <TouchableOpacity
+                  key={message}
+                  style={styles.quickReplyChip}
+                  activeOpacity={0.8}
+                  onPress={() => sendMessage(message)}
+                >
+                  <Text style={styles.quickReplyText} numberOfLines={1}>
+                    {message}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
         <View style={styles.inputContainer}>
           <View style={styles.inputWrapper}>
-
             <TextInput
               style={styles.input}
               placeholder={strings.TypeAMessagePlaceholder}
               value={inputText}
               onChangeText={setInputText}
               placeholderTextColor="#8E8E93"
-              onSubmitEditing={sendMessage}
+              onSubmitEditing={() => sendMessage()}
               returnKeyType="send"
               multiline={false}
             />
           </View>
           <TouchableOpacity
-            onPress={sendMessage}
+            onPress={() => sendMessage()}
             style={[styles.sendButton, { opacity: inputText.trim() ? 1 : 0.4 }]}
             activeOpacity={0.7}
             disabled={!inputText.trim()}
@@ -642,21 +761,38 @@ const ChatScreen = () => {
         statusBarTranslucent
         onRequestClose={() => setOfferModalVisible(false)}
       >
-        <View style={{
-          flex: 1,
-          backgroundColor: 'rgba(0,0,0,0.55)',
-          justifyContent: 'flex-end',
-        }}>
-          <View style={{
-            backgroundColor: '#FFF',
-            borderTopLeftRadius: 28,
-            borderTopRightRadius: 28,
-            padding: 24,
-            paddingBottom: Platform.OS === 'ios' ? 40 : 24,
-          }}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "rgba(0,0,0,0.55)",
+            justifyContent: "flex-end",
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#FFF",
+              borderTopLeftRadius: 28,
+              borderTopRightRadius: 28,
+              padding: 24,
+              paddingBottom: Platform.OS === "ios" ? 40 : 24,
+            }}
+          >
             {/* Header */}
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-              <Text style={{ fontSize: 20, fontFamily: font.MonolithRegular, color: '#0F172A' }}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: 20,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 20,
+                  fontFamily: font.MonolithRegular,
+                  color: "#0F172A",
+                }}
+              >
                 Counter Offer Details
               </Text>
               <TouchableOpacity onPress={() => setOfferModalVisible(false)}>
@@ -664,35 +800,75 @@ const ChatScreen = () => {
               </TouchableOpacity>
             </View>
 
-            <View style={{
-              backgroundColor: '#FFFBEB',
-              borderRadius: 16,
-              padding: 8,
-              alignItems: 'center',
-              marginBottom: 20,
-              borderWidth: 1,
-              borderColor: '#FDE68A',
-            }}>
-              <Text style={{ fontSize: 13, fontFamily: font.MonolithRegular, color: '#92400E' }}>
+            <View
+              style={{
+                backgroundColor: "#FFFBEB",
+                borderRadius: 16,
+                padding: 8,
+                alignItems: "center",
+                marginBottom: 20,
+                borderWidth: 1,
+                borderColor: "#FDE68A",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontFamily: font.MonolithRegular,
+                  color: "#92400E",
+                }}
+              >
                 Offer Amount
               </Text>
-              <Text style={{ fontSize: 32, fontFamily: font.MonolithRegular, color: '#D97706', marginTop: 4 }}>
+              <Text
+                style={{
+                  fontSize: 32,
+                  fontFamily: font.MonolithRegular,
+                  color: "#D97706",
+                  marginTop: 4,
+                }}
+              >
                 ${item?.offerAmount}
               </Text>
             </View>
 
             {/* Delivery Price */}
 
-
             {/* Pickup Location */}
             {item?.parcel?.pickupLocation && (
-              <View style={{ flexDirection: 'row', marginBottom: 14, alignItems: 'flex-start' }}>
-                <Ionicons name="location" size={20} color="#22C55E" style={{ marginTop: 2, marginRight: 10 }} />
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginBottom: 14,
+                  alignItems: "flex-start",
+                }}
+              >
+                <Ionicons
+                  name="location"
+                  size={20}
+                  color="#22C55E"
+                  style={{ marginTop: 2, marginRight: 10 }}
+                />
                 <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 11, fontFamily: font.MonolithRegular, color: '#94A3B8', marginBottom: 2 }}>
+                  <Text
+                    style={{
+                      fontSize: 11,
+                      fontFamily: font.MonolithRegular,
+                      color: "#94A3B8",
+                      marginBottom: 2,
+                    }}
+                  >
                     PICKUP
                   </Text>
-                  <Text style={{ fontSize: 13, fontFamily: font.MonolithRegular, color: '#334155', lineHeight: 18 }} numberOfLines={2}>
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      fontFamily: font.MonolithRegular,
+                      color: "#334155",
+                      lineHeight: 18,
+                    }}
+                    numberOfLines={2}
+                  >
                     {item?.parcel?.pickupLocation}
                   </Text>
                 </View>
@@ -701,23 +877,47 @@ const ChatScreen = () => {
 
             {/* Drop Location */}
             {item?.parcel?.dropLocation && (
-              <View style={{ flexDirection: 'row', marginBottom: 20, alignItems: 'flex-start' }}>
-                <Ionicons name="location" size={20} color="#EF4444" style={{ marginTop: 2, marginRight: 10 }} />
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginBottom: 20,
+                  alignItems: "flex-start",
+                }}
+              >
+                <Ionicons
+                  name="location"
+                  size={20}
+                  color="#EF4444"
+                  style={{ marginTop: 2, marginRight: 10 }}
+                />
                 <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 11, fontFamily: font.MonolithRegular, color: '#94A3B8', marginBottom: 2 }}>
+                  <Text
+                    style={{
+                      fontSize: 11,
+                      fontFamily: font.MonolithRegular,
+                      color: "#94A3B8",
+                      marginBottom: 2,
+                    }}
+                  >
                     DROP-OFF
                   </Text>
-                  <Text style={{ fontSize: 13, fontFamily: font.MonolithRegular, color: '#334155', lineHeight: 18 }} numberOfLines={2}>
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      fontFamily: font.MonolithRegular,
+                      color: "#334155",
+                      lineHeight: 18,
+                    }}
+                    numberOfLines={2}
+                  >
                     {item?.parcel?.dropLocation}
                   </Text>
                 </View>
               </View>
             )}
 
-
-
             {/* Action Buttons */}
-            <View style={{ flexDirection: 'row', gap: 12 }}>
+            <View style={{ flexDirection: "row", gap: 12 }}>
               <TouchableOpacity
                 onPress={() => {
                   setOfferModalVisible(false);
@@ -727,13 +927,19 @@ const ChatScreen = () => {
                   flex: 1,
                   height: 52,
                   borderRadius: 26,
-                  backgroundColor: '#F1F5F9',
-                  justifyContent: 'center',
-                  alignItems: 'center',
+                  backgroundColor: "#F1F5F9",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
                 activeOpacity={0.8}
               >
-                <Text style={{ fontSize: 15, fontFamily: font.MonolithRegular, color: '#334155' }}>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontFamily: font.MonolithRegular,
+                    color: "#334155",
+                  }}
+                >
                   Counter
                 </Text>
               </TouchableOpacity>
@@ -746,13 +952,19 @@ const ChatScreen = () => {
                   flex: 1,
                   height: 52,
                   borderRadius: 26,
-                  backgroundColor: '#FFCC00',
-                  justifyContent: 'center',
-                  alignItems: 'center',
+                  backgroundColor: "#FFCC00",
+                  justifyContent: "center",
+                  alignItems: "center",
                 }}
                 activeOpacity={0.8}
               >
-                <Text style={{ fontSize: 15, fontFamily: font.MonolithRegular, color: '#000' }}>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontFamily: font.MonolithRegular,
+                    color: "#000",
+                  }}
+                >
                   Accept Offer
                 </Text>
               </TouchableOpacity>
@@ -791,7 +1003,7 @@ const LIGHT_TEXT = "#8E8E93";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#F8FAFC",
   },
   header: {
     flexDirection: "row",
@@ -799,9 +1011,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     backgroundColor: "#FFFFFF",
-
-
-
+    borderBottomWidth: 1,
+    borderBottomColor: "#EEF2F7",
   },
   backBtn: {
     marginRight: 12,
@@ -810,7 +1021,6 @@ const styles = StyleSheet.create({
     height: 42,
     width: 42,
     resizeMode: "contain",
-
   },
   avatarContainer: {
     position: "relative",
@@ -849,6 +1059,7 @@ const styles = StyleSheet.create({
   headerInfo: {
     flex: 1,
     justifyContent: "center",
+    minWidth: 0,
   },
   name: {
     fontSize: 16,
@@ -861,6 +1072,22 @@ const styles = StyleSheet.create({
     color: LIGHT_TEXT,
     fontFamily: font.MonolithRegular,
     marginTop: 2,
+  },
+  connectionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 4,
+  },
+  connectionDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    marginRight: 5,
+  },
+  connectionText: {
+    fontSize: 11,
+    color: "#64748B",
+    fontFamily: font.MonolithRegular,
   },
   headerActions: {
     flexDirection: "row",
@@ -934,11 +1161,12 @@ const styles = StyleSheet.create({
     color: LIGHT_TEXT,
     fontFamily: font.MonolithRegular,
     paddingHorizontal: 12,
+    backgroundColor: "#F8FAFC",
   },
   chatContainer: {
     paddingHorizontal: 16,
     paddingTop: 16,
-    paddingBottom: 24,
+    paddingBottom: 18,
     flexGrow: 1,
   },
   bubbleWrapper: {
@@ -951,35 +1179,42 @@ const styles = StyleSheet.create({
   },
   bubbleWrapperOther: {
     justifyContent: "flex-start",
-    marginBottom: 10
+    marginBottom: 10,
   },
   messageBubble: {
     maxWidth: "80%",
     paddingHorizontal: 14,
-    paddingVertical: 10,
-    borderRadius: 20,
+    paddingVertical: 9,
+    borderRadius: 18,
   },
   myMessage: {
     backgroundColor: YELLOW,
     borderBottomRightRadius: 4,
-
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 1,
+    shadowOpacity: 0.08,
+    shadowRadius: 3,
   },
   otherMessage: {
-    backgroundColor: GRAY_BG,
+    backgroundColor: "#FFFFFF",
     borderBottomLeftRadius: 4,
+    borderWidth: 1,
+    borderColor: "#EEF2F7",
+  },
+  senderLabel: {
+    fontSize: 10,
+    color: "#94A3B8",
+    fontFamily: font.MonolithRegular,
+    marginBottom: 4,
   },
   myMessageText: {
-    color: "white",
+    color: "#111827",
     fontFamily: font.MonolithRegular,
     fontSize: 15,
     lineHeight: 22,
   },
   otherMessageText: {
-    color: DARK,
+    color: "#1F2937",
     fontFamily: font.MonolithRegular,
     fontSize: 15,
     lineHeight: 22,
@@ -1011,14 +1246,40 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#F2F2F2",
   },
+  quickReplyWrap: {
+    paddingTop: 10,
+    paddingBottom: 4,
+    marginBottom: 5,
+  },
+  quickReplyContent: {
+    paddingHorizontal: 12,
+    gap: 8,
+  },
+  quickReplyChip: {
+    height: 34,
+    borderRadius: 17,
+    paddingHorizontal: 13,
+    backgroundColor: "#FFFBEB",
+    borderWidth: 1,
+    borderColor: "#FDE68A",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  quickReplyText: {
+    fontSize: 12,
+    color: "#92400E",
+    fontFamily: font.MonolithRegular,
+  },
   inputWrapper: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: GRAY_BG,
+    backgroundColor: "#F8FAFC",
     borderRadius: 25,
     paddingHorizontal: 12,
     marginRight: 10,
+    borderWidth: 1,
+    borderColor: "#EEF2F7",
   },
   attachBtn: {
     padding: 8,
@@ -1044,7 +1305,6 @@ const styles = StyleSheet.create({
     backgroundColor: YELLOW,
     justifyContent: "center",
     alignItems: "center",
-
   },
   sendIcon: {
     height: 22,

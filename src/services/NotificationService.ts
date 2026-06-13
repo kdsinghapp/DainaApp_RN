@@ -1,6 +1,10 @@
-import messaging from '@react-native-firebase/messaging';
-import { Platform } from 'react-native';
-import notifee, { AndroidImportance, EventType } from '@notifee/react-native';
+import messaging from "@react-native-firebase/messaging";
+import { Platform } from "react-native";
+import notifee, { AndroidImportance, EventType } from "@notifee/react-native";
+
+export const DELIVERY_NOTIFICATION_CHANNEL_ID = "delivery_orders_v5";
+const ANDROID_RINGTONE_SOUND = "ringtone_notification";
+const IOS_RINGTONE_SOUND = "ringtone_notification.caf";
 
 class NotificationService {
   async incrementBadge() {
@@ -10,7 +14,7 @@ class NotificationService {
       await notifee.setBadgeCount(nextBadge);
       return nextBadge;
     } catch (error) {
-      console.log('Error incrementing badge count', error);
+      console.log("Error incrementing badge count", error);
       return 1;
     }
   }
@@ -19,12 +23,12 @@ class NotificationService {
     try {
       await notifee.setBadgeCount(0);
     } catch (error) {
-      console.log('Error clearing badge count', error);
+      console.log("Error clearing badge count", error);
     }
   }
 
   async registerAppWithFCM() {
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === "ios") {
       await messaging().registerDeviceForRemoteMessages();
       await messaging().setAutoInitEnabled(true);
     }
@@ -35,21 +39,25 @@ class NotificationService {
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-    
-    if (Platform.OS === 'android') {
+
+    if (Platform.OS === "android") {
       await notifee.requestPermission();
     }
-    
+
     return enabled;
   }
 
   async createChannel() {
-    if (Platform.OS === 'android') {
+    if (Platform.OS === "android") {
       await notifee.createChannel({
-        id: 'default',
-        name: 'Default Channel',
+        id: DELIVERY_NOTIFICATION_CHANNEL_ID,
+        name: "Delivery Orders",
+        description: "New parcel and delivery request alerts",
         importance: AndroidImportance.HIGH,
         badge: true,
+        sound: ANDROID_RINGTONE_SOUND,
+        vibration: true,
+        vibrationPattern: [300, 500, 300, 500],
       });
     }
   }
@@ -59,14 +67,15 @@ class NotificationService {
       const token = await messaging().getToken();
       return token;
     } catch (error) {
-      console.log('Error getting FCM token', error);
+      console.log("Error getting FCM token", error);
       return null;
     }
   }
 
   setupListeners() {
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.log('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+      console.log("A new FCM message arrived!", JSON.stringify(remoteMessage));
+      await this.createChannel();
       const badgeCount = await this.incrementBadge();
       if (remoteMessage.notification) {
         await notifee.displayNotification({
@@ -75,13 +84,15 @@ class NotificationService {
           data: remoteMessage.data,
           ios: {
             badgeCount,
+            sound: IOS_RINGTONE_SOUND,
           },
           android: {
-            channelId: 'default',
+            channelId: DELIVERY_NOTIFICATION_CHANNEL_ID,
             importance: AndroidImportance.HIGH,
             badgeCount,
+            sound: ANDROID_RINGTONE_SOUND,
             pressAction: {
-              id: 'default',
+              id: "default",
             },
           },
         });
@@ -92,11 +103,13 @@ class NotificationService {
       await this.clearBadge();
     });
 
-    const unsubscribeForegroundEvent = notifee.onForegroundEvent(async ({ type }) => {
-      if (type === EventType.PRESS) {
-        await this.clearBadge();
+    const unsubscribeForegroundEvent = notifee.onForegroundEvent(
+      async ({ type }) => {
+        if (type === EventType.PRESS) {
+          await this.clearBadge();
+        }
       }
-    });
+    );
 
     return () => {
       unsubscribe();
@@ -106,7 +119,11 @@ class NotificationService {
   }
 
   async onBackgroundMessage(remoteMessage: any) {
-    console.log('Background FCM message arrived!', JSON.stringify(remoteMessage));
+    console.log(
+      "Background FCM message arrived!",
+      JSON.stringify(remoteMessage)
+    );
+    await this.createChannel();
     const badgeCount = await this.incrementBadge();
 
     if (remoteMessage?.notification) {
@@ -116,13 +133,15 @@ class NotificationService {
         data: remoteMessage.data,
         ios: {
           badgeCount,
+          sound: IOS_RINGTONE_SOUND,
         },
         android: {
-          channelId: 'default',
+          channelId: DELIVERY_NOTIFICATION_CHANNEL_ID,
           importance: AndroidImportance.HIGH,
           badgeCount,
+          sound: ANDROID_RINGTONE_SOUND,
           pressAction: {
-            id: 'default',
+            id: "default",
           },
         },
       });

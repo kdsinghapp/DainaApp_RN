@@ -1,4 +1,4 @@
-import LocalizedStrings from 'react-native-localization';
+import LocalizedStrings from "react-native-localization";
 
 const strings = new LocalizedStrings({
   en: {
@@ -12,8 +12,7 @@ const strings = new LocalizedStrings({
     ViewAll: "View All",
     Gallery: "Gallery",
     Account: "Account Settings",
-    Support: "Support & Legal"
-    ,
+    Support: "Support & Legal",
     Locationu: "Location unavailable",
     Help: "Help",
     ContactInfo: "Contact Info",
@@ -26,13 +25,30 @@ const strings = new LocalizedStrings({
     RatingLabel: "Rating",
     ReviewsLabel: "Reviews",
     TypeAMessagePlaceholder: "Type a message...",
+    QuickChatHello: "Hello",
+    QuickChatPleaseCall: "Please call me",
+    QuickChatThanks: "Thank you",
+    QuickDriverWhereAreYou: "Where are you?",
+    QuickDriverComingSoon: "I am coming soon",
+    QuickDriverArriveSoon: "I will arrive shortly",
+    QuickDriverPleaseWait: "Please wait a little",
+    QuickDriverReached: "I have reached",
+    QuickUserWhereAreYou: "Where are you?",
+    QuickUserWhenArrive: "When will you arrive?",
+    QuickUserCallMe: "Call me once",
+    QuickUserIAmHere: "I am here",
+    QuickUserWaitLittle: "Wait a little",
+    QuickUserParcelSafe: "Please keep parcel safe",
     // Onboarding
     ShipYourParcel: "Ship Your Parcel",
     ShipAnywhere: "Ship Anywhere",
     TrackYourParcel: "Track Your Parcel",
-    OnboardingDesc1: "Experience smooth and completely stress-free shipping of your parcel.",
-    OnboardingDesc2: "Send your parcel across borders with our reliable and secure shipping service.",
-    OnboardingDesc3: "Stay updated and know the real-time location of your shipment anytime.",
+    OnboardingDesc1:
+      "Experience smooth and completely stress-free shipping of your parcel.",
+    OnboardingDesc2:
+      "Send your parcel across borders with our reliable and secure shipping service.",
+    OnboardingDesc3:
+      "Stay updated and know the real-time location of your shipment anytime.",
     Skip: "Skip",
     Continue: "Continue",
     // Choose Role
@@ -78,7 +94,8 @@ const strings = new LocalizedStrings({
     NoOrdersFound: "No orders found",
     NoOrdersHereYet: "No orders here yet.",
     NoOrder: "No Active Orders",
-    NoOrdersFound1: "Your shipping history is empty. Start by creating your first parcel request.",
+    NoOrdersFound1:
+      "Your shipping history is empty. Start by creating your first parcel request.",
     TrackingID: "Tracking ID",
     StepXofY: "Step {0} of {1} complete",
     ViewDetails: "View Details",
@@ -112,7 +129,8 @@ const strings = new LocalizedStrings({
     CarrierResponsePlural: "{0} driver responses",
     DriverReplyPending: "Driver reply pending",
     PendingReply: "Pending Reply",
-    DriverNotRepliedToCounter: "The driver has not replied to your counter offer yet.",
+    DriverNotRepliedToCounter:
+      "The driver has not replied to your counter offer yet.",
     ProposedAmount: "Proposed Amount",
     NoOffersAvailable: "No offers available for your ad yet.",
     FindingDriver: "Finding Driver",
@@ -169,7 +187,8 @@ const strings = new LocalizedStrings({
     ResendFailed: "Failed to resend OTP. Please try again.",
     // Document Show
     MyDocuments: "My Documents",
-    DocumentShowSubtitle: "Review your identity, vehicle, and payout details in one place.",
+    DocumentShowSubtitle:
+      "Review your identity, vehicle, and payout details in one place.",
     DocumentUploaded: "Document uploaded",
     UploadIdentityDocuments: "Upload Identity Documents",
     SetUpVehicleDetails: "Set Up Vehicle Details",
@@ -197,7 +216,8 @@ const strings = new LocalizedStrings({
     Pending: "Pending",
     FetchingDetails: "Fetching details...",
     NoDataFound: "No Data Found",
-    InfoWillAppearHere: "Information will appear here once it has been processed.",
+    InfoWillAppearHere:
+      "Information will appear here once it has been processed.",
     // Delivery Side
     EarningsReports: "Earnings & Reports",
     DocumentShow: "Document Show",
@@ -295,7 +315,8 @@ const strings = new LocalizedStrings({
     EnterAccountNumberError: "Please enter your bank account number.",
     EnterIFSCCodeError: "Please enter your bank's IFSC code.",
     VehicleSetup: "Vehicle Setup",
-    VehicleSetupSubtitle: "Add your vehicle details and registration to continue verification.",
+    VehicleSetupSubtitle:
+      "Add your vehicle details and registration to continue verification.",
     SelectVehicleType: "Select vehicle type",
     EnterVehicleNumber: "Enter vehicle number",
     UploadVehicleRegistration: "Upload vehicle registration",
@@ -316,7 +337,8 @@ const strings = new LocalizedStrings({
     Yes: "Yes",
     No: "No",
     BankSetup: "Bank Setup",
-    BankSetupSubtitle: "Add the bank account where your delivery payouts should be sent.",
+    BankSetupSubtitle:
+      "Add the bank account where your delivery payouts should be sent.",
     BankSecureNote: "Secure details",
     PayoutReady: "Payout account information",
     EnterBankName: "Enter bank name",
@@ -435,16 +457,20 @@ const strings = new LocalizedStrings({
     EnterOTP: "Enter OTP",
     ConnectionErrorRetrying: "Connection error. Retrying...",
     ConnectionFailedTryAgain: "Connection failed. Please try again.",
-    FailedConnectCheckInternet: "Failed to connect. Please check your internet.",
+    FailedConnectCheckInternet:
+      "Failed to connect. Please check your internet.",
     AuthTokenNotFound: "Authentication token not found",
     ParcelIDNotFound: "Parcel ID not found",
     NoPartnerAccepted: "No partner accepted",
-    NoPartnerAcceptedDesc: "No delivery partner accepted in 30 seconds. Tap Try again to search again or go back.",
+    NoPartnerAcceptedDesc:
+      "No delivery partner accepted in 30 seconds. Tap Try again to search again or go back.",
     PleaseWaitFindingPartner: "Please wait while we find the nearest partner",
     CurrentLocation: "Current location",
     XSecLeft: "{0} sec left",
-    LanguageSelectionTitle: "Choose your language to start your journey with us.",
-    LanguageSelectionUpdate: "Update your language preference for the app display.",
+    LanguageSelectionTitle:
+      "Choose your language to start your journey with us.",
+    LanguageSelectionUpdate:
+      "Update your language preference for the app display.",
     StartPickup: "Start Pickup",
     MarkPickedUp: "Mark as Picked Up",
     StartDelivery: "Start Delivery",
@@ -455,25 +481,32 @@ const strings = new LocalizedStrings({
     CounterOfferReceived: "Counter Offer Received",
     CounterOfferMessage: "User sent a counter offer. Tap to view and respond.",
     UserOfferedNewPrice: "User has offered a new price",
-    ReviewAcceptDeliveryOffer: "Review and accept to confirm this delivery offer.",
-    NewDeliveryRequestMessage: "A parcel pickup is nearby. Tap below to see details and send your offer.",
+    ReviewAcceptDeliveryOffer:
+      "Review and accept to confirm this delivery offer.",
+    NewDeliveryRequestMessage:
+      "A parcel pickup is nearby. Tap below to see details and send your offer.",
     Later: "Later",
     UpdateAvailableTitle: "Update Available",
-    UpdateAvailableMessage: "A new version of Daina is available. Please update the app for the latest features and bug fixes.",
+    UpdateAvailableMessage:
+      "A new version of Daina is available. Please update the app for the latest features and bug fixes.",
     UpdateNow: "Update Now",
     VersionUpdateText: "Current {0} - Latest {1}",
     ViewOrder: "View order",
     NoNotifications: "No notifications found",
-    FileTooLarge: "File size is too large for upload. Please select a smaller file.",
+    FileTooLarge:
+      "File size is too large for upload. Please select a smaller file.",
     SlideToGoOnline: "Slide to go online",
     SlideToGoOffline: "Slide to go offline",
     VerificationTitle: "Account Verification",
-    VerificationSubtitle: "Your documents are currently under review by our admin team.",
-    VerificationDescription: "This process usually takes 24-48 hours. We'll notify you as soon as your account is activated. Thank you for your patience!",
+    VerificationSubtitle:
+      "Your documents are currently under review by our admin team.",
+    VerificationDescription:
+      "This process usually takes 24-48 hours. We'll notify you as soon as your account is activated. Thank you for your patience!",
     VerificationPending: "Verification Pending",
     InProgress: "In Progress",
     PendingApproval: "PENDING APPROVAL",
-    VerificationPendingDesc: "Your application is in the final stages of review. We will notify you once you're ready to start.",
+    VerificationPendingDesc:
+      "Your application is in the final stages of review. We will notify you once you're ready to start.",
     ReviewProgress: "Review Progress",
     DocumentsUploaded: "Documents Uploaded",
     DocumentsUploadedDesc: "ID, Driving License & Vehicle papers",
@@ -484,11 +517,13 @@ const strings = new LocalizedStrings({
     ReadyForOrders: "Ready for Orders",
     ReadyForOrdersDesc: "Access to parcel delivery requests",
     DidYouKnow: "Did you know?",
-    VerificationTip: "Complete profiles are 3x faster to verify. Make sure your photos are clear and readable.",
+    VerificationTip:
+      "Complete profiles are 3x faster to verify. Make sure your photos are clear and readable.",
     RefreshStatus: "Refresh Status",
     DeleteAccount: "Delete Account",
     DeleteAccountConfirmTitle: "Delete Account",
-    DeleteAccountConfirmMessage: "Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.",
+    DeleteAccountConfirmMessage:
+      "Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.",
     DeletingAccount: "Deleting account...",
     OfferSent: "Offer Sent",
     WaitingForUserResponse: "The user hasn't responded to your offer yet.",
@@ -497,13 +532,15 @@ const strings = new LocalizedStrings({
     ArrivedAtDropoff: "📍 You've reached the drop-off location!",
     DriverArrivedAtPickup: "📍 Driver has arrived at pickup location.",
     DriverArrivedAtDropoff: "📍 Driver is at the drop-off location.",
-    PendingOfferMessage: "Driver has submitted an offer. Please check the details and send your response.",
+    PendingOfferMessage:
+      "Driver has submitted an offer. Please check the details and send your response.",
     CheckOffer: "Check Offer",
     AcceptRejectReply: "Accept / Reject Reply",
     DriverVerificationDetails: "Driver Verification Details",
     SecurityAndVerification: "Security & Verification",
     VerifiedProfileVehicleDocs: "View verified profile, vehicle & documents",
-    VerifiedProfileVehicleDocsDesc: "This driver profile is fully verified for security and parcel safety.",
+    VerifiedProfileVehicleDocsDesc:
+      "This driver profile is fully verified for security and parcel safety.",
     AppRegisteredName: "App Registered Name",
     VehicleSetupRegistration: "Vehicle Setup & Registration",
     BankDetailsHolderName: "Bank Details (Check Holder Name)",
@@ -534,8 +571,10 @@ const strings = new LocalizedStrings({
     ShipAnywhere: "Хаана ч илгээх",
     TrackYourParcel: "Илгээмжээ хянах",
     OnboardingDesc1: "Илгээмж илгээх үйл явцыг саадгүй, стрессгүй мэдрээрэй.",
-    OnboardingDesc2: "Манай найдвартай, аюулгүй хүргэлтийн үйлчилгээгээр илгээмжээ хил дамнуулан илгээгээрэй.",
-    OnboardingDesc3: "Илгээмжийнхээ бодит байршлыг хүссэн үедээ мэдэж, мэдээлэлтэй байгаарай.",
+    OnboardingDesc2:
+      "Манай найдвартай, аюулгүй хүргэлтийн үйлчилгээгээр илгээмжээ хил дамнуулан илгээгээрэй.",
+    OnboardingDesc3:
+      "Илгээмжийнхээ бодит байршлыг хүссэн үедээ мэдэж, мэдээлэлтэй байгаарай.",
     Skip: "Алгасах",
     Continue: "Үргэлжлүүлэх",
     // Choose Role
@@ -581,7 +620,8 @@ const strings = new LocalizedStrings({
     NoOrdersFound: "Захиалга олдсонгүй",
     NoOrdersHereYet: "Энд одоогоор захиалга алга.",
     NoOrder: "Идэвхтэй захиалга алга",
-    NoOrdersFound1: "Таны тээвэрлэлтийн түүх хоосон байна. Анхны илгээмжийн хүсэлтээ үүсгэж эхэлнэ үү.",
+    NoOrdersFound1:
+      "Таны тээвэрлэлтийн түүх хоосон байна. Анхны илгээмжийн хүсэлтээ үүсгэж эхэлнэ үү.",
     TrackingID: "Хяналтын ID",
     StepXofY: "{1}-ээс {0}-р алхам дууссан",
     ViewDetails: "Дэлгэрэнгүй үзэх",
@@ -615,7 +655,8 @@ const strings = new LocalizedStrings({
     CarrierResponsePlural: "{0} жолоочийн хариу",
     DriverReplyPending: "Жолоочийн хариу хүлээгдэж байна",
     PendingReply: "Хариу хүлээгдэж байна",
-    DriverNotRepliedToCounter: "Жолооч таны эсрэг саналд хараахан хариу өгөөгүй байна.",
+    DriverNotRepliedToCounter:
+      "Жолооч таны эсрэг саналд хараахан хариу өгөөгүй байна.",
     ProposedAmount: "Санал болгож буй дүн",
     NoOffersAvailable: "Одоогоор таны зард санал ирээгүй байна.",
     FindingDriver: "Жолооч хайж байна",
@@ -771,7 +812,8 @@ const strings = new LocalizedStrings({
     EnterAccountNumberError: "Дансны дугаараа оруулна уу.",
     EnterIFSCCodeError: "Банкны IFSC кодыг оруулна уу.",
     BankSetup: "Банкны тохиргоо",
-    BankSetupSubtitle: "Хүргэлтийн төлбөр хүлээн авах банкны дансаа оруулна уу.",
+    BankSetupSubtitle:
+      "Хүргэлтийн төлбөр хүлээн авах банкны дансаа оруулна уу.",
     BankSecureNote: "Аюулгүй мэдээлэл",
     PayoutReady: "Төлбөр хүлээн авах дансны мэдээлэл",
     EnterBankName: "Банкны нэр оруулна уу",
@@ -779,7 +821,8 @@ const strings = new LocalizedStrings({
     EnterIFSCCode: "IFSC код оруулна уу",
     SaveAndFinish: "Хадгалах ба Дуусгах",
     VehicleSetup: "Тээврийн хэрэгслийн тохиргоо",
-    VehicleSetupSubtitle: "Баталгаажуулалтаа үргэлжлүүлэхийн тулд тээврийн хэрэгслийн мэдээлэл болон гэрчилгээгээ оруулна уу.",
+    VehicleSetupSubtitle:
+      "Баталгаажуулалтаа үргэлжлүүлэхийн тулд тээврийн хэрэгслийн мэдээлэл болон гэрчилгээгээ оруулна уу.",
     SelectVehicleType: "Тээврийн хэрэгслийн төрөл сонгох",
     EnterVehicleNumber: "Улсын дугаар оруулна уу",
     UploadVehicleRegistration: "Тээврийн хэрэгслийн гэрчилгээ байршуулах",
@@ -790,7 +833,8 @@ const strings = new LocalizedStrings({
     RemoveSelectedDocument: "Сонгосон баримтыг устгах",
     SelectVehicleTypeError: "Тээврийн хэрэгслийн төрлийг сонгоно уу.",
     EnterVehicleNumberError: "Тээврийн хэрэгслийн дугаарыг оруулна уу.",
-    UploadVehicleRegistrationError: "Тээврийн хэрэгслийн гэрчилгээг байршуулна уу.",
+    UploadVehicleRegistrationError:
+      "Тээврийн хэрэгслийн гэрчилгээг байршуулна уу.",
     SaveAndContinue: "Хадгалах ба үргэлжлүүлэх",
     Car: "Суудлын тэрэг",
     Bike: "Мотоцикл",
@@ -866,7 +910,8 @@ const strings = new LocalizedStrings({
     SelectLanguage: "Хэл сонгох",
     // Document Show
     MyDocuments: "Миний баримт бичиг",
-    DocumentShowSubtitle: "Бичиг баримт, тээврийн хэрэгсэл болон төлбөрийн мэдээллээ нэг дор шалгана уу.",
+    DocumentShowSubtitle:
+      "Бичиг баримт, тээврийн хэрэгсэл болон төлбөрийн мэдээллээ нэг дор шалгана уу.",
     DocumentUploaded: "Баримт бичиг байршуулсан",
     UploadIdentityDocuments: "Бичиг баримт байршуулах",
     SetUpVehicleDetails: "Тээврийн хэрэгслийн мэдээлэл оруулах",
@@ -894,8 +939,23 @@ const strings = new LocalizedStrings({
     Pending: "Хүлээгдэж буй",
     FetchingDetails: "Мэдээлэл татаж байна...",
     NoDataFound: "Мэдээлэл олдсонгүй",
-    InfoWillAppearHere: "Мэдээллийг боловсруулж дууссаны дараа энд харагдах болно.",
+    InfoWillAppearHere:
+      "Мэдээллийг боловсруулж дууссаны дараа энд харагдах болно.",
     TypeAMessagePlaceholder: "Мессеж бичих...",
+    QuickChatHello: "Сайн байна уу",
+    QuickChatPleaseCall: "Над руу залгана уу",
+    QuickChatThanks: "Баярлалаа",
+    QuickDriverWhereAreYou: "Та хаана байна?",
+    QuickDriverComingSoon: "Би удахгүй очно",
+    QuickDriverArriveSoon: "Би тун удахгүй очно",
+    QuickDriverPleaseWait: "Жаахан хүлээнэ үү",
+    QuickDriverReached: "Би ирлээ",
+    QuickUserWhereAreYou: "Та хаана байна?",
+    QuickUserWhenArrive: "Та хэзээ ирэх вэ?",
+    QuickUserCallMe: "Нэг залгаарай",
+    QuickUserIAmHere: "Би энд байна",
+    QuickUserWaitLittle: "Жаахан хүлээгээрэй",
+    QuickUserParcelSafe: "Илгээмжийг аюулгүй авч яваарай",
     // Location & Search
     Locating: "Байршил тогтоож байна...",
     UnknownLocation: "Үл мэдэгдэх байршил",
@@ -937,8 +997,10 @@ const strings = new LocalizedStrings({
     OrderCompleted: "Захиалга дууссан",
     OrderCancelled: "Захиалга цуцлагдсан",
     Processing: "Боловсруулж байна...",
-    EnterPickupOTPShared: "Хэрэглэгчийн хуваалцсан авах цэгийн OTP кодыг оруулна уу",
-    EnterDeliveryOTPShared: "Хэрэглэгчийн хуваалцсан хүргэлтийн OTP кодыг оруулна уу",
+    EnterPickupOTPShared:
+      "Хэрэглэгчийн хуваалцсан авах цэгийн OTP кодыг оруулна уу",
+    EnterDeliveryOTPShared:
+      "Хэрэглэгчийн хуваалцсан хүргэлтийн OTP кодыг оруулна уу",
     CancelOrder: "Захиалга цуцлах",
     NextStep: "Дараагийн алхам: {0}",
     FailedUpdateStatus: "Төлөв шинэчлэхэд алдаа гарлаа",
@@ -949,11 +1011,14 @@ const strings = new LocalizedStrings({
     AuthTokenNotFound: "Баталгаажуулах токен олдсонгүй",
     ParcelIDNotFound: "Илгээмжийн ID олдсонгүй",
     NoPartnerAccepted: "Жолооч олдсонгүй",
-    NoPartnerAcceptedDesc: "30 секундын дотор хүргэлтийн түнш зөвшөөрсөнгүй. Дахин хайх эсвэл буцах товчийг дарна уу.",
-    PleaseWaitFindingPartner: "Бид хамгийн ойрын түншийг хайж байх хооронд хүлээнэ үү",
+    NoPartnerAcceptedDesc:
+      "30 секундын дотор хүргэлтийн түнш зөвшөөрсөнгүй. Дахин хайх эсвэл буцах товчийг дарна уу.",
+    PleaseWaitFindingPartner:
+      "Бид хамгийн ойрын түншийг хайж байх хооронд хүлээнэ үү",
     CurrentLocation: "Одоогийн байршил",
     XSecLeft: "{0} сек үлдлээ",
-    LanguageSelectionTitle: "Бидэнтэй хамт аялалаа эхлүүлэхийн тулд хэлээ сонгоно уу.",
+    LanguageSelectionTitle:
+      "Бидэнтэй хамт аялалаа эхлүүлэхийн тулд хэлээ сонгоно уу.",
     LanguageSelectionUpdate: "Аппликешны хэлний тохиргоогоо шинэчилнэ үү.",
     StartPickup: "Ачилт эхлэх",
     MarkPickedUp: "Ачуулсан гэж тэмдэглэх",
@@ -962,13 +1027,17 @@ const strings = new LocalizedStrings({
     StatusUpdatedTo: "Амжилттай, Төлөв {0} болж өөрчлөгдлөө",
     CounterOfferReceived: "Эсрэг санал ирлээ",
     NewDeliveryRequest: "Хүргэлтийн шинэ хүсэлт",
-    CounterOfferMessage: "Хэрэглэгч эсрэг санал ирүүлсэн байна. Үзэж, хариу өгөхийн тулд товшино уу.",
+    CounterOfferMessage:
+      "Хэрэглэгч эсрэг санал ирүүлсэн байна. Үзэж, хариу өгөхийн тулд товшино уу.",
     UserOfferedNewPrice: "Хэрэглэгч шинэ үнэ санал болголоо",
-    ReviewAcceptDeliveryOffer: "Энэ хүргэлтийн саналыг баталгаажуулахын тулд шалгаад зөвшөөрнө үү.",
-    NewDeliveryRequestMessage: "Ойролцоо илгээмж авах газар байна. Дэлгэрэнгүйг үзэж, саналаа илгээхийн тулд доор товшино уу.",
+    ReviewAcceptDeliveryOffer:
+      "Энэ хүргэлтийн саналыг баталгаажуулахын тулд шалгаад зөвшөөрнө үү.",
+    NewDeliveryRequestMessage:
+      "Ойролцоо илгээмж авах газар байна. Дэлгэрэнгүйг үзэж, саналаа илгээхийн тулд доор товшино уу.",
     Later: "Дараа",
     UpdateAvailableTitle: "Шинэ хувилбар гарсан байна",
-    UpdateAvailableMessage: "Daina аппын шинэ хувилбар бэлэн боллоо. Шинэ боломжууд болон засваруудыг авахын тулд апп аа шинэчилнэ үү.",
+    UpdateAvailableMessage:
+      "Daina аппын шинэ хувилбар бэлэн боллоо. Шинэ боломжууд болон засваруудыг авахын тулд апп аа шинэчилнэ үү.",
     UpdateNow: "Одоо шинэчлэх",
     VersionUpdateText: "Одоогийн {0} - Шинэ {1}",
     Rating: "Үнэлгээ өгсөнд баярлалаа!",
@@ -984,14 +1053,17 @@ const strings = new LocalizedStrings({
     SlideToGoOffline: "Оффлайн болохын тулд гүйлгэ",
     VerificationTitle: "Бүртгэл баталгаажуулалт",
     VerificationSubtitle: "Таны бичиг баримтыг манай админ баг хянаж байна.",
-    VerificationDescription: "Энэхүү үйл явц нь ихэвчлэн 24-48 цаг үргэлжилдэг. Таны бүртгэл идэвхжсэн даруйд бид танд мэдэгдэх болно. Түр хүлээнэ үү!",
+    VerificationDescription:
+      "Энэхүү үйл явц нь ихэвчлэн 24-48 цаг үргэлжилдэг. Таны бүртгэл идэвхжсэн даруйд бид танд мэдэгдэх болно. Түр хүлээнэ үү!",
     VerificationPending: "Баталгаажуулалт хүлээгдэж байна",
     InProgress: "Явц дунд",
     PendingApproval: "ЗӨВШӨӨРӨЛ ХҮЛЭЭЖ БАЙНА",
-    VerificationPendingDesc: "Таны хүсэлтийг хянаж дуусаж байна. Бэлэн болох үед бид танд мэдэгдэх болно.",
+    VerificationPendingDesc:
+      "Таны хүсэлтийг хянаж дуусаж байна. Бэлэн болох үед бид танд мэдэгдэх болно.",
     ReviewProgress: "Хяналтын явц",
     DocumentsUploaded: "Бичиг баримт илгээгдсэн",
-    DocumentsUploadedDesc: "Иргэний үнэмлэх, жолооны үнэмлэх болон тээврийн хэрэгслийн бичиг баримт",
+    DocumentsUploadedDesc:
+      "Иргэний үнэмлэх, жолооны үнэмлэх болон тээврийн хэрэгслийн бичиг баримт",
     AdminVerification: "Админ хяналт",
     AdminVerificationDesc: "Илгээсэн бичиг баримтыг гараар шалгаж байна",
     BackgroundCheck: "Арын шалгалт",
@@ -999,26 +1071,32 @@ const strings = new LocalizedStrings({
     ReadyForOrders: "Захиалга авахад бэлэн",
     ReadyForOrdersDesc: "Илгээмж хүргэх хүсэлтүүд авах боломжтой",
     DidYouKnow: "Та мэдэх үү?",
-    VerificationTip: "Бүрэн гүйцэд профайлыг 3 дахин хурдан баталгаажуулдаг. Зурагнууд тань тод, уншигдахуйц байгаа эсэхийг шалгаарай.",
+    VerificationTip:
+      "Бүрэн гүйцэд профайлыг 3 дахин хурдан баталгаажуулдаг. Зурагнууд тань тод, уншигдахуйц байгаа эсэхийг шалгаарай.",
     RefreshStatus: "Төлөв шинэчлэх",
     DeleteAccount: "Бүртгэл устгах",
     DeleteAccountConfirmTitle: "Бүртгэл устгах",
-    DeleteAccountConfirmMessage: "Та бүртгэлээ устгахдаа итгэлтэй байна уу? Энэ үйлдлийг буцаах боломжгүй бөгөөд таны бүх мэдээлэл бүрмөсөн устах болно.",
+    DeleteAccountConfirmMessage:
+      "Та бүртгэлээ устгахдаа итгэлтэй байна уу? Энэ үйлдлийг буцаах боломжгүй бөгөөд таны бүх мэдээлэл бүрмөсөн устах болно.",
     DeletingAccount: "Бүртгэл устгаж байна...",
     OfferSent: "Санал илгээсэн",
-    WaitingForUserResponse: "Хэрэглэгч таны саналд хараахан хариу өгөөгүй байна.",
+    WaitingForUserResponse:
+      "Хэрэглэгч таны саналд хараахан хариу өгөөгүй байна.",
     OfferPending: "Санал хүлээгдэж байна",
     ArrivedAtPickup: "📍 Та ирлээ! Хэрэглэгч авах цэгт ойрхон байна.",
     ArrivedAtDropoff: "📍 Та хүргэх цэгт ирлээ!",
     DriverArrivedAtPickup: "📍 Жолооч авах цэг дээр ирлээ.",
     DriverArrivedAtDropoff: "📍 Жолооч хүргэх цэг дээр ирлээ.",
-    PendingOfferMessage: "Жолооч санал ирүүлсэн байна. Дэлгэрэнгүйг шалгаад хариугаа илгээнэ үү.",
+    PendingOfferMessage:
+      "Жолооч санал ирүүлсэн байна. Дэлгэрэнгүйг шалгаад хариугаа илгээнэ үү.",
     CheckOffer: "Санал шалгах",
     AcceptRejectReply: "Зөвшөөрөх / Татгалзах хариу",
     DriverVerificationDetails: "Жолоочийн баталгаажуулалтын мэдээлэл",
     SecurityAndVerification: "Аюулгүй байдал ба баталгаажуулалт",
-    VerifiedProfileVehicleDocs: "Баталгаажсан профайл, тээврийн хэрэгсэл, баримт бичгийг үзэх",
-    VerifiedProfileVehicleDocsDesc: "Энэхүү жолоочийн профайл нь аюулгүй байдал болон илгээмжийн найдвартай байдлын хувьд бүрэн баталгаажсан болно.",
+    VerifiedProfileVehicleDocs:
+      "Баталгаажсан профайл, тээврийн хэрэгсэл, баримт бичгийг үзэх",
+    VerifiedProfileVehicleDocsDesc:
+      "Энэхүү жолоочийн профайл нь аюулгүй байдал болон илгээмжийн найдвартай байдлын хувьд бүрэн баталгаажсан болно.",
     AppRegisteredName: "Аппликэйшнд бүртгэлтэй нэр",
     VehicleSetupRegistration: "Тээврийн хэрэгслийн тохиргоо ба бүртгэл",
     BankDetailsHolderName: "Банкны мэдээлэл (Данс эзэмшигчийн нэр)",
@@ -1033,9 +1111,7 @@ const strings = new LocalizedStrings({
 
     Messages: "Мессежүүд",
     Reply: "Хариулах",
-    ViewAll: "Бүгдийг харах"
-
-
+    ViewAll: "Бүгдийг харах",
   },
 });
 
