@@ -1,4 +1,10 @@
-import React, { useMemo, useRef, useState, useEffect, useCallback } from "react";
+import React, {
+  useMemo,
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import {
   View,
   Text,
@@ -10,8 +16,13 @@ import {
   Animated,
   Platform,
 } from "react-native";
-import ReAnimated, { FadeInDown, FadeIn, Layout } from "react-native-reanimated";
-import { SafeAreaView, } from "react-native-safe-area-context";
+import Icon from "react-native-vector-icons/Ionicons";
+import ReAnimated, {
+  FadeInDown,
+  FadeIn,
+  Layout,
+} from "react-native-reanimated";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import StatusBarComponent from "../../../../compoent/StatusBarCompoent";
 import HomeHeaderBar from "../../../../compoent/HomeHeaderBar";
@@ -33,15 +44,24 @@ import useNotificationCount from "../../../../hooks/useNotificationCount";
 const DeliveryHome = () => {
   const ctx = useDeliveryContext();
   if (!ctx) return null;
-  const { isLoading, requests, coords, newOrderNotification, fetchAvailableRequests, isOnline, setIsOnline, isConnected } = ctx;
+  const {
+    isLoading,
+    requests,
+    coords,
+    newOrderNotification,
+    fetchAvailableRequests,
+    isOnline,
+    setIsOnline,
+    isConnected,
+  } = ctx;
 
   const [counts, setCounts] = useState<any>(null);
   const [refreshing, setRefreshing] = useState(false);
-  const { notificationCount, markAllNotificationsRead } = useNotificationCount();
-
+  const { notificationCount, markAllNotificationsRead } =
+    useNotificationCount();
 
   const fetchCounts = async () => {
-    const res = await GetDashboardCounts(() => { });
+    const res = await GetDashboardCounts(() => {});
     if (res && (res.status === 1 || res.status === "1")) {
       setCounts(res);
     }
@@ -49,14 +69,9 @@ const DeliveryHome = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await Promise.all([
-      fetchCounts(),
-      fetchAvailableRequests()
-    ]);
+    await Promise.all([fetchCounts(), fetchAvailableRequests()]);
     setRefreshing(false);
   };
-
-
 
   const listSlide = useRef(new Animated.Value(0)).current;
 
@@ -82,13 +97,13 @@ const DeliveryHome = () => {
   const filteredRequests = useMemo(() => {
     if (!requests || requests?.length === 0) return [];
     return requests.filter(
-      (item: any) => item.deliveryStatus?.toLowerCase() === "pending",
+      (item: any) => item.deliveryStatus?.toLowerCase() === "pending"
     );
   }, [requests]);
   useFocusEffect(
     useCallback(() => {
       const fetchCounts = async () => {
-        const res = await GetDashboardCounts(() => { });
+        const res = await GetDashboardCounts(() => {});
         if (res && (res?.status === 1 || res.status === "1")) {
           setCounts(res);
         }
@@ -101,7 +116,7 @@ const DeliveryHome = () => {
       };
     }, [])
   );
-  const { locationRef, address, currentlocation } = useDashboard()
+  const { locationRef, address, currentlocation } = useDashboard();
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />
@@ -136,10 +151,11 @@ const DeliveryHome = () => {
           marginBottom: Platform.OS === "ios" ? 20 : 10,
         }}
       >
-
         <Animated.View
           style={{
-            flex: 1, transform: [{ translateX }], opacity: fade,
+            flex: 1,
+            transform: [{ translateX }],
+            opacity: fade,
           }}
         >
           <FlatList
@@ -153,7 +169,6 @@ const DeliveryHome = () => {
                   isOnline={isOnline}
                   setIsOnline={setIsOnline}
                 />
-
 
                 <View style={styles.container1}>
                   {/* Earnings */}
@@ -176,8 +191,7 @@ const DeliveryHome = () => {
                       style={{
                         color: "black",
                         fontSize: 18,
-                        fontFamily: font.MonolithRegular
-                        ,
+                        fontFamily: font.MonolithRegular,
                         marginTop: 5,
                       }}
                     >
@@ -196,7 +210,6 @@ const DeliveryHome = () => {
                         height: 35,
                         width: 35,
                         tintColor: "#7B3F00",
-
                       }}
                       resizeMode="contain"
                     />
@@ -205,8 +218,7 @@ const DeliveryHome = () => {
                       style={{
                         color: "black",
                         fontSize: 18,
-                        fontFamily: font.MonolithRegular
-                        ,
+                        fontFamily: font.MonolithRegular,
                         marginTop: 5,
                       }}
                     >
@@ -226,7 +238,6 @@ const DeliveryHome = () => {
                         height: 35,
                         width: 35,
                         tintColor: "#7B3F00",
-
                       }}
                       resizeMode="contain"
                     />
@@ -235,8 +246,8 @@ const DeliveryHome = () => {
                       style={{
                         color: "black",
 
-                        fontSize: 18, fontFamily: font.MonolithRegular
-                        ,
+                        fontSize: 18,
+                        fontFamily: font.MonolithRegular,
                         marginTop: 5,
                       }}
                     >
@@ -265,8 +276,7 @@ const DeliveryHome = () => {
                         color: "black",
 
                         fontSize: 18,
-                        fontFamily: font.MonolithRegular
-                        ,
+                        fontFamily: font.MonolithRegular,
                         marginTop: 5,
                       }}
                     >
@@ -276,13 +286,18 @@ const DeliveryHome = () => {
                 </View>
 
                 <View style={styles.ordersHeader}>
-                  <Text style={styles.sectionTitle1}> Nearby {strings.Order}</Text>
+                  <Text style={styles.sectionTitle1}>
+                    {" "}
+                    Nearby {strings.Order}
+                  </Text>
                   <Text
-
                     onPress={() => {
-                      navigation.navigate(ScreenNameEnum.AllOrder)
+                      navigation.navigate(ScreenNameEnum.AllOrder);
                     }}
-                    style={[styles.sectionTitle1, { textAlign: "right" }]}>{strings?.ViewAll}</Text>
+                    style={[styles.sectionTitle1, { textAlign: "right" }]}
+                  >
+                    {strings?.ViewAll}
+                  </Text>
                 </View>
               </>
             }
@@ -293,15 +308,26 @@ const DeliveryHome = () => {
             style={{
               marginTop: 12,
             }}
-            keyExtractor={(item: any) => String(item.id ?? item.parcelId ?? item.trackingId)}
+            keyExtractor={(item: any) =>
+              String(item.id ?? item.parcelId ?? item.trackingId)
+            }
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 20 }}
             initialNumToRender={8}
             maxToRenderPerBatch={8}
             windowSize={7}
             renderItem={({ item, index }) => {
+              const pickupAddress =
+                item?.pickupLocation ||
+                item?.pickup?.location ||
+                strings.Unknown;
+              const dropAddress =
+                item?.dropLocation || item?.drop?.location || strings.Unknown;
+              const orderCode = item?.trackingId || item?.id;
               return (
-                <ReAnimated.View entering={FadeInDown.delay(Math.min(index, 8) * 60)}>
+                <ReAnimated.View
+                  entering={FadeInDown.delay(Math.min(index, 8) * 60)}
+                >
                   <TouchableOpacity
                     style={styles.card}
                     activeOpacity={0.85}
@@ -311,6 +337,7 @@ const DeliveryHome = () => {
                       });
                     }}
                   >
+                    <View style={styles.cardAccent} />
                     <View style={styles.cardTop}>
                       <View style={styles.iconBox}>
                         <Image
@@ -320,33 +347,83 @@ const DeliveryHome = () => {
                         />
                       </View>
 
-                      <Text style={[styles.cardId, styles.bold]}>
-                        #{item?.trackingId || item?.id}
-                      </Text>
-                      <Text style={styles.bulletSeparator}>•</Text>
-                      <Text style={styles.cardDate}>
-                        {item?.date}
-                      </Text>
+                      <View style={styles.cardHeaderText}>
+                        <Text style={styles.cardMetaLabel}>
+                          {strings.Order || "Order"}
+                        </Text>
+                        <View style={styles.cardIdRow}>
+                          <Text
+                            style={[styles.cardId, styles.bold]}
+                            numberOfLines={1}
+                          >
+                            #{orderCode}
+                          </Text>
+                          {item?.date ? (
+                            <>
+                              <Text style={styles.bulletSeparator}>•</Text>
+                              <Text style={styles.cardDate} numberOfLines={1}>
+                                {item?.date}
+                              </Text>
+                            </>
+                          ) : null}
+                        </View>
+                      </View>
 
-                      <View style={{ flex: 1 }} />
+                      <View style={styles.cardChevron}>
+                        <Icon
+                          name="chevron-forward"
+                          size={16}
+                          color="#64748B"
+                        />
+                      </View>
                     </View>
 
                     <View style={styles.routeRow}>
+                      <View style={styles.routeHeader}>
+                        <Text style={styles.routeTitle}>
+                          {strings.PickupAndDrop || "Pickup & Drop"}
+                        </Text>
+                        <View style={styles.routeBadge}>
+                          <Icon
+                            name="navigate-outline"
+                            size={13}
+                            color="#64748B"
+                          />
+                        </View>
+                      </View>
                       <View style={styles.timelineContainer}>
                         <View style={styles.timelineDotStart} />
                         <View style={styles.timelineLine} />
                         <View style={styles.timelineDotEnd} />
                       </View>
-                      <View style={{ flex: 1, marginLeft: 12 }}>
-                        <Text style={styles.label}>{strings?.From}</Text>
-                        <Text style={styles.value}  >
-                          {item?.pickupLocation || item?.pickup?.location}
+                      <View style={styles.routeContent}>
+                        <View style={styles.labelRow}>
+                          <Icon
+                            name="radio-button-on"
+                            size={10}
+                            color="#FFCC00"
+                          />
+                          <Text style={styles.label}>{strings?.From}</Text>
+                        </View>
+                        <Text style={styles.value} numberOfLines={2}>
+                          {pickupAddress}
                         </Text>
-                        <Text style={[styles.label, { marginTop: 12 }]}>{strings?.To}</Text>
-                        <Text style={styles.value} >
-                          {item?.dropLocation || item?.drop?.location}
+
+                        <View style={[styles.labelRow, styles.dropLabelRow]}>
+                          <Icon name="location" size={11} color="#10B981" />
+                          <Text style={styles.label}>{strings?.To}</Text>
+                        </View>
+                        <Text style={styles.value} numberOfLines={2}>
+                          {dropAddress}
                         </Text>
                       </View>
+                    </View>
+
+                    <View style={styles.cardFooter}>
+                      <Text style={styles.footerText} numberOfLines={1}>
+                        {strings.ViewDetails || "View Details"}
+                      </Text>
+                      <Icon name="arrow-forward" size={15} color="#111827" />
                     </View>
                   </TouchableOpacity>
                 </ReAnimated.View>
@@ -356,7 +433,10 @@ const DeliveryHome = () => {
               <View style={styles.emptyWrap}>
                 <View style={styles.illustrationWrap}>
                   <View style={styles.illustrationBg} />
-                  <Image source={imageIndex.ordePracle} style={styles.emptyIcon} />
+                  <Image
+                    source={imageIndex.ordePracle}
+                    style={styles.emptyIcon}
+                  />
                 </View>
                 <Text style={styles.emptyTitle}>{strings.NoOrder}</Text>
               </View>

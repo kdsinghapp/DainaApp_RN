@@ -6,6 +6,7 @@ export const styles = StyleSheet.create({
     flex: 1,
     padding: 12,
     backgroundColor: "#fff",
+
   },
 
   topRow: {
@@ -32,12 +33,10 @@ export const styles = StyleSheet.create({
   pillLeftText: {
     fontSize: 16,
     fontFamily: font.MonolithRegular,
-
   },
   pillRightText: {
     fontSize: 16,
     fontFamily: font.MonolithRegular,
-
   },
   knob: {
     position: "absolute",
@@ -64,13 +63,12 @@ export const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     color: "black",
-    fontFamily: font.MonolithRegular
-
+    fontFamily: font.MonolithRegular,
   },
   sectionTitle1: {
     fontSize: 15,
     color: "black",
-    fontFamily: font.MonolithRegular
+    fontFamily: font.MonolithRegular,
   },
 
   tabs: {
@@ -82,8 +80,7 @@ export const styles = StyleSheet.create({
     height: 55,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 10
-
+    marginTop: 10,
   },
   tab: {
     flex: 1,
@@ -100,18 +97,16 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.06,
     shadowRadius: 2,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   tabText: {
     fontSize: 14,
-    color: "#1C1B1B", fontFamily: font.MonolithRegular
-
-
+    color: "#1C1B1B",
+    fontFamily: font.MonolithRegular,
   },
   tabTextActive: {
     color: "black",
-    fontFamily: font.MonolithRegular
-    ,
+    fontFamily: font.MonolithRegular,
     fontSize: 15,
   },
   container1: {
@@ -126,7 +121,6 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#FFCC00",
     marginHorizontal: 6,
-
   },
   icon: {
     height: 28,
@@ -136,46 +130,74 @@ export const styles = StyleSheet.create({
   title: {
     color: "black",
     fontSize: 14,
-    marginTop: 8
+    marginTop: 8,
   },
   card: {
     backgroundColor: "#fff",
-    borderRadius: 18,
+    borderRadius: 20,
     padding: 16,
-    marginBottom: 14,
+    marginBottom: 12,
     borderWidth: 1,
     borderColor: "#E2E8F0",
+    overflow: "hidden",
     ...Platform.select({
       ios: {
         shadowColor: "#0F172A",
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.02,
-        shadowRadius: 8,
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.06,
+        shadowRadius: 16,
       },
 
     }),
+  },
+  cardAccent: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 4,
+    backgroundColor: "#FFCC00",
   },
   cardTop: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 14,
+    marginTop: 2,
   },
   iconBox: {
-    width: 34,
-    height: 34,
-    borderRadius: 10,
+    width: 44,
+    height: 44,
+    borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
-    marginRight: 10,
-    backgroundColor: "#FFF9E6",
+    marginRight: 12,
+    backgroundColor: "#FFF7CC",
+    borderWidth: 1,
+    borderColor: "#F4D45E",
+  },
+  cardHeaderText: {
+    flex: 1,
+    minWidth: 0,
+  },
+  cardMetaLabel: {
+    color: "#64748B",
+    fontSize: 10,
+    fontFamily: font.MonolithRegular,
+    textTransform: "uppercase",
+    marginBottom: 3,
+  },
+  cardIdRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    minWidth: 0,
   },
   cardId: {
-    fontSize: 15,
+    flexShrink: 1,
+    fontSize: 16,
     color: "#0F172A",
   },
   bold: {
     fontFamily: font.MonolithRegular,
-
   },
   bulletSeparator: {
     marginHorizontal: 8,
@@ -184,39 +206,98 @@ export const styles = StyleSheet.create({
     fontFamily: font.MonolithRegular,
   },
   cardDate: {
+    flexShrink: 1,
     fontSize: 12,
     color: "#64748B",
     fontFamily: font.MonolithRegular,
   },
+  cardChevron: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: "#F8FAFC",
+    borderWidth: 1,
+    borderColor: "#EEF2F7",
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 8,
+  },
   timelineContainer: {
-    width: 12,
+    width: 14,
     alignItems: "center",
     justifyContent: "space-between",
-    paddingVertical: 4,
-    height: 86,
+    paddingVertical: 3,
+    height: 92,
+    marginTop: 2,
   },
   timelineDotStart: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 9,
+    height: 9,
+    borderRadius: 5,
     backgroundColor: "#FFCC00",
   },
   timelineLine: {
     flex: 1,
-    width: 1.5,
-    backgroundColor: "#E2E8F0",
-    marginVertical: 4,
+    width: 2,
+    borderRadius: 1,
+    backgroundColor: "#CBD5E1",
+    marginVertical: 5,
   },
   timelineDotEnd: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: 9,
+    height: 9,
+    borderRadius: 5,
     backgroundColor: "#10B981",
   },
   routeRow: {
     flexDirection: "row",
     alignItems: "flex-start",
-    marginLeft: 11,
+    backgroundColor: "#F8FAFC",
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: "#F1F5F9",
+    paddingHorizontal: 14,
+    paddingTop: 38,
+    paddingBottom: 14,
+    position: "relative",
+    marginVertical: 4,
+  },
+  routeHeader: {
+    position: "absolute",
+    top: 11,
+    left: 14,
+    right: 14,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  routeTitle: {
+    color: "#0F172A",
+    fontFamily: font.MonolithRegular,
+    fontSize: 12,
+  },
+  routeBadge: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: "#FFFFFF",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#EEF2F7",
+  },
+  routeContent: {
+    flex: 1,
+    marginLeft: 14,
+  },
+  labelRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    marginBottom: 4,
+  },
+  dropLabelRow: {
+    marginTop: 15,
   },
   label: {
     fontSize: 11,
@@ -229,8 +310,24 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     color: "#0F172A",
     fontFamily: font.MonolithRegular,
-    marginTop: 2,
-    lineHeight: 18,
+    lineHeight: 19,
+  },
+  cardFooter: {
+    alignSelf: "flex-end",
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#FFCC00",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    paddingHorizontal: 14,
+    marginTop: 12,
+  },
+  footerText: {
+    fontSize: 12,
+    color: "#111827",
+    fontFamily: font.MonolithRegular,
   },
   statusRow: {
     flexDirection: "row",

@@ -1,4 +1,10 @@
-import React, { useMemo, useRef, useState, useEffect, useCallback } from "react";
+import React, {
+  useMemo,
+  useRef,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import {
   View,
   Text,
@@ -10,8 +16,9 @@ import {
   Animated,
   ActivityIndicator,
 } from "react-native";
-import ReAnimated, { FadeInDown, } from "react-native-reanimated";
-import { SafeAreaView, } from "react-native-safe-area-context";
+import Icon from "react-native-vector-icons/Ionicons";
+import ReAnimated, { FadeInDown } from "react-native-reanimated";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import StatusBarComponent from "../../../../compoent/StatusBarCompoent";
 import imageIndex from "../../../../assets/imageIndex";
@@ -29,11 +36,19 @@ import OfferAcceptedModal from "../../../../compoent/OfferAcceptedModal";
 const AllOrder = () => {
   const ctx = useDeliveryContext();
   if (!ctx) return null;
-  const { isLoading, requests, coords, newOrderNotification, fetchAvailableRequests, isOnline, setIsOnline, isConnected } = ctx;
+  const {
+    isLoading,
+    requests,
+    coords,
+    newOrderNotification,
+    fetchAvailableRequests,
+    isOnline,
+    setIsOnline,
+    isConnected,
+  } = ctx;
 
   const [counts, setCounts] = useState<any>(null);
   const [refreshing, setRefreshing] = useState(false);
-
 
   const fetchCounts = async () => {
     const res = await GetDashboardCounts(() => { });
@@ -44,10 +59,7 @@ const AllOrder = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await Promise.all([
-      fetchCounts(),
-      fetchAvailableRequests()
-    ]);
+    await Promise.all([fetchCounts(), fetchAvailableRequests()]);
     setRefreshing(false);
   };
 
@@ -84,7 +96,7 @@ const AllOrder = () => {
   const filteredRequests = useMemo(() => {
     if (!requests || requests?.length === 0) return [];
     return requests.filter(
-      (item: any) => item.deliveryStatus?.toLowerCase() === "pending",
+      (item: any) => item.deliveryStatus?.toLowerCase() === "pending"
     );
   }, [requests]);
   useFocusEffect(
@@ -104,10 +116,12 @@ const AllOrder = () => {
     }, [])
   );
   return (
-    <SafeAreaView style={{
-      flex: 1,
-      backgroundColor: "#fff",
-    }}>
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: "#fff",
+      }}
+    >
       <StatusBarComponent />
       <NewOrderNotificationModal />
       <CustomHeader label={strings.Order} />
@@ -116,20 +130,20 @@ const AllOrder = () => {
       <View
         style={{
           flex: 1,
-          marginHorizontal: 12
-
+          marginHorizontal: 12,
         }}
       >
-
-        {isLoading ? <ActivityIndicator
-          color={color.primary}
-          size="large"
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        /> : (
+        {isLoading ? (
+          <ActivityIndicator
+            color={color.primary}
+            size="large"
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          />
+        ) : (
           <FlatList
             data={filteredRequests}
             style={{
@@ -138,15 +152,24 @@ const AllOrder = () => {
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
-            keyExtractor={(item: any) => String(item.id ?? item.parcelId ?? item.trackingId)}
+            keyExtractor={(item: any) =>
+              String(item.id ?? item.parcelId ?? item.trackingId)
+            }
             showsVerticalScrollIndicator={false}
             initialNumToRender={8}
             maxToRenderPerBatch={8}
             windowSize={7}
-
             renderItem={({ item, index }) => {
+              const pickupAddress =
+                item?.pickupLocation ||
+                item?.pickup?.location ||
+                strings.Unknown;
+              const dropAddress =
+                item?.dropLocation || item?.drop?.location || strings.Unknown;
+              const orderCode = item?.trackingId || item?.id;
               return (
-                <View  >
+                <View
+                >
                   <TouchableOpacity
                     style={styles.card}
                     activeOpacity={0.85}
@@ -156,6 +179,7 @@ const AllOrder = () => {
                       });
                     }}
                   >
+                    <View style={styles.cardAccent} />
                     <View style={styles.cardTop}>
                       <View style={styles.iconBox}>
                         <Image
@@ -165,31 +189,83 @@ const AllOrder = () => {
                         />
                       </View>
 
-                      <Text style={[styles.cardId, styles.bold]}>
-                        #{item?.trackingId || item?.id}
-                      </Text>
-                      <Text style={styles.bulletSeparator}>•</Text>
-                      <Text style={styles.cardDate}>
-                        {item?.date}
-                      </Text>
-                      <View style={{ flex: 1 }} />
+                      <View style={styles.cardHeaderText}>
+                        <Text style={styles.cardMetaLabel}>
+                          {strings.Order || "Order"}
+                        </Text>
+                        <View style={styles.cardIdRow}>
+                          <Text
+                            style={[styles.cardId, styles.bold]}
+                            numberOfLines={1}
+                          >
+                            #{orderCode}
+                          </Text>
+                          {item?.date ? (
+                            <>
+                              <Text style={styles.bulletSeparator}>•</Text>
+                              <Text style={styles.cardDate} numberOfLines={1}>
+                                {item?.date}
+                              </Text>
+                            </>
+                          ) : null}
+                        </View>
+                      </View>
+
+                      <View style={styles.cardChevron}>
+                        <Icon
+                          name="chevron-forward"
+                          size={16}
+                          color="#64748B"
+                        />
+                      </View>
                     </View>
+
                     <View style={styles.routeRow}>
+                      <View style={styles.routeHeader}>
+                        <Text style={styles.routeTitle}>
+                          {strings.PickupAndDrop || "Pickup & Drop"}
+                        </Text>
+                        <View style={styles.routeBadge}>
+                          <Icon
+                            name="navigate-outline"
+                            size={13}
+                            color="#64748B"
+                          />
+                        </View>
+                      </View>
                       <View style={styles.timelineContainer}>
                         <View style={styles.timelineDotStart} />
                         <View style={styles.timelineLine} />
                         <View style={styles.timelineDotEnd} />
                       </View>
-                      <View style={{ flex: 1, marginLeft: 12 }}>
-                        <Text style={styles.label}>{strings?.From}</Text>
-                        <Text style={styles.value}  >
-                          {item?.pickupLocation || item?.pickup?.location}
+                      <View style={styles.routeContent}>
+                        <View style={styles.labelRow}>
+                          <Icon
+                            name="radio-button-on"
+                            size={10}
+                            color="#FFCC00"
+                          />
+                          <Text style={styles.label}>{strings?.From}</Text>
+                        </View>
+                        <Text style={styles.value} numberOfLines={2}>
+                          {pickupAddress}
                         </Text>
-                        <Text style={[styles.label, { marginTop: 12 }]}>{strings?.To}</Text>
-                        <Text style={styles.value} >
-                          {item?.dropLocation || item?.drop?.location}
+
+                        <View style={[styles.labelRow, styles.dropLabelRow]}>
+                          <Icon name="location" size={11} color="#10B981" />
+                          <Text style={styles.label}>{strings?.To}</Text>
+                        </View>
+                        <Text style={styles.value} numberOfLines={2}>
+                          {dropAddress}
                         </Text>
                       </View>
+                    </View>
+
+                    <View style={styles.cardFooter}>
+                      <Text style={styles.footerText} numberOfLines={1}>
+                        {strings.ViewDetails || "View Details"}
+                      </Text>
+                      <Icon name="arrow-forward" size={15} color="#111827" />
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -199,14 +275,16 @@ const AllOrder = () => {
               <View style={styles.emptyWrap}>
                 <View style={styles.illustrationWrap}>
                   <View style={styles.illustrationBg} />
-                  <Image source={imageIndex.ordePracle} style={styles.emptyIcon} />
+                  <Image
+                    source={imageIndex.ordePracle}
+                    style={styles.emptyIcon}
+                  />
                 </View>
                 <Text style={styles.emptyTitle}>{strings.NoOrder}</Text>
               </View>
             }
           />
         )}
-
       </View>
     </SafeAreaView>
   );
