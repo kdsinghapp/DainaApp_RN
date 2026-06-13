@@ -489,7 +489,7 @@ const strings = new LocalizedStrings({
     Later: "Later",
     UpdateAvailableTitle: "Update Available",
     UpdateAvailableMessage:
-      "A new version of Daina is available. Please update the app for the latest features and bug fixes.",
+      "A newer, faster, and more stable version of Daina is ready. Update now to get the latest features and improvements.",
     UpdateNow: "Update Now",
     VersionUpdateText: "Current {0} - Latest {1}",
     ViewOrder: "View order",
@@ -1040,7 +1040,7 @@ const strings = new LocalizedStrings({
     Later: "Дараа",
     UpdateAvailableTitle: "Шинэ хувилбар гарсан байна",
     UpdateAvailableMessage:
-      "Daina аппын шинэ хувилбар бэлэн боллоо. Шинэ боломжууд болон засваруудыг авахын тулд апп аа шинэчилнэ үү.",
+      "Daina аппын илүү шинэ, хурдан, тогтвортой хувилбар бэлэн боллоо. Шинэ боломжууд болон сайжруулалтыг авахын тулд одоо шинэчилнэ үү.",
     UpdateNow: "Одоо шинэчлэх",
     VersionUpdateText: "Одоогийн {0} - Шинэ {1}",
     Rating: "Үнэлгээ өгсөнд баярлалаа!",

@@ -1,6 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
+  Image,
   Linking,
   Modal,
   Platform,
@@ -9,200 +10,266 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import DeviceInfo from "react-native-device-info";
+import { SafeAreaView } from "react-native-safe-area-context";
+import VersionCheck from "react-native-version-check";
 import strings from "../localization/Localization";
 import font from "../theme/font";
+import imageIndex from "../assets/imageIndex";
 
 const IOS_APP_ID = "6777900970";
+const IOS_BUNDLE_ID = "com.daina.app";
 const IOS_STORE_URL = `https://apps.apple.com/in/app/daina/id${IOS_APP_ID}`;
-const ANDROID_PACKAGE_NAME = "com.DainaApp";
-const ANDROID_STORE_URL = `https://play.google.com/store/apps/details?id=${ANDROID_PACKAGE_NAME}`;
-const ANDROID_VERSION_URL = "";
 const ENABLE_UPDATE_CHECK_IN_DEV = false;
+const DEBUG_FORCE_SHOW = false;
 
-type UpdateInfo = {
-  latestVersion: string;
-  storeUrl: string;
+const cleanVersion = (version: string) => version.replace(/[^0-9.]/g, "");
+
+const isValidVersion = (version?: string) => {
+  const cleaned = cleanVersion(version || "");
+  return Boolean(cleaned && /\d/.test(cleaned) && cleaned !== "0.0.0");
 };
 
-const getCurrentAppVersion = () => DeviceInfo.getVersion() || "0.0.0";
+const isVersionNewer = (current: string, latest: string) => {
+  if (!isValidVersion(current) || !isValidVersion(latest)) return false;
 
-const compareVersions = (currentVersion: string, latestVersion: string) => {
-  const currentParts = currentVersion.split(".").map((part) => Number(part) || 0);
-  const latestParts = latestVersion.split(".").map((part) => Number(part) || 0);
+  const currentParts = cleanVersion(current).split(".").map(Number);
+  const latestParts = cleanVersion(latest).split(".").map(Number);
   const length = Math.max(currentParts.length, latestParts.length);
 
   for (let index = 0; index < length; index += 1) {
-    const current = currentParts[index] ?? 0;
-    const latest = latestParts[index] ?? 0;
-    if (latest > current) return 1;
-    if (latest < current) return -1;
+    const currentPart = currentParts[index] || 0;
+    const latestPart = latestParts[index] || 0;
+
+    if (latestPart > currentPart) return true;
+    if (currentPart > latestPart) return false;
   }
 
-  return 0;
+  return false;
 };
 
-const fetchIosUpdateInfo = async (): Promise<UpdateInfo | null> => {
-  const response = await fetch(`https://itunes.apple.com/lookup?id=${IOS_APP_ID}&country=in`, {
-    headers: { "Cache-Control": "no-cache" },
-  });
+const fetchAppStoreVersion = async () => {
+  const response = await fetch(
+    `https://itunes.apple.com/lookup?id=${IOS_APP_ID}&country=in&timestamp=${Date.now()}`,
+  );
+
+  if (!response.ok) return null;
+
   const data = await response.json();
   const app = data?.results?.[0];
 
-  if (!app?.version) return null;
+  if (!app?.version || app?.bundleId !== IOS_BUNDLE_ID) return null;
 
   return {
-    latestVersion: String(app.version),
+    latestVersion: cleanVersion(String(app.version)),
     storeUrl: app.trackViewUrl || IOS_STORE_URL,
   };
 };
 
-const fetchAndroidUpdateInfo = async (): Promise<UpdateInfo | null> => {
-  if (!ANDROID_VERSION_URL) return null;
-
-  const response = await fetch(ANDROID_VERSION_URL, {
-    headers: { "Cache-Control": "no-cache" },
-  });
-  const data = await response.json();
-  const version = data?.android ?? data?.version;
-
-  if (!version) return null;
-
-  return {
-    latestVersion: String(version),
-    storeUrl: ANDROID_STORE_URL,
-  };
-};
-
 const AppUpdateModal = () => {
-  const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
-  const [checking, setChecking] = useState(false);
-  const currentAppVersion = useMemo(() => getCurrentAppVersion(), []);
+  const [visible, setVisible] = useState(false);
+  const [storeUrl, setStoreUrl] = useState(IOS_STORE_URL);
+  const [loading, setLoading] = useState(false);
+  const [latestVersion, setLatestVersion] = useState("");
+  const [currentVersion, setCurrentVersion] = useState("");
 
-  const storeUrl = useMemo(
-    () => updateInfo?.storeUrl || (Platform.OS === "ios" ? IOS_STORE_URL : ANDROID_STORE_URL),
-    [updateInfo?.storeUrl],
-  );
-
-  useEffect(() => {
-    let cancelled = false;
-
-    const checkForUpdate = async () => {
-      if (__DEV__ && !ENABLE_UPDATE_CHECK_IN_DEV) return;
-      setChecking(true);
-
-      try {
-        const currentVersion = getCurrentAppVersion();
-        const info = Platform.OS === "ios"
-          ? await fetchIosUpdateInfo()
-          : await fetchAndroidUpdateInfo();
-
-        if (!info || compareVersions(currentVersion, info.latestVersion) !== 1) return;
-
-        if (!cancelled) {
-          setUpdateInfo(info);
-        }
-      } catch (error) {
-        console.warn("[AppUpdateModal] Version check failed:", error);
-      } finally {
-        if (!cancelled) setChecking(false);
-      }
-    };
-
-    checkForUpdate();
-
-    return () => {
-      cancelled = true;
-    };
+  const showUpdateModal = useCallback((current: string, latest: string, url: string) => {
+    setCurrentVersion(current);
+    setLatestVersion(latest);
+    setStoreUrl(url || IOS_STORE_URL);
+    setVisible(true);
   }, []);
 
-  const handleUpdate = async () => {
+  const checkAppVersion = useCallback(async () => {
+    if (Platform.OS !== "ios") return;
+    if (__DEV__ && !ENABLE_UPDATE_CHECK_IN_DEV && !DEBUG_FORCE_SHOW) return;
+
+    if (DEBUG_FORCE_SHOW) {
+      showUpdateModal("1.0.0", "2.0.0", IOS_STORE_URL);
+      return;
+    }
+
     try {
-      await Linking.openURL(storeUrl);
+      const localVersion = cleanVersion(VersionCheck.getCurrentVersion() || "");
+      setCurrentVersion(localVersion);
+
+      if (!isValidVersion(localVersion)) return;
+
+      let updateNeeded = false;
+      let fetchedLatestVersion = "";
+      let fetchedStoreUrl = IOS_STORE_URL;
+
+      try {
+        const updateInfo = await VersionCheck.needUpdate({
+          provider: "appStore",
+          appID: IOS_APP_ID,
+        });
+
+        if (updateInfo?.latestVersion) {
+          fetchedLatestVersion = cleanVersion(updateInfo.latestVersion);
+          fetchedStoreUrl = updateInfo.storeUrl || IOS_STORE_URL;
+          updateNeeded = Boolean(updateInfo.isNeeded) && isVersionNewer(localVersion, fetchedLatestVersion);
+        }
+      } catch (error) {
+        console.warn("[AppUpdateModal] VersionCheck failed, using App Store fallback:", error);
+      }
+
+      if (!updateNeeded) {
+        const fallbackInfo = await fetchAppStoreVersion();
+
+        if (fallbackInfo) {
+          fetchedLatestVersion = fallbackInfo.latestVersion;
+          fetchedStoreUrl = fallbackInfo.storeUrl;
+          updateNeeded = isVersionNewer(localVersion, fetchedLatestVersion);
+        }
+      }
+
+      if (__DEV__) {
+        console.log("[AppUpdateModal] Version check", {
+          currentVersion: localVersion,
+          latestVersion: fetchedLatestVersion,
+          updateNeeded,
+        });
+      }
+
+      if (updateNeeded && isValidVersion(fetchedLatestVersion)) {
+        showUpdateModal(localVersion, fetchedLatestVersion, fetchedStoreUrl);
+      } else {
+        setVisible(false);
+      }
     } catch (error) {
-      console.warn("[AppUpdateModal] Open store failed:", error);
+      console.warn("[AppUpdateModal] Version check failed:", error);
+    }
+  }, [showUpdateModal]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      void checkAppVersion();
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [checkAppVersion]);
+
+  const openStore = async () => {
+    if (loading) return;
+
+    setLoading(true);
+    try {
+      const urlToOpen = storeUrl.startsWith("itms-apps://")
+        ? storeUrl.replace("itms-apps://", "https://")
+        : storeUrl || IOS_STORE_URL;
+
+      await Linking.openURL(urlToOpen);
+    } catch (error) {
+      console.warn("[AppUpdateModal] Open store failed, trying fallback:", error);
+
+      try {
+        await Linking.openURL(IOS_STORE_URL);
+      } catch (fallbackError) {
+        console.warn("[AppUpdateModal] Fallback store URL failed:", fallbackError);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleClose = () => {
-    setUpdateInfo(null);
-  };
-
-  if (!updateInfo && !checking) return null;
+  if (!visible) return null;
 
   return (
-    <Modal
-      visible={Boolean(updateInfo)}
-      transparent
-      animationType="fade"
-      statusBarTranslucent
-      onRequestClose={handleClose}
-    >
-      <View style={styles.backdrop}>
-        <View style={styles.card}>
-          <TouchableOpacity style={styles.closeButton} activeOpacity={0.8} onPress={handleClose}>
-            <Text style={styles.closeButtonText}>x</Text>
-          </TouchableOpacity>
+    <Modal visible={visible} transparent animationType="fade" statusBarTranslucent>
+      <View style={styles.overlay}>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={styles.card}>
+            <View style={styles.accentBar} />
 
-          <View style={styles.iconWrap}>
-            {checking ? (
-              <ActivityIndicator color="#111827" size="small" />
-            ) : (
-              <Text style={styles.iconText}>!</Text>
-            )}
-          </View>
+            <TouchableOpacity style={styles.closeButton} activeOpacity={0.8} onPress={() => setVisible(false)}>
+              <Text style={styles.closeButtonText}>x</Text>
+            </TouchableOpacity>
 
-          <Text style={styles.title}>{strings.UpdateAvailableTitle || "Update Available"}</Text>
-          <Text style={styles.message}>
-            {strings.UpdateAvailableMessage || "A new version of Daina is available. Please update the app for the latest features and bug fixes."}
-          </Text>
+            <Image
+              source={imageIndex.phonLogoapp}
+              style={styles.logo}
+              resizeMode="contain"
+            />
 
-          {updateInfo?.latestVersion ? (
+
             <View style={styles.versionBadge}>
               <Text style={styles.versionText}>
                 {strings.formatString
-                  ? String(strings.formatString(strings.VersionUpdateText || "Current {0} - Latest {1}", currentAppVersion, updateInfo.latestVersion))
-                  : `Current ${currentAppVersion} - Latest ${updateInfo.latestVersion}`}
+                  ? String(
+                    strings.formatString(
+                      strings.VersionUpdateText || "Current {0} - Latest {1}",
+                      currentVersion || "1.0.0",
+                      latestVersion || "1.0.0",
+                    ),
+                  )
+                  : `Current ${currentVersion || "1.0.0"} - Latest ${latestVersion || "1.0.0"}`}
               </Text>
             </View>
-          ) : null}
 
-          <TouchableOpacity style={styles.updateButton} activeOpacity={0.85} onPress={handleUpdate}>
-            <Text style={styles.updateButtonText}>{strings.UpdateNow || "Update Now"}</Text>
-          </TouchableOpacity>
+            <Text style={styles.message}>
+              {strings.UpdateAvailableMessage ||
+                "A newer, faster, and more stable version of Daina is ready. Update now to get the latest features and improvements."}
+            </Text>
 
-        </View>
+            <TouchableOpacity
+              style={[styles.updateButton, loading && styles.updateButtonDisabled]}
+              onPress={openStore}
+              disabled={loading}
+              activeOpacity={0.85}
+            >
+              {loading ? (
+                <ActivityIndicator color="#111827" size="small" />
+              ) : (
+                <Text style={styles.updateButtonText}>{strings.UpdateNow || "Update Now"}</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
       </View>
     </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  backdrop: {
+  overlay: {
     flex: 1,
-    alignItems: "center",
+    backgroundColor: "rgba(15, 23, 42, 0.68)",
     justifyContent: "center",
-    backgroundColor: "rgba(15, 23, 42, 0.60)",
-    padding: 24,
+    alignItems: "center",
+  },
+  safeArea: {
+    width: "100%",
+    alignItems: "center",
+    paddingHorizontal: 24,
   },
   card: {
     width: "100%",
     maxWidth: 360,
     alignItems: "center",
     backgroundColor: "#FFFFFF",
-    borderRadius: 20,
+    borderRadius: 24,
     paddingHorizontal: 24,
-    paddingVertical: 28,
+    paddingTop: 32,
+    paddingBottom: 26,
+    overflow: "hidden",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
-    shadowRadius: 24,
-    elevation: 12,
+    shadowOffset: { width: 0, height: 14 },
+    shadowOpacity: 0.22,
+    shadowRadius: 28,
+    elevation: 16,
+  },
+  accentBar: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 6,
+    backgroundColor: "#FFCC00",
   },
   closeButton: {
     position: "absolute",
-    top: 12,
-    right: 12,
+    top: 14,
+    right: 14,
     width: 32,
     height: 32,
     borderRadius: 16,
@@ -215,67 +282,73 @@ const styles = StyleSheet.create({
     color: "#475569",
     fontSize: 18,
     lineHeight: 20,
-    fontFamily: font.MonolithRegular
+    fontFamily: font.MonolithRegular,
+
   },
   iconWrap: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 64,
+    height: 64,
+    borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#FFCC00",
+    backgroundColor: "#111827",
+    borderWidth: 3,
+    borderColor: "#FFCC00",
     marginBottom: 18,
   },
   iconText: {
-    color: "white",
-    fontSize: 30,
-    lineHeight: 30,
-    fontFamily: font.MonolithRegular
+    color: "#FFCC00",
+    fontSize: 34,
+    lineHeight: 36,
+    fontFamily: font.MonolithRegular,
   },
   title: {
     color: "#111827",
-    fontSize: 20, fontFamily: font.MonolithRegular
-    ,
+    fontSize: 22,
+    fontFamily: font.MonolithRegular,
     textAlign: "center",
-    letterSpacing: 0.2,
+  },
+  versionBadge: {
+    marginTop: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    backgroundColor: "#F8FAFC",
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  versionText: {
+    color: "#64748B",
+    fontSize: 12,
+    fontFamily: font.MonolithRegular,
   },
   message: {
     color: "#475569",
     fontSize: 14,
     lineHeight: 22,
-    marginTop: 10,
+    marginTop: 16,
     textAlign: "center",
-  },
-  versionBadge: {
-    marginTop: 14,
-    paddingHorizontal: 14,
-    paddingVertical: 5,
-    backgroundColor: "#F1F5F9",
-    borderRadius: 20,
-  },
-  versionText: {
-    color: "#64748B",
-    fontSize: 12,
-    fontFamily: font.MonolithRegular
-    ,
-    letterSpacing: 0.4,
+    fontFamily: font.MonolithRegular,
   },
   updateButton: {
     width: "100%",
-    height: 50,
-    borderRadius: 14,
+    height: 52,
+    borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "#FFCC00",
-    marginTop: 22,
+    marginTop: 24,
+  },
+  updateButtonDisabled: {
+    opacity: 0.6,
   },
   updateButtonText: {
     color: "#111827",
     fontSize: 15,
-    fontFamily: font.MonolithRegular
-    ,
-    letterSpacing: 0.3,
+    fontFamily: font.MonolithRegular,
   },
+  logo: { height: 96, width: 167 },
+
 });
 
 export default AppUpdateModal;

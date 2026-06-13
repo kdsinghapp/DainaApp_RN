@@ -640,6 +640,30 @@
         }
       }
     },
+    "react-native-version-check": {
+      "root": "/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-version-check",
+      "name": "react-native-version-check",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-version-check/react-native-version-check.podspec",
+          "version": "3.5.0",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-version-check/android",
+          "packageImportPath": "import io.xogus.reactnative.versioncheck.RNVersionCheckPackage;",
+          "packageInstance": "new RNVersionCheckPackage()",
+          "buildTypes": [],
+          "componentDescriptors": [],
+          "cmakeListsPath": "/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-version-check/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
     "react-native-webview": {
       "root": "/Users/technorizen/Desktop/aman/DainaApp/node_modules/react-native-webview",
       "name": "react-native-webview",
@@ -911,7 +935,8 @@
         },
         {
           "name": "--terminal <string>",
-          "description": "Launches the Metro Bundler in a new window using the specified terminal path."
+          "description": "Launches the Metro Bundler in a new window using the specified terminal path.",
+          "default": "vscode"
         },
         {
           "name": "--binary-path <string>",
@@ -1070,7 +1095,8 @@
         },
         {
           "name": "--terminal <string>",
-          "description": "Launches the Metro Bundler in a new window using the specified terminal path."
+          "description": "Launches the Metro Bundler in a new window using the specified terminal path.",
+          "default": "vscode"
         },
         {
           "name": "--appId <string>",
