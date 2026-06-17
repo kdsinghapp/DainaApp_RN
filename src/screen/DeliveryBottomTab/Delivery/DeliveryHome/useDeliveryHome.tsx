@@ -337,13 +337,7 @@ export const useDeliveryHome = () => {
               if (!cancelledRef.current) {
                 setNewOrderNotification({ visible: true, data });
                 if (isOnlineRef.current) {
-                  if (soundTimerRef.current) clearTimeout(soundTimerRef.current);
-                  playNotificationSound();
                   ReactNativeHapticFeedback.trigger("notificationWarning", hapticOptions);
-                  soundTimerRef.current = setTimeout(() => {
-                    stopNotificationSound();
-                    soundTimerRef.current = null;
-                  }, 10000);
                 }
               }
               return;
