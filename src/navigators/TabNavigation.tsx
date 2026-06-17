@@ -88,14 +88,14 @@ export default function TabNavigator() {
                       position: 'absolute',
                       top: -3,
                       right: 2,
-                      minWidth: 18,
-                      height: 18,
                       paddingHorizontal: unreadChatCount > 9 ? 5 : 0,
-                      borderRadius: 9,
+                      borderRadius: 20,
                       alignItems: 'center',
                       justifyContent: 'center',
                       backgroundColor: '#FF3B30',
                       borderWidth: 1.5,
+                      height: 20,
+                      width: 20,
                       borderColor: '#FFFFFF',
                     }}
                   >
