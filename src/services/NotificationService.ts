@@ -8,6 +8,8 @@ export const GENERAL_NOTIFICATION_CHANNEL_ID = "general_notifications_v1";
 export const DELIVERY_NOTIFICATION_CHANNEL_ID = NEW_PARCEL_NOTIFICATION_CHANNEL_ID;
 const ANDROID_RINGTONE_SOUND = "ringtone_notification";
 const IOS_RINGTONE_SOUND = "ringtone_notification.caf";
+const DISPLAYED_MESSAGE_IDS_KEY = "displayed_notification_message_ids";
+const DISPLAYED_MESSAGE_TTL_MS = 10 * 60 * 1000;
 
 const NEW_PARCEL_TYPES = new Set([
   "new_offer",
@@ -35,7 +37,14 @@ const NON_RINGING_TYPES = new Set([
 
 const DELIVERY_ROLE_VALUES = new Set(["delivery", "driver", "delivery_user", "deliveryuser"]);
 
+type NotificationContent = {
+  title?: string;
+  body?: string;
+};
+
 class NotificationService {
+  private unsubscribeListeners: (() => void) | null = null;
+
   async incrementBadge() {
     try {
       const currentBadge = await notifee.getBadgeCount();
@@ -183,6 +192,11 @@ class NotificationService {
     return {
       ios: {
         badgeCount,
+        foregroundPresentationOptions: {
+          alert: true,
+          badge: true,
+          sound: true,
+        },
         ...(shouldRing ? { sound: IOS_RINGTONE_SOUND } : {}),
       },
       android: {
@@ -199,6 +213,95 @@ class NotificationService {
     };
   }
 
+  getNotificationContent(remoteMessage: any): NotificationContent | null {
+    const notification = remoteMessage?.notification;
+    const data = remoteMessage?.data ?? {};
+    const title = notification?.title ?? data?.title ?? data?.notificationTitle;
+    const body = notification?.body ?? data?.body ?? data?.message ?? data?.notificationBody;
+
+    if (!title && !body) return null;
+
+    return { title, body };
+  }
+
+  getMessageId(remoteMessage: any, content?: NotificationContent | null) {
+    const data = remoteMessage?.data ?? {};
+    const id =
+      remoteMessage?.messageId ??
+      remoteMessage?.message_id ??
+      data?.messageId ??
+      data?.message_id ??
+      data?.notificationId ??
+      data?.notification_id ??
+      data?.id ??
+      data?.orderId ??
+      data?.order_id ??
+      data?.parcelId ??
+      data?.parcel_id;
+
+    if (id) return String(id);
+
+    const title = content?.title ?? remoteMessage?.notification?.title ?? "";
+    const body = content?.body ?? remoteMessage?.notification?.body ?? "";
+    const type = data?.type ?? data?.notificationType ?? data?.notification_type ?? "";
+    return `${type}:${title}:${body}`;
+  }
+
+  async hasRecentlyDisplayed(messageId: string) {
+    try {
+      const now = Date.now();
+      const rawIds = await AsyncStorage.getItem(DISPLAYED_MESSAGE_IDS_KEY);
+      const ids = rawIds ? JSON.parse(rawIds) : {};
+      const lastDisplayedAt = ids?.[messageId];
+      return typeof lastDisplayedAt === "number" && now - lastDisplayedAt < DISPLAYED_MESSAGE_TTL_MS;
+    } catch (error) {
+      console.log("[NotificationService] Unable to check duplicate notification", error);
+      return false;
+    }
+  }
+
+  async markDisplayed(messageId: string) {
+    try {
+      const now = Date.now();
+      const rawIds = await AsyncStorage.getItem(DISPLAYED_MESSAGE_IDS_KEY);
+      const ids = rawIds ? JSON.parse(rawIds) : {};
+      const nextIds = Object.keys(ids).reduce((acc: Record<string, number>, key) => {
+        if (now - ids[key] < DISPLAYED_MESSAGE_TTL_MS) {
+          acc[key] = ids[key];
+        }
+        return acc;
+      }, {});
+
+      nextIds[messageId] = now;
+      await AsyncStorage.setItem(DISPLAYED_MESSAGE_IDS_KEY, JSON.stringify(nextIds));
+    } catch (error) {
+      console.log("[NotificationService] Unable to save displayed notification", error);
+    }
+  }
+
+  async displayLocalNotification(remoteMessage: any, badgeCount: number) {
+    if (Platform.OS === "ios" && remoteMessage?.notification) {
+      return;
+    }
+
+    const content = this.getNotificationContent(remoteMessage);
+    if (!content) return;
+
+    const messageId = this.getMessageId(remoteMessage, content);
+    if (await this.hasRecentlyDisplayed(messageId)) return;
+    await this.markDisplayed(messageId);
+
+    const displayOptions = await this.getDisplayOptions(remoteMessage, badgeCount);
+    await notifee.displayNotification({
+      id: messageId,
+      title: content.title,
+      body: content.body,
+      data: remoteMessage?.data,
+      ios: displayOptions.ios,
+      android: displayOptions.android,
+    });
+  }
+
   async getFcmToken() {
     try {
       const token = await messaging().getToken();
@@ -210,20 +313,15 @@ class NotificationService {
   }
 
   setupListeners() {
+    if (this.unsubscribeListeners) {
+      return this.unsubscribeListeners;
+    }
+
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {
       console.log("A new FCM message arrived!", JSON.stringify(remoteMessage));
       await this.createChannel();
       const badgeCount = await this.incrementBadge();
-      if (remoteMessage.notification) {
-        const displayOptions = await this.getDisplayOptions(remoteMessage, badgeCount);
-        await notifee.displayNotification({
-          title: remoteMessage.notification.title,
-          body: remoteMessage.notification.body,
-          data: remoteMessage.data,
-          ios: displayOptions.ios,
-          android: displayOptions.android,
-        });
-      }
+      await this.displayLocalNotification(remoteMessage, badgeCount);
     });
 
     const unsubscribeOpened = messaging().onNotificationOpenedApp(async () => {
@@ -238,11 +336,14 @@ class NotificationService {
       }
     );
 
-    return () => {
+    this.unsubscribeListeners = () => {
       unsubscribe();
       unsubscribeOpened();
       unsubscribeForegroundEvent();
+      this.unsubscribeListeners = null;
     };
+
+    return this.unsubscribeListeners;
   }
 
   async onBackgroundMessage(remoteMessage: any) {
@@ -254,15 +355,10 @@ class NotificationService {
     const badgeCount = await this.incrementBadge();
 
     if (remoteMessage?.notification) {
-      const displayOptions = await this.getDisplayOptions(remoteMessage, badgeCount);
-      await notifee.displayNotification({
-        title: remoteMessage.notification.title,
-        body: remoteMessage.notification.body,
-        data: remoteMessage.data,
-        ios: displayOptions.ios,
-        android: displayOptions.android,
-      });
+      return;
     }
+
+    await this.displayLocalNotification(remoteMessage, badgeCount);
   }
 }
 
