@@ -27,8 +27,8 @@ type CountryOption = {
 
 const PhoneLogin = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [countryCode, setCountryCode] = useState("IN");
-  const [callingCode, setCallingCode] = useState("+91");
+  const [countryCode, setCountryCode] = useState("MN");
+  const [callingCode, setCallingCode] = useState("+976");
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [searchText, setSearchText] = useState("");

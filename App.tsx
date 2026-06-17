@@ -41,7 +41,6 @@ const App: FunctionComponent<any> = () => {
   }, []);
 
   const initApp = async () => {
-    // Initialize Language
     const lang = await getLanguage();
     strings.setLanguage(lang);
     getFcmToken()

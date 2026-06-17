@@ -224,15 +224,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#EEF0F3',
     marginBottom: 18,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#0F172A',
-        shadowOffset: { width: 0, height: 10 },
-        shadowOpacity: 0.06,
-        shadowRadius: 16,
-      },
 
-    }),
   },
   vehicleHero: {
     backgroundColor: YELLOW,
