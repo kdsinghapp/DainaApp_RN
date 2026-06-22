@@ -658,8 +658,8 @@ const TripMap = () => {
     const first = cleaned[0];
     const last = cleaned[cleaned.length - 1];
     const withEndpoints = [...cleaned];
-    if (getDistanceKm(origin, first) > 0.05) withEndpoints.unshift(origin);
-    if (getDistanceKm(destination, last) > 0.05) withEndpoints.push(destination);
+    if (getDistanceKm(origin, first) > 0.001) withEndpoints.unshift(origin);
+    if (getDistanceKm(destination, last) > 0.001) withEndpoints.push(destination);
 
     return withEndpoints;
   }, [isValidLatLng]);
@@ -866,15 +866,10 @@ const TripMap = () => {
   ]);
 
   useEffect(() => {
-    setActiveRouteCoordinates([]);
-  }, [
-    driverCoordinate?.latitude,
-    driverCoordinate?.longitude,
-    routeDestination?.latitude,
-    routeDestination?.longitude,
-    deliveryStatus,
-    hasDriverLocation,
-  ]);
+    if (!activeRouteValid) {
+      setActiveRouteCoordinates([]);
+    }
+  }, [activeRouteValid]);
 
   useEffect(() => {
     fitVisibleRoute();
