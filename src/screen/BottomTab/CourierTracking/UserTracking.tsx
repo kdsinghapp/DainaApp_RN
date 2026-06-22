@@ -1147,7 +1147,7 @@ const CourierTrackingScreen = () => {
 
           {/* Driver Marker */}
           {console.log('🚗 DRIVER MARKER DEBUG:', { hasDriverLocation, hasLiveDriverLocation, driverCoords, currentCoords })}
-          {hasDriverLocation && (
+          {!hasDriverLocation && (
             <Marker.Animated
               key="driver-marker"
               coordinate={driverLocation as any}
@@ -1157,21 +1157,14 @@ const CourierTrackingScreen = () => {
               zIndex={12}
             >
               <View style={styles.courierMarker}>
-                <View style={styles.courierPulse} />
-                <View style={styles.courierMarkerInner}>
-                  <Image source={imageIndex.caricon} style={styles.courierImage} />
+                <View  >
+                  <Image source={imageIndex.caricon2} style={styles.courierImage} />
                 </View>
               </View>
             </Marker.Animated>
           )}
         </MapView>
-
-
-
       </View>
-
-
-
       <SafeAreaView style={styles.headerOverlay} edges={["top"]}>
         <View style={styles.infoCard}>
           <TouchableOpacity
@@ -1180,8 +1173,6 @@ const CourierTrackingScreen = () => {
             activeOpacity={0.8}
           >
             <Image source={imageIndex.back}
-
-
               style={{
                 height: 38,
                 width: 38
@@ -1199,15 +1190,12 @@ const CourierTrackingScreen = () => {
             </View>
           </View>
         </View>
-
       </SafeAreaView>
-
       {/* Rapido-style bottom sheet */}
       <View style={[styles.draggablePanel,]}>
         <View {...panResponder.panHandlers} style={styles.dragArea}>
           <View style={styles.handleBar} />
         </View>
-
         <ScrollView
           style={styles.scrollContent}
           contentContainerStyle={styles.scrollContentContainer}
@@ -1542,15 +1530,9 @@ const styles = StyleSheet.create({
     borderColor: "#FFCC00",
   },
   courierMarkerInner: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: "#FFF",
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 2,
+
   },
-  courierImage: { width: 22, height: 22, resizeMode: "contain" },
+  courierImage: { width: 50, height: 50, resizeMode: "contain" },
   draggablePanel: {
     position: "absolute",
     left: 0,
