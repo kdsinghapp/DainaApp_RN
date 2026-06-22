@@ -42,6 +42,9 @@ const LanguageItem = ({ item, isSelected, onSelect }: any) => {
     }).start();
   };
 
+
+
+
   const handlePressOut = () => {
     Animated.spring(scaleValue, {
       toValue: 1,

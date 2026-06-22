@@ -92,14 +92,14 @@ const styles = StyleSheet.create({
   badge: {
     position: "absolute",
     top: 7,
-    right: 7,
+    right: 6,
 
     backgroundColor: "#FF3B30",
     borderColor: "#FFFFFF",
   },
   countBadge: {
-    top: 2,
-    right: 0,
+    top: 0,
+    right: 3,
     minWidth: 18,
     height: 18,
     borderRadius: 9,
