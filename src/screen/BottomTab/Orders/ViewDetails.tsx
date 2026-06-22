@@ -541,71 +541,32 @@ export default function ViewDetails() {
 
 
         {driver && (
-          <View style={{
-            marginHorizontal: 20,
-            marginTop: 15,
-            marginBottom: 10,
-
-            backgroundColor: CARD,
-            padding: 8,
-            borderRadius: 15,
-
-            ...(Platform.OS === 'android' && {
-              borderWidth: 0.8,
-              borderColor: '#E5E7EB',
-            }),
-
-
-
-
-          }}>
-            <View style={{
-              justifyContent: "space-between",
-              flexDirection: "row",
-              alignItems: "center"
-            }}>
-              <View style={{
-                flexDirection: "row",
-                alignItems: "center",
-              }}>
-                {driver?.image ? <Image source={{ uri: driver?.image }}
-                  style={{
-                    height: 60,
-                    width: 60,
-                    borderRadius: 50
-                  }}
-                /> :
-                  <Image source={imageIndex.dpuser}
-                    style={{
-                      height: 55,
-                      width: 55,
-                    }}
-                  />}
-
-                <View style={{ marginLeft: 11 }}>
-                  {driver?.name && <Text style={{
-                    fontSize: 14,
-                    color: "black",
-                    fontFamily: font.MonolithRegular,
-                  }}>{driver?.name}</Text>}
-                  {driver?.email &&
-                    <Text style={{
-                      fontSize: 13,
-                      color: "gray",
-                      fontFamily: font.MonolithRegular
-                    }}>{driver?.email}</Text>
-                  }
-
+          <View style={styles.driverCard}>
+            <View style={styles.driverCardInner}>
+              <View style={styles.driverInfoRow}>
+                {driver?.image ? (
+                  <Image
+                    source={{ uri: driver?.image }}
+                    style={styles.driverAvatarImg}
+                  />
+                ) : (
+                  <Image
+                    source={imageIndex.dpuser}
+                    style={styles.driverAvatarPlaceholder}
+                  />
+                )}
+                <View style={styles.driverTextWrap}>
+                  {driver?.name && (
+                    <Text style={styles.driverName}>{driver?.name}</Text>
+                  )}
+                  {driver?.email && (
+                    <Text style={styles.driverEmail}>{driver?.email}</Text>
+                  )}
                 </View>
               </View>
-              <View style={{
-                flexDirection: "row",
-                justifyContent: "center"
-              }}>
-
-
-
+              <View style={styles.driverActionsRow}>
                 <TouchableOpacity
+                  style={styles.driverActionBtn}
                   onPress={() =>
                     navigation.navigate(ScreenNameEnum.ChatScreen, {
                       item: item?.id,
@@ -615,15 +576,11 @@ export default function ViewDetails() {
                 >
                   <Image
                     source={imageIndex.messtrcker}
-                    style={{
-                      height: 33,
-                      width: 33,
-                      right: 12,
-                    }}
+                    style={styles.driverActionIcon}
                   />
                 </TouchableOpacity>
-
                 <TouchableOpacity
+                  style={styles.driverActionBtn}
                   onPress={() => {
                     const phone = driver?.phone;
                     if (phone) {
@@ -633,10 +590,7 @@ export default function ViewDetails() {
                 >
                   <Image
                     source={imageIndex.Calls}
-                    style={{
-                      height: 33,
-                      width: 33,
-                    }}
+                    style={styles.driverActionIcon}
                   />
                 </TouchableOpacity>
               </View>
@@ -763,19 +717,15 @@ const styles = StyleSheet.create({
     marginTop: 12,
     borderRadius: 20,
     padding: 16,
-    borderColor: '#EFEFEF',
+    // iOS shadow
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.08,
-    shadowRadius: 4,
-    ...(Platform.OS === 'android' && {
-      borderWidth: 0.8,
-      borderColor: '#E5E7EB',
-    }),
-
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.10,
+    shadowRadius: 8,
+    // Android elevation
+    elevation: 3,
+    borderWidth: Platform.OS === 'android' ? 0.8 : 0,
+    borderColor: '#E5E7EB',
   },
   cardHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 },
   muted: { color: "#94A3B8", fontFamily: font.MonolithRegular, fontSize: 11, },
@@ -970,11 +920,15 @@ const styles = StyleSheet.create({
     padding: 20,
     borderWidth: 0.8,
     borderColor: "#FFCC00",
+    // iOS shadow
     shadowColor: "#FFCC00",
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
+    shadowOpacity: 0.20,
+    shadowRadius: 14,
     shadowOffset: { width: 0, height: 4 },
-    overflow: "hidden",
+    // Android elevation
+    elevation: 4,
+    overflow: Platform.OS === 'android' ? 'hidden' : 'visible',
+    backgroundColor: CARD,
   },
   pendingCardBgDecoration: {
     position: "absolute",
@@ -1062,6 +1016,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    // iOS shadow
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.07,
+    shadowRadius: 6,
+    // Android elevation
+    elevation: 2,
   },
   verificationButtonTitle: {
     fontSize: 14,
@@ -1100,11 +1061,17 @@ const styles = StyleSheet.create({
   },
   offerCard: {
     backgroundColor: CARD,
-    borderRadius: 12,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: "#E5E7EB",
     padding: 14,
-    overflow: "hidden",
+    // iOS shadow
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.07,
+    shadowRadius: 6,
+    // Android elevation
+    elevation: 2,
   },
   offerCardLocked: {
     borderColor: "#F1D660",
@@ -1339,5 +1306,74 @@ const styles = StyleSheet.create({
   fullImage: {
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height * 0.8,
+  },
+
+  /* Driver Card Styles */
+  driverCard: {
+    marginHorizontal: 20,
+    marginTop: 15,
+    marginBottom: 10,
+    backgroundColor: CARD,
+    borderRadius: 16,
+    padding: 14,
+    // iOS shadow
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.09,
+    shadowRadius: 8,
+    // Android
+    elevation: 3,
+    borderWidth: Platform.OS === 'android' ? 0.8 : 0,
+    borderColor: '#E5E7EB',
+  },
+  driverCardInner: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  driverInfoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
+  },
+  driverAvatarImg: {
+    height: 52,
+    width: 52,
+    borderRadius: 26,
+    borderWidth: 2,
+    borderColor: "#F1F5F9",
+  },
+  driverAvatarPlaceholder: {
+    height: 52,
+    width: 52,
+    borderRadius: 26,
+  },
+  driverTextWrap: {
+    marginLeft: 12,
+    flex: 1,
+  },
+  driverName: {
+    fontSize: 14,
+    color: TEXT,
+    fontFamily: font.MonolithRegular,
+    fontWeight: '600',
+  },
+  driverEmail: {
+    fontSize: 12,
+    color: MUTED,
+    fontFamily: font.MonolithRegular,
+    marginTop: 2,
+  },
+  driverActionsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  driverActionBtn: {
+    padding: 4,
+  },
+  driverActionIcon: {
+    height: 34,
+    width: 34,
   },
 });
