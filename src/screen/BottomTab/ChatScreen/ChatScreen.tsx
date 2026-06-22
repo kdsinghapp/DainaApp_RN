@@ -559,7 +559,6 @@ const ChatScreen = () => {
       strings.QuickUserWhenArrive || "When will you arrive?",
       strings.QuickUserCallMe || "Call me once",
       strings.QuickUserIAmHere || "I am here",
-      strings.QuickUserWaitLittle || "Wait a little",
       strings.QuickUserParcelSafe || "Please keep parcel safe",
       strings.QuickChatThanks || "Thank you",
     ];
@@ -1021,13 +1020,13 @@ const ChatScreen = () => {
 // ─── Styles ───────────────────────────────────────────────────────────────────
 const YELLOW = "#FFCC00";
 const DARK = "#1A1A1A";
-const GRAY_BG = "#F7F7F9";
 const LIGHT_TEXT = "#8E8E93";
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8FAFC",
+
   },
   header: {
     flexDirection: "row",
