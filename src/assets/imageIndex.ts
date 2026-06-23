@@ -59,7 +59,6 @@ export default {
     right: require('./images/arrowRight.png'),
     Icon: require('./images/Icon.png'),
     MohronFag: require('./images/MohronFag.png'),
-    caricon2: require('./images/caricon.png'),
     prfile: require('./images/prfile.png'),
     back: require('./images/back.png'),
     arrowDown: require('./images/arrowDown.png'),

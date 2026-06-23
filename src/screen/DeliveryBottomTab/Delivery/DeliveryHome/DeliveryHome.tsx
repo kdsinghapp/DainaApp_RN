@@ -61,7 +61,7 @@ const DeliveryHome = () => {
     useNotificationCount();
 
   const fetchCounts = async () => {
-    const res = await GetDashboardCounts(() => {});
+    const res = await GetDashboardCounts(() => { });
     if (res && (res.status === 1 || res.status === "1")) {
       setCounts(res);
     }
@@ -103,7 +103,7 @@ const DeliveryHome = () => {
   useFocusEffect(
     useCallback(() => {
       const fetchCounts = async () => {
-        const res = await GetDashboardCounts(() => {});
+        const res = await GetDashboardCounts(() => { });
         if (res && (res?.status === 1 || res.status === "1")) {
           setCounts(res);
         }
@@ -148,7 +148,7 @@ const DeliveryHome = () => {
       <View
         style={{
           flex: 1,
-          marginBottom: Platform.OS === "ios" ? 20 : 10,
+          marginBottom: Platform.OS === "ios" ? 20 : 65,
         }}
       >
         <Animated.View
@@ -159,6 +159,7 @@ const DeliveryHome = () => {
           }}
         >
           <FlatList
+            showsHorizontalScrollIndicator={false}
             ListHeaderComponent={
               <>
                 <OnlineSlideRight
