@@ -722,8 +722,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.10,
     shadowRadius: 8,
-    // Android elevation
-    elevation: 3,
     borderWidth: Platform.OS === 'android' ? 0.8 : 0,
     borderColor: '#E5E7EB',
   },
@@ -925,8 +923,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.20,
     shadowRadius: 14,
     shadowOffset: { width: 0, height: 4 },
-    // Android elevation
-    elevation: 4,
     overflow: Platform.OS === 'android' ? 'hidden' : 'visible',
     backgroundColor: CARD,
   },
@@ -1021,8 +1017,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.07,
     shadowRadius: 6,
-    // Android elevation
-    elevation: 2,
   },
   verificationButtonTitle: {
     fontSize: 14,
@@ -1070,8 +1064,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.07,
     shadowRadius: 6,
-    // Android elevation
-    elevation: 2,
   },
   offerCardLocked: {
     borderColor: "#F1D660",
@@ -1322,7 +1314,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.09,
     shadowRadius: 8,
     // Android
-    elevation: 3,
     borderWidth: Platform.OS === 'android' ? 0.8 : 0,
     borderColor: '#E5E7EB',
   },
