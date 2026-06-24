@@ -96,7 +96,7 @@ const EditProfile = () => {
       <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 100 : 0} // adjust offset if needed
+        keyboardVerticalOffset={Platform.OS === "ios" ? 10 : 0} // adjust offset if needed
 
       >
         <ScrollView contentContainerStyle={styles.container}

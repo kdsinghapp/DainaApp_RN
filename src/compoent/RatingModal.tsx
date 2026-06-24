@@ -79,7 +79,7 @@ const RatingModal = ({
       <KeyboardAvoidingView
         style={styles.overlay}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
-        keyboardVerticalOffset={Platform.OS === "ios" ? 24 : 0}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 12 : 0}
       >
         <TouchableWithoutFeedback onPress={onClose}>
           <View style={styles.backdrop} />

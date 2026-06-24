@@ -447,7 +447,7 @@ export const styles = StyleSheet.create({
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    paddingTop: Platform.OS === 'ios' ? 60 : 40,
+    paddingTop: Platform.OS === 'ios' ? 55 : 40,
     paddingHorizontal: 24,
   },
   closeButton: {

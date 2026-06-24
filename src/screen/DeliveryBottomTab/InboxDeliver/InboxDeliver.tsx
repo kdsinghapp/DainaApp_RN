@@ -196,7 +196,6 @@ export default function InboxDeliver() {
 
         </View>
 
-        {/* Right Side: Info Column */}
         <View style={styles.infoCol}>
           {/* Header Row: Name & Time */}
           <View style={styles.cardHeaderRow}>

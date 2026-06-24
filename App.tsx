@@ -13,10 +13,6 @@ import { getMessaging } from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppUpdateModal from './src/compoent/AppUpdateModal';
 
-
-
-
-
 LogBox.ignoreAllLogs();
 (Text as any).defaultProps = (Text as any).defaultProps || {};
 
@@ -27,8 +23,6 @@ LogBox.ignoreAllLogs();
 (TextInput as any).defaultProps.allowFontScaling = false;
 
 (TextInput as any).defaultProps.underlineColorAndroid = "transparent";
-
-
 const App: FunctionComponent<any> = () => {
   const unsubscribeRef = useRef<(() => void) | null>(null);
   useEffect(() => {
@@ -47,11 +41,9 @@ const App: FunctionComponent<any> = () => {
     // Initialize Notifications
     await initNotifications();
   };
-
   const getFcmToken = async () => {
     try {
       const fcmToken = await getMessaging().getToken();
-
       if (fcmToken) {
         await AsyncStorage.setItem('fcmToken', fcmToken);
         console.log('✅ FCM Token:', fcmToken);
@@ -83,9 +75,6 @@ const App: FunctionComponent<any> = () => {
       console.log('Notification init error:', error);
     }
   };
-
-
-
   return (
     <QueryClientProvider client={queryClient}>
       <AppNavigator />
@@ -93,8 +82,6 @@ const App: FunctionComponent<any> = () => {
     </QueryClientProvider>
   )
 }
-
-
 
 export default App;
 
