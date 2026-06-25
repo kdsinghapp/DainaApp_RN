@@ -60,7 +60,6 @@ const EditProfileDeliver = () => {
   const pickImageFromGallery = () => {
     launchImageLibrary({ mediaType: "photo", quality: 0.4 }, (response) => {
       if (response.didCancel) {
-        console.log("User cancelled image picker");
       } else if (response.errorCode) {
         console.log("ImagePicker Error: ", response.errorMessage);
         errorToast(response.errorMessage || "Something went wrong");

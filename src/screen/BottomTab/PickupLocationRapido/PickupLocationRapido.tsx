@@ -183,7 +183,6 @@ const PickupLocationRapido = () => {
         <View style={styles.indicator} />
         <Text style={styles.addressText} numberOfLines={2}>{address}</Text>
         <CustomButton title={strings?.ConfirmLocation}
-          // onPress={() => navigation.goBack()} 
           onPress={confirmLocation}
           disable={isFetchingAddress || address === 'Locating...'}
           textStyle={{
