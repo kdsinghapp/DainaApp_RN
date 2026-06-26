@@ -821,6 +821,7 @@ type RouteParams = {
       id: string;
     };
   };
+  pickupLocation?: string;
 };
 
 type WSMessage = {
@@ -830,19 +831,21 @@ type WSMessage = {
 };
 
 // ── Theme ──────────────────────────────────────────
+import colors from '../../../theme/colors';
+import shadows from '../../../theme/shadows';
 const T = {
-  primary: "#5D4037",
-  primaryLight: "#EFEBE9",
-  primaryBorder: "#BCAAA4",
-  primaryDim: "rgba(93, 64, 55, 0.18)",
-  primaryText: "#5D4037",
-  bg: "#FAF7F2",
+  primary: "#FFCC00",
+  primaryLight: "rgba(255, 204, 0, 0.1)",
+  primaryBorder: "#FFCC00",
+  primaryDim: "rgba(255, 204, 0, 0.18)",
+  primaryText: "#E6B800",
+  bg: "#F9FAFB",
   bgCard: "#FFFFFF",
   bgHeader: "white",
-  textDark: "#1A1200",
-  textMid: "black",
-  textFaint: "#8D6E63",
-  border: "#5D4037",
+  textDark: "#111827",
+  textMid: "#6B7280",
+  textFaint: "#9CA3AF",
+  border: "#E5E7EB",
 };
 
 // ── Blips ─────────────────────────────────────────
@@ -979,7 +982,7 @@ interface RadarSearchScreenProps {
 
 const RadarSearchScreen: React.FC<RadarSearchScreenProps> = ({
   driversFound = 0,
-  radiusKm = 1,
+  radiusKm = 2,
   pickupAddress = "Sapphire House, Indore",
   onCancel,
 }) => {
@@ -1015,7 +1018,8 @@ const RadarSearchScreen: React.FC<RadarSearchScreenProps> = ({
   // ── Navigation ──────────────────────────────────
   const route = useRoute();
   const navigation = useNavigation<any>();
-  const { parcelId } = (route?.params as RouteParams) || {};
+  const { parcelId, pickupLocation } = (route?.params as RouteParams) || {};
+  const pickupAreaText = pickupLocation || pickupAddress;
 
   // ── Helpers ─────────────────────────────────────
   const updateStatusDetails = (status: string) => {
@@ -1458,10 +1462,18 @@ const RadarSearchScreen: React.FC<RadarSearchScreenProps> = ({
         {/* ── STATUS TEXT ── */}
         <View style={s.statusWrap}>
           <Animated.View style={[s.statusDot, { opacity: dotBlink }]} />
-          <Text style={[s.statusText, {}]} numberOfLines={1}>
+          <Text style={[s.statusText, {}]} numberOfLines={2}>
             {driverStatus}
           </Text>
         </View>
+        <Text style={s.radiusInfo} numberOfLines={3}>
+          {strings.AnnouncementRadiusInfo}
+        </Text>
+        {!!pickupAreaText ? (
+          <Text style={s.pickupAreaText} numberOfLines={2}>
+            {pickupAreaText}
+          </Text>
+        ) : null}
 
         {/* ── ERROR BANNER ── */}
 
@@ -1534,9 +1546,9 @@ const s = StyleSheet.create({
     overflow: "hidden",
     position: "relative",
     shadowColor: T.primary,
-    shadowOpacity: 0.25,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 8 },
   },
   sweepWrap: {
     position: "absolute",
@@ -1589,9 +1601,29 @@ const s = StyleSheet.create({
   statusText: {
     fontSize: 14,
     color: T.textMid,
-    letterSpacing: 0.5,
+    letterSpacing: 0,
     fontFamily: font.MonolithRegular,
     flex: 1,
+  },
+  radiusInfo: {
+    width: "100%",
+    maxWidth: 320,
+    fontSize: 12,
+    lineHeight: 17,
+    color: T.textDark,
+    textAlign: "center",
+    fontFamily: font.MonolithRegular,
+    marginTop: -8,
+  },
+  pickupAreaText: {
+    width: "100%",
+    maxWidth: 320,
+    fontSize: 11,
+    lineHeight: 16,
+    color: T.textMid,
+    textAlign: "center",
+    fontFamily: font.MonolithRegular,
+    marginTop: -14,
   },
 
   // Error

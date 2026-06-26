@@ -139,8 +139,10 @@ const strings = new LocalizedStrings({
     ScanningArea: "SCANNING AREA",
     CancelSearch: "CANCEL SEARCH",
     RetryLabel: "RETRY",
-    SearchingDrivers: "Searching for available drivers...",
-    ConnectingNetwork: "Connecting to delivery network",
+    SearchingDrivers: "Announcing this parcel to nearby online drivers...",
+    ConnectingNetwork: "Connecting to nearby driver network",
+    AnnouncementRadiusInfo:
+      "Showing to online drivers near the pickup area, within about 1-2 km.",
     DriverConfirmed: "Driver confirmed • Preparing pickup",
     DriverEnRoute: "Driver en route • ETA calculating",
     ParcelCollected: "Parcel collected • In transit",
@@ -275,7 +277,7 @@ const strings = new LocalizedStrings({
     OrderCancelled: "Order Cancelled",
     Processing: "Processing...",
     PickupOtpError: "Please enter pickup OTP shared by customer",
-    DeliveryOtpError: "Please enter delivery OTP shared by customer",
+    DeliveryOtpError: "Please enter delivery OTP shared by receiver",
     ParcelDetails: "Parcel Details",
     PickupLocation: "Pickup Location",
     DropLocation: "Drop Location",
@@ -413,6 +415,7 @@ const strings = new LocalizedStrings({
     UnableGetLocation: "Unable to get location",
     SearchPickupArea: "Search Pickup Area",
     SetPickup: "Set Pickup",
+    PickupPointAccuracy: "Set an exact pickup point for driver arrival.",
     ConfirmLocation: "Confirm Location",
     SearchAddress: "Search Address",
     EnterAddressPlaceholder: "Enter your address...",
@@ -450,7 +453,7 @@ const strings = new LocalizedStrings({
     Processing: "Processing...",
     Reply: "Reply",
     EnterPickupOTPShared: "Enter Pickup OTP shared by customer",
-    EnterDeliveryOTPShared: "Enter delivery OTP shared by customer",
+    EnterDeliveryOTPShared: "Enter delivery OTP shared by receiver",
     CancelOrder: "Cancel Order",
     RateDelivery: "Rate delivery",
     NextStep: "Next Step: {0}",
@@ -465,8 +468,9 @@ const strings = new LocalizedStrings({
     NoPartnerAccepted: "No partner accepted",
     NoPartnerAcceptedDesc:
       "No delivery partner accepted in 30 seconds. Tap Try again to search again or go back.",
-    PleaseWaitFindingPartner: "Please wait while we find the nearest partner",
-    CurrentLocation: "Current location",
+    PleaseWaitFindingPartner:
+      "Please wait while we announce your parcel to nearby online drivers",
+    CurrentLocation: "Pickup area: drivers within 1-2 km",
     XSecLeft: "{0} sec left",
     LanguageSelectionTitle:
       "Choose your language to start your journey with us.",
@@ -485,7 +489,7 @@ const strings = new LocalizedStrings({
     ReviewAcceptDeliveryOffer:
       "Review and accept to confirm this delivery offer.",
     NewDeliveryRequestMessage:
-      "A parcel pickup is nearby. Tap below to see details and send your offer.",
+      "A parcel pickup is nearby, usually within 1-2 km. Tap below to see details and send your offer.",
     Later: "Later",
     UpdateAvailableTitle: "Update Available",
     UpdateAvailableMessage:
@@ -666,8 +670,10 @@ const strings = new LocalizedStrings({
     ScanningArea: "ОРЧНЫГ ШАЛГАЖ БАЙНА",
     CancelSearch: "ХАЙЛТЫГ ЦУЦЛАХ",
     RetryLabel: "ДАХИН ОРОЛДОХ",
-    SearchingDrivers: "Боломжтой жолооч хайж байна...",
-    ConnectingNetwork: "Сүлжээнд холбогдож байна",
+    SearchingDrivers: "Энэ илгээмжийг ойролцоох онлайн жолооч нарт зарлаж байна...",
+    ConnectingNetwork: "Ойролцоох жолоочийн сүлжээнд холбогдож байна",
+    AnnouncementRadiusInfo:
+      "Авах цэгийн ойролцоох 1-2 км дотор байгаа онлайн жолооч нарт харуулж байна.",
     DriverConfirmed: "Жолооч баталгаажсан • Хүлээн авахаар бэлтгэж байна",
     DriverEnRoute: "Жолооч явж байна • ETA тооцоолж байна",
     ParcelCollected: "Илгээмжийг авсан • Замдаа",
@@ -776,7 +782,7 @@ const strings = new LocalizedStrings({
     OrderCancelled: "Захиалга цуцлагдсан",
     Processing: "Боловсруулж байна...",
     PickupOtpError: "Хэрэглэгчийн өгсөн авах OTP-г оруулна уу",
-    DeliveryOtpError: "Хэрэглэгчийн өгсөн хүргэлтийн OTP-г оруулна уу",
+    DeliveryOtpError: "Хүлээн авагчийн өгсөн хүргэлтийн OTP-г оруулна уу",
     ParcelDetails: "Илгээмжийн дэлгэрэнгүй",
     PickupLocation: "Авах байршил",
     DropLocation: "Хүргэх байршил",
@@ -966,6 +972,7 @@ const strings = new LocalizedStrings({
     UnableGetLocation: "Байршлыг тогтоох боломжгүй",
     SearchPickupArea: "Авах бүсийг хайх",
     SetPickup: "Авах цэгийг тохируулах",
+    PickupPointAccuracy: "Жолооч очих авах цэгийг нарийн тохируулна уу.",
     ConfirmLocation: "Байршлыг баталгаажуулах",
     SearchAddress: "Хаяг хайх",
     EnterAddressPlaceholder: "Хаягаа оруулна уу...",
@@ -1003,7 +1010,7 @@ const strings = new LocalizedStrings({
     EnterPickupOTPShared:
       "Хэрэглэгчийн хуваалцсан авах цэгийн OTP кодыг оруулна уу",
     EnterDeliveryOTPShared:
-      "Хэрэглэгчийн хуваалцсан хүргэлтийн OTP кодыг оруулна уу",
+      "Хүлээн авагчийн хуваалцсан хүргэлтийн OTP кодыг оруулна уу",
     CancelOrder: "Захиалга цуцлах",
     NextStep: "Дараагийн алхам: {0}",
     FailedUpdateStatus: "Төлөв шинэчлэхэд алдаа гарлаа",
@@ -1017,8 +1024,8 @@ const strings = new LocalizedStrings({
     NoPartnerAcceptedDesc:
       "30 секундын дотор хүргэлтийн түнш зөвшөөрсөнгүй. Дахин хайх эсвэл буцах товчийг дарна уу.",
     PleaseWaitFindingPartner:
-      "Бид хамгийн ойрын түншийг хайж байх хооронд хүлээнэ үү",
-    CurrentLocation: "Одоогийн байршил",
+      "Таны илгээмжийг ойролцоох онлайн жолооч нарт зарлах хүртэл хүлээнэ үү",
+    CurrentLocation: "Авах бүс: 1-2 км доторх жолооч нар",
     XSecLeft: "{0} сек үлдлээ",
     LanguageSelectionTitle:
       "Бидэнтэй хамт аялалаа эхлүүлэхийн тулд хэлээ сонгоно уу.",

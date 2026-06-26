@@ -15,6 +15,8 @@ import VersionCheck from "react-native-version-check";
 import strings from "../localization/Localization";
 import font from "../theme/font";
 import imageIndex from "../assets/imageIndex";
+import colors from "../theme/colors";
+import shadows from "../theme/shadows";
 
 const IOS_APP_ID = "6777900970";
 const IOS_BUNDLE_ID = "com.daina.app";
@@ -246,17 +248,13 @@ const styles = StyleSheet.create({
     width: "100%",
     maxWidth: 360,
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: colors.surface,
     borderRadius: 24,
     paddingHorizontal: 24,
     paddingTop: 32,
     paddingBottom: 26,
     overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 14 },
-    shadowOpacity: 0.22,
-    shadowRadius: 28,
-    elevation: 16,
+    ...shadows.modal,
   },
   accentBar: {
     position: "absolute",
@@ -264,7 +262,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     height: 6,
-    backgroundColor: "#FFCC00",
+    backgroundColor: colors.primary,
   },
   closeButton: {
     position: "absolute",
@@ -291,19 +289,19 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#111827",
+    backgroundColor: colors.textPrimary,
     borderWidth: 3,
-    borderColor: "#FFCC00",
+    borderColor: colors.primary,
     marginBottom: 18,
   },
   iconText: {
-    color: "#FFCC00",
+    color: colors.primary,
     fontSize: 34,
     lineHeight: 36,
     fontFamily: font.MonolithRegular,
   },
   title: {
-    color: "#111827",
+    color: colors.textPrimary,
     fontSize: 22,
     fontFamily: font.MonolithRegular,
     textAlign: "center",
@@ -312,18 +310,18 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingHorizontal: 14,
     paddingVertical: 8,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: colors.background,
     borderRadius: 18,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: colors.border,
   },
   versionText: {
-    color: "#64748B",
+    color: colors.textSecondary,
     fontSize: 12,
     fontFamily: font.MonolithRegular,
   },
   message: {
-    color: "#475569",
+    color: colors.textSecondary,
     fontSize: 14,
     lineHeight: 22,
     marginTop: 16,
@@ -336,14 +334,14 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#FFCC00",
+    backgroundColor: colors.primary,
     marginTop: 24,
   },
   updateButtonDisabled: {
     opacity: 0.6,
   },
   updateButtonText: {
-    color: "#111827",
+    color: colors.textPrimary,
     fontSize: 15,
     fontFamily: font.MonolithRegular,
   },

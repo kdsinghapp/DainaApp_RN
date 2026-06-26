@@ -32,7 +32,7 @@ import { errorToast } from "../../../../utils/customToast";
 import strings from "../../../../localization/Localization";
 
 const CreateParcelFrom = () => {
-  const navgatoon = useNavigation()
+  const navgatoon = useNavigation<any>()
   const [pickupDate, setPickupDate] = useState<Date | null>(null);
   const [pickupTime, setPickupTime] = useState<Date | null>(null);
   const [showDate, setShowDate] = useState(false);
@@ -40,7 +40,7 @@ const CreateParcelFrom = () => {
   const [shipmentType, setShipmentType] = useState("");
   const [consignmentType, setConsignmentType] = useState("document");
   const [deliveryType, setDeliveryType] = useState("normal");
-  const [pickupLocation, setPickupLocation] = useState("");
+  const [pickupLocation, setPickupLocation] = useState<any>("");
   const [pickupLat, setpickupLat] = useState<{ latitude: number; longitude: number } | null>(null);
   const [droplat, sedroplat] = useState<{ latitude: number; longitude: number } | null>(null);
   const [dropLocation, setDropLocation] = useState("");
@@ -213,9 +213,10 @@ const CreateParcelFrom = () => {
       };
       const response = await AddParcelApi(formDataObj, setIsLoading);
       if (response && (response.status == "1" || response.status == 1)) {
-        navgatoon.replace(ScreenNameEnum.NearbyDriversMap, {
+        navgatoon.replace(ScreenNameEnum.RequestLoading, {
           parcelId: response,
-          pickupLocation: pickupLocation?.address
+          pickupLocation: pickupLocation?.address,
+          pickupCoords: pickupLat,
         });
       }
     } else {
@@ -380,6 +381,10 @@ const CreateParcelFrom = () => {
                   navgatoon.navigate(ScreenNameEnum.PickupLocationRapido, {
                     onLocationSelect: (data: any) => {
                       setPickupLocation(data);
+                      setpickupLat({
+                        latitude: data?.latitude,
+                        longitude: data?.longitude,
+                      });
                     }
                   })
                 }

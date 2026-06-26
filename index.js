@@ -18,5 +18,4 @@ messaging().setBackgroundMessageHandler(async remoteMessage => {
     }
 });
 
-// ✅ Register App (always at bottom)
 AppRegistry.registerComponent(appName, () => App);

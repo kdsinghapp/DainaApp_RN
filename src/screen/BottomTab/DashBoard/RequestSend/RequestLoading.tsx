@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
@@ -10,7 +12,7 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { Circle, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -21,11 +23,14 @@ import ScreenNameEnum from '../../../../routes/screenName.enum';
 import CustomHeader from '../../../../compoent/CustomHeader';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import font from '../../../../theme/font';
+import colors from '../../../../theme/colors';
+import shadows from '../../../../theme/shadows';
 import { WebSocket_Url } from '../../../../Api';
 import strings from '../../../../localization/Localization';
 
 const { width, height } = Dimensions.get('window');
 const ACCEPT_TIMEOUT_SEC = 30;
+const DRIVER_SEARCH_RADIUS_METERS = 2000;
 
 interface RouteParams {
   parcelId: {
@@ -33,6 +38,11 @@ interface RouteParams {
       id: string;
     };
   };
+  pickupLocation?: string;
+  pickupCoords?: {
+    latitude?: number;
+    longitude?: number;
+  } | null;
 }
 
 interface WSMessage {
@@ -45,7 +55,8 @@ const RequestLoading = () => {
   const spinValue = useRef(new Animated.Value(0)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const progressAnim = useRef(new Animated.Value(0)).current;
-
+  const pulseAnim1 = useRef(new Animated.Value(0)).current;
+  const pulseAnim2 = useRef(new Animated.Value(0)).current;
   const [driverStatus, setDriverStatus] = useState(strings.SearchingDrivers);
   const [statusDetails, setStatusDetails] = useState(strings.ConnectingNetwork);
   const [isConnected, setIsConnected] = useState(false);
@@ -68,7 +79,10 @@ const RequestLoading = () => {
 
   const route = useRoute();
   const navigation = useNavigation<any>();
-  const { parcelId } = (route?.params as RouteParams) || {};
+  const { parcelId, pickupLocation, pickupCoords } = (route?.params as RouteParams) || {};
+  const pickupLatitude = Number(pickupCoords?.latitude);
+  const pickupLongitude = Number(pickupCoords?.longitude);
+  const hasPickupCoords = Number.isFinite(pickupLatitude) && Number.isFinite(pickupLongitude);
 
   const updateStatusDetails = (status: string) => {
     const statusMap: Record<string, string> = {
@@ -213,6 +227,26 @@ const RequestLoading = () => {
       })
     ).start();
 
+    Animated.loop(
+      Animated.timing(pulseAnim1, {
+        toValue: 1,
+        duration: 2500,
+        easing: Easing.out(Easing.ease),
+        useNativeDriver: true,
+      })
+    ).start();
+
+    setTimeout(() => {
+      Animated.loop(
+        Animated.timing(pulseAnim2, {
+          toValue: 1,
+          duration: 2500,
+          easing: Easing.out(Easing.ease),
+          useNativeDriver: true,
+        })
+      ).start();
+    }, 1250);
+
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 500,
@@ -221,6 +255,20 @@ const RequestLoading = () => {
   }, []);
 
   useEffect(() => {
+    if (hasPickupCoords) {
+      const region = {
+        latitude: pickupLatitude,
+        longitude: pickupLongitude,
+        latitudeDelta: 0.04,
+        longitudeDelta: 0.04,
+      };
+      setCurrentRegion(region);
+      setTimeout(() => {
+        mapRef.current?.animateToRegion(region, 1000);
+      }, 300);
+      return;
+    }
+
     Geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
@@ -238,7 +286,7 @@ const RequestLoading = () => {
       () => { },
       { enableHighAccuracy: true, timeout: 15000, maximumAge: 3000 }
     );
-  }, []);
+  }, [hasPickupCoords, pickupLatitude, pickupLongitude]);
 
   useEffect(() => {
     let mounted = true;
@@ -269,6 +317,26 @@ const RequestLoading = () => {
   const spin = spinValue.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg'],
+  });
+
+  const pulseScale1 = pulseAnim1.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 3.5],
+  });
+
+  const pulseOpacity1 = pulseAnim1.interpolate({
+    inputRange: [0, 0.6, 1],
+    outputRange: [0.6, 0.15, 0],
+  });
+
+  const pulseScale2 = pulseAnim2.interpolate({
+    inputRange: [0, 1],
+    outputRange: [1, 3.5],
+  });
+
+  const pulseOpacity2 = pulseAnim2.interpolate({
+    inputRange: [0, 0.6, 1],
+    outputRange: [0.6, 0.15, 0],
   });
 
   const progressWidth = progressAnim.interpolate({
@@ -312,6 +380,7 @@ const RequestLoading = () => {
         <View style={styles.header}>
           <Text style={styles.headerTitle}>{strings.FindingDriver}</Text>
           <Text style={styles.headerSubtitle}>{strings.PleaseWaitFindingPartner}</Text>
+          <Text style={styles.radiusInfo}>{strings.AnnouncementRadiusInfo}</Text>
         </View>
         <View style={styles.mapContainer}>
           <MapView
@@ -324,12 +393,49 @@ const RequestLoading = () => {
             showsCompass={false}
             mapType="standard"
             mapPadding={{ top: 24, right: 16, bottom: 24, left: 16 }}
-          />
+          >
+            <Circle
+              center={{
+                latitude: currentRegion.latitude,
+                longitude: currentRegion.longitude,
+              }}
+              radius={DRIVER_SEARCH_RADIUS_METERS}
+              strokeColor="rgba(255, 204, 0, 0.95)"
+              fillColor="rgba(255, 204, 0, 0.18)"
+              strokeWidth={2}
+            />
+            <Marker
+              coordinate={{
+                latitude: currentRegion.latitude,
+                longitude: currentRegion.longitude,
+              }}
+              title={strings.PickupLocation}
+              description={pickupLocation}
+            />
+          </MapView>
           <View style={styles.mapOverlay} pointerEvents="none">
-            <Image source={imageIndex.location1} style={styles.trackingImage} resizeMode="contain" />
+            <View style={styles.circleContainer}>
+              <Animated.View style={[styles.pulseCircle, { transform: [{ scale: pulseScale1 }], opacity: pulseOpacity1 }]} />
+              <Animated.View style={[styles.pulseCircle2, { position: 'absolute', transform: [{ scale: pulseScale2 }], opacity: pulseOpacity2 }]} />
+              <View style={[styles.mainCircle, { position: 'absolute' }]}>
+                <Animated.View
+                  style={[
+                    styles.innerCircle,
+                    { transform: [{ rotate: spin }] },
+                  ]}
+                >
+                  <Image source={imageIndex.location1} style={styles.locationIcon} resizeMode="contain" />
+                </Animated.View>
+              </View>
+            </View>
           </View>
           <View style={styles.currentLocationBadge} pointerEvents="none">
             <Text style={styles.currentLocationText}>{strings.CurrentLocation}</Text>
+            {!!pickupLocation ? (
+              <Text style={styles.pickupLocationText} numberOfLines={2}>
+                {pickupLocation}
+              </Text>
+            ) : null}
           </View>
         </View>
         <View style={styles.bottomCard}>
@@ -360,7 +466,7 @@ const RequestLoading = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.background,
   },
   content: {
     flex: 1,
@@ -374,31 +480,32 @@ const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 24,
-    color: '#1D1D1F',
+    color: colors.textPrimary,
     marginBottom: 8,
     fontFamily: font.MonolithRegular,
   },
   headerSubtitle: {
     fontSize: 15,
-    color: '#6B7280',
+    color: colors.textSecondary,
     textAlign: 'center',
     paddingHorizontal: 20,
+    fontFamily: font.MonolithRegular,
+  },
+  radiusInfo: {
+    marginTop: 8,
+    fontSize: 12,
+    lineHeight: 17,
+    color: colors.textTertiary,
+    textAlign: 'center',
+    paddingHorizontal: 18,
     fontFamily: font.MonolithRegular,
   },
   mapContainer: {
     flex: 1,
     minHeight: 280,
-
     overflow: 'hidden',
-    backgroundColor: '#E5E7EB',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.08,
-        shadowRadius: 12,
-      },
-    }),
+    backgroundColor: colors.border,
+    ...shadows.card,
     borderRadius: 20,
   },
   map: {
@@ -438,51 +545,64 @@ const styles = StyleSheet.create({
     color: '#374151',
     fontFamily: font.MonolithRegular,
   },
+  pickupLocationText: {
+    marginTop: 3,
+    fontSize: 11,
+    lineHeight: 15,
+    color: '#6B7280',
+    textAlign: 'center',
+    fontFamily: font.MonolithRegular,
+  },
   loaderSection: {
     alignItems: 'center',
     marginBottom: 0,
   },
   circleContainer: {
-    width: 160,
-    height: 160,
+    width: 300,
+    height: 300,
     justifyContent: 'center',
     alignItems: 'center',
   },
   pulseCircle: {
     position: 'absolute',
-    width: 160,
-    height: 160,
-    borderRadius: 80,
-    backgroundColor: '#FCD34D',
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: '#FFCC00',
   },
   pulseCircle2: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: '#FDE68A',
+    position: 'absolute',
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    backgroundColor: '#FFCC00',
   },
   mainCircle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 90,
+    height: 90,
+    borderRadius: 45,
     backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
     ...Platform.select({
       ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.08,
-        shadowRadius: 12,
+        shadowColor: '#FFCC00',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 10,
+      },
+      android: {
+        elevation: 8,
+        shadowColor: '#FFCC00',
       },
     }),
-    borderWidth: 3,
-    borderColor: '#F59E0B',
+    borderWidth: 2,
+    borderColor: '#FFCC00',
   },
   innerCircle: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     backgroundColor: '#FFFBEB',
     justifyContent: 'center',
     alignItems: 'center',
@@ -490,32 +610,25 @@ const styles = StyleSheet.create({
   locationIcon: {
     width: 32,
     height: 32,
-    tintColor: '#F59E0B',
+    tintColor: '#FFCC00',
   },
   bottomCard: {
     position: 'absolute',
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    backgroundColor: colors.surface,
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
     paddingHorizontal: 24,
     paddingTop: 12,
-    paddingBottom: 28,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: -4 },
-        shadowOpacity: 0.1,
-        shadowRadius: 16,
-      },
-    }),
+    paddingBottom: 32,
+    ...shadows.modal,
   },
   indicator: {
     width: 40,
     height: 4,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: colors.border,
     borderRadius: 2,
     alignSelf: 'center',
     marginBottom: 20,
@@ -527,24 +640,24 @@ const styles = StyleSheet.create({
   progressBackground: {
     width: '100%',
     height: 6,
-    backgroundColor: '#F3F4F6',
+    backgroundColor: colors.border,
     borderRadius: 3,
     overflow: 'hidden',
     marginBottom: 8,
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#FFCC00',
+    backgroundColor: colors.primary,
     borderRadius: 3,
   },
   progressText: {
     fontSize: 13,
-    color: '#6B7280',
+    color: colors.textSecondary,
     fontFamily: font.MonolithRegular,
   },
   primaryStatus: {
     fontSize: 18,
-    color: '#1D1D1F',
+    color: colors.textPrimary,
     textAlign: 'center',
     marginBottom: 6,
     lineHeight: 24,
@@ -552,7 +665,7 @@ const styles = StyleSheet.create({
   },
   secondaryStatus: {
     fontSize: 14,
-    color: '#6B7280',
+    color: colors.textSecondary,
     textAlign: 'center',
     marginBottom: 16,
     fontFamily: font.MonolithRegular,
@@ -563,10 +676,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 10,
     paddingHorizontal: 14,
-    borderRadius: 10,
-    backgroundColor: '#F9FAFB',
+    borderRadius: 12,
+    backgroundColor: colors.background,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: colors.border,
   },
   connectionDot: {
     width: 8,
@@ -574,12 +687,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginRight: 10,
   },
-  connected: { backgroundColor: '#22C55E' },
-  connecting: { backgroundColor: '#F59E0B' },
-  error: { backgroundColor: '#EF4444' },
+  connected: { backgroundColor: colors.success },
+  connecting: { backgroundColor: colors.warning },
+  error: { backgroundColor: colors.error },
   connectionText: {
     fontSize: 14,
-    color: '#374151',
+    color: colors.textPrimary,
     flex: 1,
     fontFamily: font.MonolithRegular,
   },
@@ -611,18 +724,18 @@ const styles = StyleSheet.create({
   timeoutIcon: {
     width: 44,
     height: 44,
-    tintColor: '#EF4444',
+    tintColor: colors.error,
   },
   timeoutTitle: {
     fontSize: 22,
-    color: '#1D1D1F',
+    color: colors.textPrimary,
     textAlign: 'center',
     marginBottom: 12,
     fontFamily: font.MonolithRegular,
   },
   timeoutMessage: {
     fontSize: 15,
-    color: '#6B7280',
+    color: colors.textSecondary,
     textAlign: 'center',
     lineHeight: 22,
     marginBottom: 28,
@@ -638,29 +751,27 @@ const styles = StyleSheet.create({
   btnGoBack: {
     flex: 1,
     paddingVertical: 16,
-    borderRadius: 14,
-    backgroundColor: '#F3F4F6',
+    borderRadius: 16,
+    backgroundColor: colors.background,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#E5E7EB',
+    borderColor: colors.border,
   },
   btnGoBackText: {
     fontSize: 16,
-
-    color: '#4B5563',
+    color: colors.textSecondary,
     fontFamily: font.MonolithRegular,
   },
   btnRetryMain: {
     flex: 1,
     paddingVertical: 16,
-    borderRadius: 14,
-    backgroundColor: '#FFCC00',
+    borderRadius: 16,
+    backgroundColor: colors.primary,
     alignItems: 'center',
-
   },
   btnRetryMainText: {
     fontSize: 16,
-    color: '#FFFFFF',
+    color: colors.textInverse,
     fontFamily: font.MonolithRegular,
   },
 });
