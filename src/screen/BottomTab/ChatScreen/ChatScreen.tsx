@@ -517,7 +517,7 @@ const ChatScreen = () => {
     item?.user?.firstName ??
     item?.assignedDriver?.name ??
     chatName ??
-    "Delivery Agent";
+    "";
   const agentImage =
     chattingWith?.image ??
     item?.deliveryUser?.profile_image ??
