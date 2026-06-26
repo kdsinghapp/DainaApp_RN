@@ -171,14 +171,7 @@ const NewOrderNotificationModal: React.FC<NewOrderNotificationModalProps> = ({
             )}
           </View>
 
-          {!!parcelType && (
-            <View style={styles.metaRow}>
-              <View style={styles.metaChip}>
-                <Icon name="cube-outline" size={wp(3.5)} color="#64748B" />
-                <Text style={styles.metaText} numberOfLines={1}>{parcelType}</Text>
-              </View>
-            </View>
-          )}
+
 
           {/* Location Path (Timeline) */}
           {(pickupAddress || dropAddress) ? (
