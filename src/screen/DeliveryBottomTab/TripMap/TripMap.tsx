@@ -378,6 +378,9 @@ const TripMap = () => {
       candidate.dropLat != null ||
       candidate.droplat != null ||
       candidate.drop_lat != null ||
+      candidate.dropoffLat != null ||
+      candidate.dropoff_lat != null ||
+      candidate.dropOffLat != null ||
       candidate.dropLocationLat != null ||
       candidate.drop_location_lat != null ||
       candidate.drop != null ||
@@ -501,7 +504,7 @@ const TripMap = () => {
   );
 
   const pickupCoords = normalizePointForAddress(getCoords(
-    [source?.pickup, source?.pickupLocation, source?.pickupCoords, source?.pickupCoordinate, source?.pickup_coordinates],
+    [source?.pickupLocation, source?.pickup, source?.pickupCoords, source?.pickupCoordinate, source?.pickup_coordinates],
     [[
       source?.pickupLat ?? source?.pickup_lat,
       source?.pickupLon ?? source?.pickupLng ?? source?.pickup_lon ?? source?.pickup_lng,
@@ -515,13 +518,13 @@ const TripMap = () => {
   ), pickupAddress);
 
   const dropoffCoords = normalizePointForAddress(getCoords(
-    [source?.drop, source?.dropLocation, source?.deliveryLocation, source?.dropCoords, source?.dropCoordinate, source?.drop_coordinates],
+    [source?.dropLocation, source?.drop, source?.deliveryLocation, source?.dropCoords, source?.dropCoordinate, source?.drop_coordinates],
     [[
-      source?.dropLat ?? source?.droplat ?? source?.drop_lat,
-      source?.dropLon ?? source?.dropLng ?? source?.drop_lon ?? source?.drop_lng,
+      source?.dropLat ?? source?.droplat ?? source?.drop_lat ?? source?.dropoffLat ?? source?.dropoff_lat ?? source?.dropOffLat,
+      source?.dropLon ?? source?.dropLng ?? source?.drop_lon ?? source?.drop_lng ?? source?.dropoffLon ?? source?.dropoff_lon ?? source?.dropOffLon ?? source?.dropoffLng,
     ], [
-      source?.dropLocationLat ?? source?.drop_location_lat,
-      source?.dropLocationLon ?? source?.dropLocationLng ?? source?.drop_location_lon ?? source?.drop_location_lng,
+      source?.dropLocationLat ?? source?.drop_location_lat ?? source?.dropoffLocationLat,
+      source?.dropLocationLon ?? source?.dropLocationLng ?? source?.drop_location_lon ?? source?.drop_location_lng ?? source?.dropoffLocationLon,
     ], [
       source?.destinationLat ?? source?.destination_lat,
       source?.destinationLon ?? source?.destinationLng ?? source?.destination_lon ?? source?.destination_lng,
@@ -529,7 +532,10 @@ const TripMap = () => {
   ), dropoffAddress);
 
   const pickup = pickupCoords || { latitude: DEFAULT_LAT, longitude: DEFAULT_LNG };
-  const dropoff = dropoffCoords || { latitude: DEFAULT_LAT, longitude: DEFAULT_LNG };
+  const dropoff = dropoffCoords || {
+    latitude: pickup.latitude + 0.01,
+    longitude: pickup.longitude + 0.01,
+  };
   const [currentCoords, setCurrentCoords] = useState(driverCoords);
   const [routeDistanceKm, setRouteDistanceKm] = useState<number | null>(null);
   const [routeCoordinates, setRouteCoordinates] = useState<LatLng[]>([]);
@@ -1050,21 +1056,21 @@ const TripMap = () => {
               />
             )}
 
-            {routeCoordinates.length > 1 && (
+            {routeCoordinates.length > 1 && !hasActiveRouteLine && (
               <Polyline
                 coordinates={routeCoordinates}
-                strokeWidth={hasActiveRouteLine ? 8 : 10}
+                strokeWidth={10}
                 strokeColor="rgba(255, 255, 255, 0.96)"
                 lineCap="round"
                 lineJoin="round"
                 zIndex={0}
               />
             )}
-            {routeCoordinates.length > 1 && (
+            {routeCoordinates.length > 1 && !hasActiveRouteLine && (
               <Polyline
                 coordinates={routeCoordinates}
-                strokeWidth={hasActiveRouteLine ? 4 : 6}
-                strokeColor={hasActiveRouteLine ? "#94A3B8" : "#FFCC00"}
+                strokeWidth={6}
+                strokeColor="#FFCC00"
                 lineCap="round"
                 lineJoin="round"
                 zIndex={1}
