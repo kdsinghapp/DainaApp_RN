@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { GetProfileApi } from "../../../Api/apiRequest";
 import { loginSuccess, logout } from "../../../redux/feature/authSlice";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { DeleteAccountApi } from "../../../Api/apiRequest";
+import { DeleteAccountApi, LogoutApi } from "../../../Api/apiRequest";
 import DeleteAccountModal from "../../../compoent/DeleteAccountModal";
 import { styles } from "./style";
 import strings from "../../../localization/Localization";
@@ -108,8 +108,13 @@ const DeliveryProfile: React.FC<Props> = ({
 
     }
   };
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setModal(false);
+    try {
+      await LogoutApi(setLoading);
+    } catch (error) {
+      console.log('Logout API error:', error);
+    }
     dispatch(logout());
     AsyncStorage.removeItem('authData');
     navigation.replace(ScreenNameEnum.SPLASH_SCREEN);

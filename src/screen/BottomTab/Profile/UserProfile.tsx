@@ -36,7 +36,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import strings from "../../../localization/Localization";
 import { color } from "../../../constant";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
-import { DeleteAccountApi } from "../../../Api/apiRequest";
+import { DeleteAccountApi, LogoutApi } from "../../../Api/apiRequest";
 import DeleteAccountModal from "../../../compoent/DeleteAccountModal";
 
 const { width } = Dimensions.get("window");
@@ -132,8 +132,13 @@ const ProfileScreen: React.FC = () => {
     }
   };
 
-  const handleLogoutPress = () => {
+  const handleLogoutPress = async () => {
     ReactNativeHapticFeedback.trigger("notificationSuccess", hapticOptions);
+    try {
+      await LogoutApi(setLoading);
+    } catch (error) {
+      console.log('Logout API error:', error);
+    }
     dispatch(logout());
     navigation.replace(ScreenNameEnum.SPLASH_SCREEN);
   };

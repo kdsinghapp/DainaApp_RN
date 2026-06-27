@@ -471,7 +471,7 @@ const DeliveryHome = () => {
 
             <View style={styles.userInfo}>
               <View style={styles.userMetaRow}>
-                <Text style={styles.userLabel}>{strings.User || "User"}</Text>
+                {/* <Text style={styles.userLabel}>{strings.User || "User"}</Text> */}
                 {orderCode ? (
                   <Text style={styles.orderCode} numberOfLines={1}>
                     #{orderCode}
@@ -481,14 +481,14 @@ const DeliveryHome = () => {
               <Text style={styles.name} numberOfLines={1}>
                 {item?.user?.firstName || strings.Unknown}
               </Text>
-              {item?.user?.phone ? (
+              {/* {item?.user?.phone ? (
                 <View style={styles.phoneRow}>
-                  <Icon name="call-outline" size={12} color="#64748B" />
+                  <Icon name="call-outline" size={12} color="black" />
                   <Text style={styles.phone} numberOfLines={1}>
                     {item?.user?.phone}
                   </Text>
                 </View>
-              ) : null}
+              ) : null} */}
             </View>
           </View>
 

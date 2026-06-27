@@ -763,7 +763,7 @@ export const PostApi = async (param, setLoading) => {
       param.data,
       { headers }
     );
-    console.log("ssss", response)
+    console.log(". lout ", response)
     return response.data;
   } catch (error) {
     console.log("POST API ERROR 👉", error?.response || error);
@@ -1090,6 +1090,21 @@ const RateDeliveryApi = async (
   }
 };
 
+export const LogoutApi = async (setLoading?: (loading: boolean) => void) => {
+  try {
+    const token = await AsyncStorage.getItem('token');
+    const param = {
+      url: '/logout',
+      token: token,
+      data: {}
+    };
+    return await PostApi(param, setLoading as any);
+  } catch (error) {
+    console.error('Logout API call error:', error);
+    return null;
+  }
+};
+
 const DeleteAccountApi = async () => {
   try {
     const token = await AsyncStorage.getItem('token');
@@ -1152,4 +1167,5 @@ export {
   saveAuthData,
   handleLogout,
   DeleteAccountApi,
+  LogoutApi
 };
