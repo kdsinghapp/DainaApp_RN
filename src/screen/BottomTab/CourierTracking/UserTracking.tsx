@@ -295,40 +295,10 @@ const CourierTrackingScreen = () => {
     return "";
   };
   const normalizePointForAddress = (point: LatLng | null, address: any): LatLng | null => {
-    if (!point) return null;
-    const addressText = getAddressText(address).toLowerCase();
-    const looksLikeUsAddress =
-      addressText.includes("usa") ||
-      addressText.includes("united states") ||
-      addressText.includes("san francisco") ||
-      /\bca\b/.test(addressText);
-
-    const looksLikeWestUsCoordinate =
-      point.latitude >= 30 &&
-      point.latitude <= 50 &&
-      point.longitude > 100 &&
-      point.longitude <= 130;
-
-    if ((looksLikeUsAddress || looksLikeWestUsCoordinate) && point.longitude > 0 && point.longitude >= 60 && point.longitude <= 130) {
-      return { ...point, longitude: -point.longitude };
-    }
-
     return point;
   };
   const normalizePointForRoute = (point: LatLng, destination: LatLng, address: any): LatLng => {
-    const normalized = normalizePointForAddress(point, address) ?? point;
-    const sameLongitudeBand = Math.abs(Math.abs(normalized.longitude) - Math.abs(destination.longitude)) <= 35;
-    const sameLatitudeBand = Math.abs(normalized.latitude - destination.latitude) <= 30;
-
-    if (sameLongitudeBand && sameLatitudeBand && destination.longitude < 0 && normalized.longitude > 0) {
-      return { ...normalized, longitude: -normalized.longitude };
-    }
-
-    if (sameLongitudeBand && sameLatitudeBand && destination.longitude > 0 && normalized.longitude < 0) {
-      return { ...normalized, longitude: Math.abs(normalized.longitude) };
-    }
-
-    return normalized;
+    return point;
   };
 
   const pickupAddressForCoords = getAddressText(
