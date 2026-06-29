@@ -61,8 +61,10 @@ const PhoneLogin = () => {
     if (searchText === "") {
       setFilteredCountries(Constcounty);
     } else {
+      const lowerSearch = searchText?.toLowerCase();
       const filtered = Constcounty?.filter((c) =>
-        c?.country?.toLowerCase().includes(searchText?.toLowerCase())
+        c?.country?.toLowerCase().includes(lowerSearch) ||
+        c?.dial_code?.includes(searchText)
       );
       setFilteredCountries(filtered);
     }

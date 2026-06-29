@@ -46,7 +46,7 @@ export default function OtpScreen() {
 
         <StatusBarComponent />
         <CustomHeader label={strings.Back} />
-        <LoadingModal visible={isLoading} />
+        {/* <LoadingModal visible={isLoading} /> */}
         <View style={styles.container}>
           <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
             <View style={styles.headerSection}>
@@ -86,7 +86,12 @@ export default function OtpScreen() {
                     color: color.primary,
                     fontFamily: font.MonolithRegular,
 
-                    marginLeft: 6
+
+                    fontSize: 16,
+                    marginTop: 10,
+                    lineHeight: 30,
+                    textAlign: "center",
+                    marginLeft: 4
                   }}>
                     {Math.floor(timer / 60).toString().padStart(2, '0')}:
                     {(timer % 60).toString().padStart(2, '0')}
@@ -108,6 +113,7 @@ export default function OtpScreen() {
           {/* <Image source={imageIndex.otp} style={{ width: '80%', height: hp(45), alignSelf: 'center', marginBottom: 30 }} /> */}
 
           <CustomButton
+            loading={isLoading}
             title={strings.Continue}
             // onPress={() => {
             //   if (type == "signup") {

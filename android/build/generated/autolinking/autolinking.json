@@ -52,6 +52,31 @@
         }
       }
     },
+    "@react-native-clipboard/clipboard": {
+      "root": "/Users/technorizen/Desktop/aman/DainaApp/node_modules/@react-native-clipboard/clipboard",
+      "name": "@react-native-clipboard/clipboard",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/technorizen/Desktop/aman/DainaApp/node_modules/@react-native-clipboard/clipboard/RNCClipboard.podspec",
+          "version": "1.16.3",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/technorizen/Desktop/aman/DainaApp/node_modules/@react-native-clipboard/clipboard/android",
+          "packageImportPath": "import com.reactnativecommunity.clipboard.ClipboardPackage;",
+          "packageInstance": "new ClipboardPackage()",
+          "buildTypes": [],
+          "libraryName": "rnclipboard",
+          "componentDescriptors": [],
+          "cmakeListsPath": "/Users/technorizen/Desktop/aman/DainaApp/node_modules/@react-native-clipboard/clipboard/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
     "@react-native-community/datetimepicker": {
       "root": "/Users/technorizen/Desktop/aman/DainaApp/node_modules/@react-native-community/datetimepicker",
       "name": "@react-native-community/datetimepicker",

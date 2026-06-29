@@ -62,7 +62,10 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     >
       <View style={[styles.content, { justifyContent: alignment[alignItm] }]}>
         {loading ? (
-          <ActivityIndicator color={txtcolor} size="small" />
+          <ActivityIndicator color={txtcolor} size="small"
+
+
+          />
         ) : (
           <>
             {leftIcon && <View style={styles.icon}>{leftIcon}</View>}
