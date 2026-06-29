@@ -73,12 +73,11 @@ const PhoneLogin = () => {
     setCountryCode(country?.code);
     setCallingCode(country?.dial_code);
     setModalVisible(false);
-    setSearchText(""); // reset search
+    setSearchText("");
   };
   const handleContinue = async () => {
-    const trimmedNumber = phoneNumber.replace(/\D/g, ""); // Remove non-digit characters
+    const trimmedNumber = phoneNumber.replace(/\D/g, "");
     const userType = await AsyncStorage.getItem('selectedRole');
-    // Validation
     if (!trimmedNumber) {
       setError(strings.PleaseEnterPhone);
       return;
@@ -86,7 +85,7 @@ const PhoneLogin = () => {
       setError(strings.PleaseEnterValidPhone);
       return;
     }
-    // Clear error if valid
+
     setError("");
     let data = {
       code: `${callingCode}`,
@@ -122,7 +121,6 @@ const PhoneLogin = () => {
           </View>
           <Text style={styles.title}>{strings?.PhoneQuestion}</Text>
           <Text style={styles.subtitle}>{strings?.PhoneSubtitle}</Text>
-          {/* Phone Input */}
           <Text style={{
             fontSize: 15,
             marginBottom: 15,
@@ -137,7 +135,6 @@ const PhoneLogin = () => {
               />
               <View style={styles.separator} />
             </TouchableOpacity>
-
             <TextInput
               style={styles.input}
               keyboardType="number-pad"
@@ -150,26 +147,24 @@ const PhoneLogin = () => {
           </View>
           {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-          {/* Continue Button */}
+
           <View style={{ marginTop: 20 }}>
             <CustomButton title={strings.Continue} onPress={handleContinue} />
           </View>
 
-          {/* Custom Country Modal */}
+
           <Modal visible={modalVisible} animationType="slide" transparent={true}>
             <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
               <View style={styles.modalOverlay}>
                 <TouchableWithoutFeedback onPress={() => { }}>
                   <View style={styles.modalContent}>
-                    {/* Header */}
+
                     <View style={styles.modalHeader}>
                       <Text style={styles.modalTitle}>{strings.SelectCountry}</Text>
                       <TouchableOpacity onPress={() => setModalVisible(false)}>
                         <Text style={styles.modalCancel}>{strings.Cancel}</Text>
                       </TouchableOpacity>
                     </View>
-
-                    {/* Search Input */}
                     <TextInput
                       placeholder={strings.SearchCountry}
                       value={searchText}
@@ -178,7 +173,7 @@ const PhoneLogin = () => {
                       placeholderTextColor={"#999"}
                     />
 
-                    {/* Country List */}
+
                     <FlatList
                       data={filteredCountries}
                       keyExtractor={(item) => item.code}
@@ -221,8 +216,6 @@ const styles = StyleSheet.create({
   separator: { borderWidth: 0.5, height: 22, borderColor: "#FFCC00", marginLeft: 5 },
   input: { fontFamily: font.MonolithRegular, flex: 1, height: 55, fontSize: 16, marginLeft: 5, color: "black" },
   emailText: { color: "black", textAlign: "center", fontSize: 16, marginTop: 20, fontFamily: font.MonolithRegular },
-
-  /* Modal Styles */
   modalOverlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "center", alignItems: "center" },
   modalContent: {
     backgroundColor: "#fff",
