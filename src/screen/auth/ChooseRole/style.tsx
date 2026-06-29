@@ -53,21 +53,18 @@ export const styles = StyleSheet.create({
   },
   option: {
 
-    borderRadius: 20,
+    borderRadius: 18,
     backgroundColor: '#fff',
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
-    padding: 12,
-
-
+    padding: 14,
     borderWidth: 1,
     borderColor: "#d6e1f9ff",
-    margin: 2
   },
   optionSelected: {
     borderColor: '#FFCC00',
-    backgroundColor: '#FFFDF0',
+    // backgroundColor: '#FFFDF0',
 
   },
   iconWrap: {
