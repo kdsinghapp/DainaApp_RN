@@ -8,10 +8,14 @@ import {
   Image,
   Platform,
   KeyboardAvoidingView,
+  Modal,
+  FlatList,
+  TouchableWithoutFeedback,
 } from "react-native";
+import Constcounty from "../../../auth/PhoneLogin/Constcounty";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Icon from "react-native-vector-icons/Ionicons";
-import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { useNavigation, } from "@react-navigation/native";
 import { launchImageLibrary } from "react-native-image-picker";
 import { openCamera } from "../../../../utils/cameraHelper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -53,6 +57,36 @@ const CreateParcelFrom = () => {
   const [receiverAddress, setReceiverAddress] = useState("");
   const [extraMessage, setExtraMessage] = useState("");
   const [price, setPrice] = useState("");
+
+  // Country Code states
+  const [senderCallingCode, setSenderCallingCode] = useState("+976");
+  const [receiverCallingCode, setReceiverCallingCode] = useState("+976");
+  const [activePicker, setActivePicker] = useState<"sender" | "receiver" | null>(null);
+  const [searchText, setSearchText] = useState("");
+  const [filteredCountries, setFilteredCountries] = useState(Constcounty);
+
+  useEffect(() => {
+    if (searchText === "") {
+      setFilteredCountries(Constcounty);
+    } else {
+      const lowerSearch = searchText?.toLowerCase();
+      const filtered = Constcounty?.filter((c: any) =>
+        c?.country?.toLowerCase().includes(lowerSearch) ||
+        c?.dial_code?.includes(searchText)
+      );
+      setFilteredCountries(filtered);
+    }
+  }, [searchText]);
+
+  const handleSelectCountry = (country: any) => {
+    if (activePicker === "sender") {
+      setSenderCallingCode(country.dial_code);
+    } else if (activePicker === "receiver") {
+      setReceiverCallingCode(country.dial_code);
+    }
+    setActivePicker(null);
+    setSearchText("");
+  };
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState<any>();
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -194,6 +228,7 @@ const CreateParcelFrom = () => {
         shipmentType,
         senderName,
         senderMobile,
+        senderCountryCode: senderCallingCode,
         senderAddress,
         pickupDate,
         pickupTime,
@@ -203,6 +238,7 @@ const CreateParcelFrom = () => {
         price,
         receiverName,
         receiverMobile,
+        receiverCountryCode: receiverCallingCode,
         receiverAddress,
         extraMessage,
         pickupLat,
@@ -633,16 +669,25 @@ const CreateParcelFrom = () => {
 
             <View style={styles.inputContainer}>
               <Text style={styles.label}>{strings.SenderMobileNumber}</Text>
-              <TextInput
-                style={[styles.textInput, errors.senderMobile ? styles.inputError : null]}
-                placeholder={strings.SenderMobileNumber}
-                keyboardType="phone-pad"
-                placeholderTextColor="#94A3B8"
-                value={senderMobile}
-                returnKeyType="done"
-
-                onChangeText={(value) => handleInputChange("senderMobile", value)}
-              />
+              <View style={[styles.phoneInputContainer, errors.senderMobile ? styles.inputError : null]}>
+                <TouchableOpacity onPress={() => setActivePicker("sender")} style={styles.countryPicker}>
+                  <Text style={styles.callingCode}>{senderCallingCode}</Text>
+                  <Image
+                    source={imageIndex.dounArroww}
+                    style={{ height: 22, width: 22, marginLeft: 5 }}
+                  />
+                  <View style={styles.separator} />
+                </TouchableOpacity>
+                <TextInput
+                  style={styles.phoneInput}
+                  placeholder={strings.SenderMobileNumber}
+                  keyboardType="phone-pad"
+                  placeholderTextColor="#94A3B8"
+                  value={senderMobile}
+                  returnKeyType="done"
+                  onChangeText={(value) => handleInputChange("senderMobile", value)}
+                />
+              </View>
               {errors.senderMobile ? <Text style={styles.errorText}>{errors.senderMobile}</Text> : null}
             </View>
 
@@ -662,14 +707,24 @@ const CreateParcelFrom = () => {
 
             <View style={styles.inputContainer}>
               <Text style={styles.label}>{strings.ReceiverMobileNumber}</Text>
-              <TextInput
-                style={[styles.textInput, errors.receiverMobile ? styles.inputError : null]}
-                placeholder={strings.ReceiverMobileNumber}
-                keyboardType="phone-pad"
-                placeholderTextColor={"#94A3B8"}
-                value={receiverMobile}
-                onChangeText={(value) => handleInputChange("receiverMobile", value)}
-              />
+              <View style={[styles.phoneInputContainer, errors.receiverMobile ? styles.inputError : null]}>
+                <TouchableOpacity onPress={() => setActivePicker("receiver")} style={styles.countryPicker}>
+                  <Text style={styles.callingCode}>{receiverCallingCode}</Text>
+                  <Image
+                    source={imageIndex.dounArroww}
+                    style={{ height: 22, width: 22, marginLeft: 5 }}
+                  />
+                  <View style={styles.separator} />
+                </TouchableOpacity>
+                <TextInput
+                  style={styles.phoneInput}
+                  placeholder={strings.ReceiverMobileNumber}
+                  keyboardType="phone-pad"
+                  placeholderTextColor={"#94A3B8"}
+                  value={receiverMobile}
+                  onChangeText={(value) => handleInputChange("receiverMobile", value)}
+                />
+              </View>
               {errors.receiverMobile ? <Text style={styles.errorText}>{errors.receiverMobile}</Text> : null}
             </View>
 
@@ -715,6 +770,47 @@ const CreateParcelFrom = () => {
         pickImageFromGallery={pickImageFromGallery}
         handleTakePhoto={takePhotoFromCamera}
       />
+
+      <Modal visible={!!activePicker} animationType="slide" transparent={true}>
+        <TouchableWithoutFeedback onPress={() => setActivePicker(null)}>
+          <View style={styles.modalOverlay}>
+            <TouchableWithoutFeedback onPress={() => { }}>
+              <View style={styles.modalContent}>
+                <View style={styles.modalHeader}>
+                  <Text style={styles.modalTitle}>{strings.SelectCountry || "Select Country"}</Text>
+                  <TouchableOpacity onPress={() => setActivePicker(null)}>
+                    <Text style={styles.modalCancel}>{strings.Cancel || "Cancel"}</Text>
+                  </TouchableOpacity>
+                </View>
+                <TextInput
+                  placeholder={strings.SearchCountry || "Search Country"}
+                  value={searchText}
+                  onChangeText={setSearchText}
+                  style={styles.searchInput}
+                  placeholderTextColor={"#999"}
+                />
+                <FlatList
+                  data={filteredCountries}
+                  keyExtractor={(item) => item.code}
+                  showsVerticalScrollIndicator={false}
+                  style={{ marginTop: 10 }}
+                  keyboardShouldPersistTaps="handled"
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      style={styles.modalItem}
+                      onPress={() => handleSelectCountry(item)}
+                    >
+                      <Text style={styles.countryText}>
+                        {item.flag} {item.country} ({item.dial_code})
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </SafeAreaView>
   );
 };

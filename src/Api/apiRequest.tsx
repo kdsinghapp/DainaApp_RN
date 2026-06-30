@@ -642,6 +642,7 @@ const AddParcelApi = async (param: any, setLoading: (loading: boolean) => void) 
     if (param.shipmentType) formdata.append("shipmentType", param.shipmentType);
     if (param.senderName) formdata.append("senderName", param.senderName);
     if (param.senderMobile) formdata.append("senderMobileNumber", param.senderMobile);
+    if (param.senderCountryCode) formdata.append("senderCountryCode", param.senderCountryCode);
     if (param.senderAddress) formdata.append("senderAddress", param.senderAddress);
     if (param.pickupDate) {
       formdata.append("pickupDate", param.pickupDate instanceof Date ? param.pickupDate.toISOString() : param.pickupDate);
@@ -656,6 +657,7 @@ const AddParcelApi = async (param: any, setLoading: (loading: boolean) => void) 
 
     if (param.receiverName) formdata.append("receiverName", param.receiverName);
     if (param.receiverMobile) formdata.append("receiverMobileNumber", param.receiverMobile);
+    if (param.receiverCountryCode) formdata.append("receiverCountryCode", param.receiverCountryCode);
     if (param.receiverAddress) formdata.append("receiverAddress", param.receiverAddress);
     if (param.extraMessage) formdata.append("message", param.extraMessage);
     const headers: any = {
