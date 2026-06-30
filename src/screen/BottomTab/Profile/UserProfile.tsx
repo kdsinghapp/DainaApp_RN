@@ -226,6 +226,12 @@ const ProfileScreen: React.FC = () => {
                 label={strings.ChangeLanguage}
                 onPress={() => navigation.navigate(ScreenNameEnum.language)}
               />
+              <MenuItem
+                index={2}
+                icon={<Icon name="wallet-outline" size={22} color={color.primary} />}
+                label={strings?.Wallet || "Wallet"}
+                onPress={() => navigation.navigate(ScreenNameEnum.WalletScreen)}
+              />
               {/* <MenuItem
                 index={2}
                 isLast

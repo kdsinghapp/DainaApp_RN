@@ -226,6 +226,14 @@ const DeliveryProfile: React.FC<Props> = ({
           />
           <ItemDivider />
           <ListItem
+            icon={<Icon name="wallet-outline" size={24} color={color.primary} />}
+            label={strings.Wallet || "Wallet"}
+            onPress={() => {
+              navigation.navigate(ScreenNameEnum.WalletScreen);
+            }}
+          />
+          <ItemDivider />
+          <ListItem
             icon={<Icon name="headset-outline" size={24} color={color.primary} />}
             label={strings.Support}
             onPress={() => {

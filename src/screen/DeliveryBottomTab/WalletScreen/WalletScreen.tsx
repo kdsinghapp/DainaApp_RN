@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Image,
   View,
@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Modal,
   TextInput,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import StatusBarComponent from "../../../compoent/StatusBarCompoent";
@@ -15,56 +16,152 @@ import CustomHeader from "../../../compoent/CustomHeader";
 import font from "../../../theme/font";
 import imageIndex from "../../../assets/imageIndex";
 import strings from "../../../localization/Localization";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { base_url } from "../../../Api";
+import { errorToast, successToast } from "../../../utils/customToast";
 
 const WalletScreen = () => {
-  const [balance, setBalance] = useState(12256.0);
+  const [balance, setBalance] = useState(0);
+  const [currency, setCurrency] = useState("$");
   const [isModalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState<"add" | "withdraw" | null>(null);
   const [amount, setAmount] = useState("");
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  const transactions: any = [
+  useEffect(() => {
+    fetchWalletData();
+  }, []);
 
-  ];
+  const fetchWalletData = async () => {
+    try {
+      setLoading(true);
+      const token = await AsyncStorage.getItem("token");
+      if (!token) return;
 
-  const handleConfirm = () => {
+      const [walletRes, transactionsRes] = await Promise.all([
+        axios.get(`${base_url}/wallet`, { headers: { Authorization: `Bearer ${token}` } }).catch(err => {
+          console.error("Wallet fetch error", err);
+          return null;
+        }),
+        axios.get(`${base_url}/wallet/transactions?limit=50&offset=0`, { headers: { Authorization: `Bearer ${token}` } }).catch(err => {
+          console.error("Transactions fetch error", err);
+          return null;
+        })
+      ]);
+
+      if (walletRes?.data) {
+        console.log("Wallet Data Response:", walletRes.data);
+        if (walletRes.data.status === 1 || walletRes.data.status === "1") {
+          const wallet = walletRes.data.wallet;
+          if (wallet) {
+            setBalance(parseFloat(wallet.availableBalance) || 0);
+            setCurrency(wallet.currency || "$");
+          }
+        }
+      }
+
+      if (transactionsRes?.data) {
+        console.log("Transactions Response:", transactionsRes.data);
+        // Safely extract the transactions array whether it's directly the response, under 'data', or under 'transactions'
+        let txList = [];
+        if (Array.isArray(transactionsRes.data)) {
+          txList = transactionsRes.data;
+        } else if (Array.isArray(transactionsRes.data.transactions)) {
+          txList = transactionsRes.data.transactions;
+        } else if (Array.isArray(transactionsRes.data.data)) {
+          txList = transactionsRes.data.data;
+        }
+        setTransactions(txList);
+      }
+
+    } catch (error) {
+      console.error("fetchWalletData error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleConfirm = async () => {
     const enteredAmount = parseFloat(amount);
     if (!enteredAmount || enteredAmount <= 0) {
       alert("Please enter a valid amount");
       return;
     }
 
-    if (modalType === "add") {
-      setBalance((prev) => prev + enteredAmount);
-      // 👉 Add API call here
-    } else if (modalType === "withdraw") {
-      if (enteredAmount > balance) {
-        alert("Insufficient balance!");
-        return;
-      }
-      setBalance((prev) => prev - enteredAmount);
-      // 👉 Withdraw API call here
+    if (modalType === "withdraw" && enteredAmount > balance) {
+      alert("Insufficient balance!");
+      return;
     }
 
-    setModalVisible(false);
-    setAmount("");
-    setModalType(null);
+    try {
+      setLoading(true);
+      const token = await AsyncStorage.getItem("token");
+      if (!token) return;
+
+      let response;
+      if (modalType === "add") {
+        const payload = `amount=${encodeURIComponent(enteredAmount.toString())}`;
+        response = await axios.post(`${base_url}/wallet/demo-credit`, payload, {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            Authorization: `Bearer ${token}`
+          }
+        });
+      } else {
+        const payload = {
+          amount: enteredAmount,
+          type: modalType
+        };
+        response = await axios.post(`${base_url}/wallet`, payload, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+      }
+
+      console.log("Wallet Update Response:", response.data);
+      if (response.data?.status === 1 || response.data?.status === "1") {
+        successToast(response.data?.message || `Successfully ${modalType === "add" ? "added" : "withdrawn"} amount`);
+        // Refresh balance and transactions
+        fetchWalletData();
+      } else {
+        errorToast(response.data?.message || "Transaction failed");
+      }
+    } catch (error: any) {
+      console.error("Wallet update error:", error);
+      errorToast(error?.response?.data?.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+      setModalVisible(false);
+      setAmount("");
+      setModalType(null);
+    }
   };
 
-  const renderTransaction = ({ item }: any) => (
-    <View style={styles.transactionRow}>
-      <View>
-        <Text style={styles.amount}>${item.amount.toFixed(2)}</Text>
-        <Text style={styles.name}>{item.name}</Text>
+  const renderTransaction = ({ item }: any) => {
+    const txAmount = parseFloat(item.amount) || 0;
+    const txType = item.type?.toLowerCase() || "";
+    const isCredit = txType === "in" || txType === "add" || txType === "credit";
+    const txDate = item.date || (item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "");
+
+    return (
+      <View style={styles.transactionRow}>
+        <View>
+          <Text style={styles.amount}>{currency} {txAmount.toFixed(2)}</Text>
+          <Text style={styles.name}>{item.name || item.type || "Transaction"}</Text>
+        </View>
+        <View style={{ alignItems: "flex-end" }}>
+          <Image
+            source={isCredit ? imageIndex.Iconreceiv : imageIndex.IconRed}
+            style={{ width: 24, height: 24 }}
+          />
+          <Text style={styles.date}>{txDate}</Text>
+        </View>
       </View>
-      <View style={{ alignItems: "flex-end" }}>
-        <Image
-          source={item.type === "in" ? imageIndex.Iconreceiv : imageIndex.IconRed}
-          style={{ width: 24, height: 24 }}
-        />
-        <Text style={styles.date}>{item.date}</Text>
-      </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -76,7 +173,7 @@ const WalletScreen = () => {
         {/* Balance Card */}
         <View style={styles.balanceCard}>
           <Text style={styles.balanceText}>{strings.AvailableBalance}</Text>
-          <Text style={styles.balanceAmount}>$ 00</Text>
+          <Text style={styles.balanceAmount}>{currency} {balance.toFixed(2)}</Text>
           <View style={styles.buttonRow}>
             <TouchableOpacity
               style={styles.withdrawBtn}
@@ -100,12 +197,17 @@ const WalletScreen = () => {
         </View>
 
         {/* Transactions List */}
-        <FlatList
-          data={transactions}
-          renderItem={renderTransaction}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={{ paddingBottom: 20 }}
-        />
+        {loading && transactions.length === 0 ? (
+          <ActivityIndicator size="large" color="#FFCC00" style={{ marginTop: 20 }} />
+        ) : (
+          <FlatList
+            data={transactions}
+            renderItem={renderTransaction}
+            keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}
+            contentContainerStyle={{ paddingBottom: 20 }}
+            ListEmptyComponent={<Text style={{ textAlign: "center", marginTop: 20, color: "#888" }}>No transactions found.</Text>}
+          />
+        )}
       </View>
       {/* Custom Modal */}
       <Modal
