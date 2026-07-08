@@ -12,6 +12,7 @@ const NotificationsSetting = () => {
   const [vibrate, setVibrate] = useState(false);
   const [appUpdates, setAppUpdates] = useState(true);
 
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBarComponent />

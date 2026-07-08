@@ -29,10 +29,17 @@ const WalletScreen = () => {
   const [amount, setAmount] = useState("");
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
     fetchWalletData();
+    checkUserRole();
   }, []);
+
+  const checkUserRole = async () => {
+    const role = await AsyncStorage.getItem("selectedRole");
+    setUserRole(role);
+  };
 
   const fetchWalletData = async () => {
     try {
@@ -140,17 +147,46 @@ const WalletScreen = () => {
     }
   };
 
+  const formatTransactionMessage = (key: string) => {
+    if (!key) return "Transaction";
+
+    const messages: Record<string, string> = {
+      escrow_hold: "Amount Held in Daina Trusted Wallet",
+      escrow_release_debit: "Amount Released from Daina Trusted Wallet",
+      delivery_credit: "Payment Received via Daina Trusted Wallet",
+      escrow_refund: "Amount Refunded by Daina Trusted Wallet",
+      demo_credit: "Demo Credit",
+      admin_credit: "Admin Credit",
+      wallet_credit: "Wallet Credit",
+      wallet_debit: "Wallet Debit",
+      payment_refunded: "Payment Refunded",
+      payment_released: "Payment Released",
+    };
+
+    const keyLower = key.toLowerCase();
+
+    if (messages[keyLower]) {
+      return messages[keyLower];
+    }
+
+    return key
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  };
   const renderTransaction = ({ item }: any) => {
     const txAmount = parseFloat(item.amount) || 0;
     const txType = item.type?.toLowerCase() || "";
-    const isCredit = txType === "in" || txType === "add" || txType === "credit";
+    const isCredit = txType === "in" || txType === "add" || txType === "credit" || txType.includes("credit");
     const txDate = item.date || (item.createdAt ? new Date(item.createdAt).toLocaleDateString() : "");
+
+    const displayMessage = formatTransactionMessage(item.name || item.type);
 
     return (
       <View style={styles.transactionRow}>
-        <View>
+        <View style={{ flex: 1, paddingRight: 10 }}>
           <Text style={styles.amount}>{currency} {txAmount.toFixed(2)}</Text>
-          <Text style={styles.name}>{item.name || item.type || "Transaction"}</Text>
+          <Text style={styles.name}>{displayMessage}</Text>
         </View>
         <View style={{ alignItems: "flex-end" }}>
           <Image
@@ -168,6 +204,7 @@ const WalletScreen = () => {
       <StatusBarComponent />
       <CustomHeader label={strings.Wallet} />
       <View style={{
+        flex: 1,
         marginHorizontal: 15
       }}>
         {/* Balance Card */}
@@ -175,24 +212,29 @@ const WalletScreen = () => {
           <Text style={styles.balanceText}>{strings.AvailableBalance}</Text>
           <Text style={styles.balanceAmount}>{currency} {balance.toFixed(2)}</Text>
           <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={styles.withdrawBtn}
-              onPress={() => {
-                setModalType("withdraw");
-                setModalVisible(true);
-              }}
-            >
-              <Text style={styles.btnText}>{strings.Withdraw}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.addBtn}
-              onPress={() => {
-                setModalType("add");
-                setModalVisible(true);
-              }}
-            >
-              <Text style={styles.btnText}>{strings.AddAmount}</Text>
-            </TouchableOpacity>
+            {userRole === "Delivery" && (
+              <TouchableOpacity
+                style={styles.withdrawBtn}
+                onPress={() => {
+                  setModalType("withdraw");
+                  setModalVisible(true);
+                }}
+              >
+                <Text style={styles.btnText}>{strings.Withdraw}</Text>
+              </TouchableOpacity>
+            )}
+
+            {userRole === "user" && (
+              <TouchableOpacity
+                style={styles.addBtn}
+                onPress={() => {
+                  setModalType("add");
+                  setModalVisible(true);
+                }}
+              >
+                <Text style={styles.btnText}>{strings.AddAmount}</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
 
@@ -201,10 +243,11 @@ const WalletScreen = () => {
           <ActivityIndicator size="large" color="#FFCC00" style={{ marginTop: 20 }} />
         ) : (
           <FlatList
+            showsVerticalScrollIndicator={false}
             data={transactions}
             renderItem={renderTransaction}
             keyExtractor={(item, index) => item.id ? item.id.toString() : index.toString()}
-            contentContainerStyle={{ paddingBottom: 20 }}
+            contentContainerStyle={{ paddingBottom: 100 }}
             ListEmptyComponent={<Text style={{ textAlign: "center", marginTop: 20, color: "#888" }}>No transactions found.</Text>}
           />
         )}
@@ -228,6 +271,7 @@ const WalletScreen = () => {
               keyboardType="numeric"
               value={amount}
               onChangeText={setAmount}
+              placeholderTextColor={'grey'}
             />
 
             <View style={styles.modalBtnRow}>
@@ -357,6 +401,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: "center",
     fontSize: 16,
+    color: '#000'
   },
   modalBtnRow: {
     flexDirection: "row",

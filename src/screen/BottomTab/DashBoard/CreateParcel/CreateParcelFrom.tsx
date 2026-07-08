@@ -99,11 +99,12 @@ const CreateParcelFrom = () => {
         errorToast(response.errorMessage || "Something went wrong");
       } else if (response.assets && response.assets.length > 0) {
         setImage(response.assets[0]);
+        setErrors(prev => ({ ...prev, image: "" }));
       }
     });
   };
   // Validation states
-  const [errors, setErrors] = useState({
+  const [errors, setErrors] = useState<any>({
     pickupLocation: "",
     dropLocation: "",
     shipmentType: "",
@@ -112,10 +113,12 @@ const CreateParcelFrom = () => {
     pickupDate: "",
     pickupTime: "",
     consignmentType: "",
+    packageSize: "",
     deliveryType: "",
     price: "",
     receiverName: "",
     receiverMobile: "",
+    image: "",
   });
 
   // Dropdown data
@@ -139,53 +142,37 @@ const CreateParcelFrom = () => {
     let error = "";
 
     switch (fieldName) {
-      // case "senderName":
-      // case "receiverName":
-      //   if (!value.trim()) error = "This field is required";
+      case "receiverName":
+        if (!value || !value.trim()) error = strings.ThisFieldIsRequired || "This field is required";
+        break;
 
-      // case "senderMobile":
-      // case "receiverMobile":
-      //   if (!value.trim()) error = "Mobile number is required";
-      //   break;
-
-      // case "senderAddress":
-      // case "receiverAddress":
-      //   if (!value.trim()) error = "This field is required";
-      //   break;
+      case "receiverMobile":
+        if (!value || !value.trim()) error = strings.MobileNumberRequired || "Mobile number is required";
+        break;
 
       case "pickupLocation":
-        if (!value || !value.address) error = strings.PickupLocationRequired;
+        if (!value || !value.address) error = strings.PickupLocationRequired || "Pickup location is required";
         break;
 
       case "dropLocation":
-        if (!value.trim()) error = strings.DropLocationRequired;
+        if (!value || !value.trim()) error = strings.DropLocationRequired || "Drop location is required";
         break;
 
-      // case "price":
-      //   if (!value.trim()) error = "Price is required";
-      //   break;
+      case "price":
+        if (!value || !value.trim()) error = strings.PriceRequired || "Price is required";
+        break;
 
-      // case "shipmentType":
-      // case "consignmentType":
-      // case "deliveryType":
-      //   if (!value.trim()) error = "Please select an option";
-      //   break;
+      case "shipmentType":
+      case "consignmentType":
+      case "deliveryType":
+      case "packageSize":
+        if (!value || !value.trim()) error = strings.PleaseSelectOption || "Please select an option";
+        break;
 
-      // case "pickupDate":
-      //   if (!value) error = "Pickup date is required";
-      //   else if (value < new Date()) error = "Pickup date cannot be in the past";
-      //   break;
 
-      // case "pickupTime":
-      //   if (!value) error = "Pickup time is required";
-      //   break;
 
-      // case "image":
-      //   if (!value) error = "Please add a parcel image";
-      //   break;
-
-      // default:
-      //   break;
+      default:
+        break;
     }
 
     setErrors(prev => ({ ...prev, [fieldName]: error }));
@@ -197,18 +184,12 @@ const CreateParcelFrom = () => {
       pickupLocation,
       dropLocation,
       shipmentType,
-      senderName,
-      senderMobile,
-      senderAddress,
-      pickupDate: pickupDate ? "hasValue" : "",
-      pickupTime: pickupTime ? "hasValue" : "",
       consignmentType,
+      packageSize,
       deliveryType,
       price,
       receiverName,
       receiverMobile,
-
-      receiverAddress,
     };
 
     let isValid = true;
@@ -223,11 +204,27 @@ const CreateParcelFrom = () => {
   };
 
   const handleSubmit = async () => {
+    let finalSenderName = senderName;
+    let finalSenderMobile = senderMobile;
+
+    if (!senderName || !senderMobile) {
+      try {
+        const jsonValue = await AsyncStorage.getItem('authData');
+        const authData = jsonValue != null ? JSON.parse(jsonValue) : null;
+        if (authData?.userData) {
+          if (!senderName) finalSenderName = authData.userData.firstName || authData.userData.name || "";
+          if (!senderMobile) finalSenderMobile = authData.userData.phone || authData.userData.mobile || "";
+        }
+      } catch (e) {
+        console.log('Error reading authData', e);
+      }
+    }
+
     if (validateForm()) {
       const formDataObj = {
         shipmentType,
-        senderName,
-        senderMobile,
+        senderName: finalSenderName,
+        senderMobile: finalSenderMobile,
         senderCountryCode: senderCallingCode,
         senderAddress,
         pickupDate,
@@ -411,7 +408,7 @@ const CreateParcelFrom = () => {
             <Text style={styles.cardTitle}>{strings.PickupAndDrop || "Route Details"}</Text>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>{strings.PickupLocation || "Pickup Location"}</Text>
+              <Text style={styles.label}>{strings.PickupLocation || "Pickup Location"} <Text style={{ color: 'red' }}>*</Text></Text>
               <TouchableOpacity
                 onPress={() =>
                   navgatoon.navigate(ScreenNameEnum.PickupLocationRapido, {
@@ -421,6 +418,7 @@ const CreateParcelFrom = () => {
                         latitude: data?.latitude,
                         longitude: data?.longitude,
                       });
+                      setErrors(prev => ({ ...prev, pickupLocation: "" }));
                     }
                   })
                 }
@@ -437,7 +435,7 @@ const CreateParcelFrom = () => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>{strings.DropLocation || "Drop Location"}</Text>
+              <Text style={styles.label}>{strings.DropLocation || "Drop Location"} <Text style={{ color: 'red' }}>*</Text></Text>
               <TouchableOpacity
                 onPress={() =>
                   navgatoon.navigate(ScreenNameEnum.PickupLocationRapido, {
@@ -447,6 +445,7 @@ const CreateParcelFrom = () => {
                         latitude: data?.latitude,
                         longitude: data?.longitude,
                       });
+                      setErrors(prev => ({ ...prev, dropLocation: "" }));
                     }
                   })
                 }
@@ -467,7 +466,7 @@ const CreateParcelFrom = () => {
             <Text style={styles.cardTitle}>{strings.ShipmentSenderDetails || "Parcel Details"}</Text>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>{strings.ShipmentType}</Text>
+              <Text style={styles.label}>{strings.ShipmentType} <Text style={{ color: 'red' }}>*</Text></Text>
               <CustomDropdown
                 data={shipmentTypeData}
                 placeholder={strings.ShipmentType}
@@ -478,7 +477,7 @@ const CreateParcelFrom = () => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>{strings.ConsignmentType}</Text>
+              <Text style={styles.label}>{strings.ConsignmentType} <Text style={{ color: 'red' }}>*</Text></Text>
               <CustomDropdown
                 data={consignmentTypeData}
                 placeholder={strings.ConsignmentType}
@@ -489,7 +488,7 @@ const CreateParcelFrom = () => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>{strings.PackageSize}</Text>
+              <Text style={styles.label}>{strings.PackageSize} <Text style={{ color: 'red' }}>*</Text></Text>
               <View style={styles.packageRow}>
                 {[
                   { label: strings.SmallSize, value: "1 KG" },
@@ -502,7 +501,10 @@ const CreateParcelFrom = () => {
                       styles.packageBox,
                       packageSize === item.value && styles.selectedBox,
                     ]}
-                    onPress={() => setPackageSize(item.value)}
+                    onPress={() => {
+                      setPackageSize(item.value);
+                      setErrors(prev => ({ ...prev, packageSize: "" }));
+                    }}
                   >
                     <Icon
                       name={item.value === "1 KG" ? "cube-outline" : item.value === "3KG-10KG" ? "layers-outline" : "archive-outline"}
@@ -520,10 +522,11 @@ const CreateParcelFrom = () => {
                   </TouchableOpacity>
                 ))}
               </View>
+              {errors.packageSize ? <Text style={styles.errorText}>{errors.packageSize}</Text> : null}
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>{strings.DeliveryType}</Text>
+              <Text style={styles.label}>{strings.DeliveryType} <Text style={{ color: 'red' }}>*</Text></Text>
               <CustomDropdown
                 data={deliveryTypeData}
                 placeholder={strings.DeliveryType}
@@ -534,7 +537,7 @@ const CreateParcelFrom = () => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>{strings.Price}</Text>
+              <Text style={styles.label}>{strings.Price} <Text style={{ color: 'red' }}>*</Text></Text>
               <TextInput
                 placeholderTextColor={"#94A3B8"}
                 value={price}
@@ -575,6 +578,7 @@ const CreateParcelFrom = () => {
                   <Text style={styles.imageUploadSubText}>Supports JPG, PNG formats</Text>
                 </TouchableOpacity>
               )}
+              {errors.image ? <Text style={styles.errorText}>{errors.image}</Text> : null}
             </View>
           </View>
 
@@ -692,7 +696,7 @@ const CreateParcelFrom = () => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>{strings.ReceiverName}</Text>
+              <Text style={styles.label}>{strings.ReceiverName} <Text style={{ color: 'red' }}>*</Text></Text>
               <TextInput
                 style={[styles.textInput, errors.receiverName ? styles.inputError : null]}
                 placeholderTextColor={"#94A3B8"}
@@ -706,7 +710,7 @@ const CreateParcelFrom = () => {
             </View>
 
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>{strings.ReceiverMobileNumber}</Text>
+              <Text style={styles.label}>{strings.ReceiverMobileNumber} <Text style={{ color: 'red' }}>*</Text></Text>
               <View style={[styles.phoneInputContainer, errors.receiverMobile ? styles.inputError : null]}>
                 <TouchableOpacity onPress={() => setActivePicker("receiver")} style={styles.countryPicker}>
                   <Text style={styles.callingCode}>{receiverCallingCode}</Text>

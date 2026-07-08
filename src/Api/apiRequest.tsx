@@ -137,16 +137,19 @@ const Verifyotp = async (param: any, setLoading: any, dispatch: any, setGeneralA
       const languageId = strings.getLanguage() === 'en' ? 1 : 2;
       await SetLanguageApi({ languageId }, setLoading);
 
+      const hasNameAndEmail = !!parsedResponse?.firstName && !!parsedResponse?.email;
+
       if (parsedResponse?.type === "Delivery") {
         setLoading(false)
         const completion = parsedResponse?.completionStatus;
+        const isProfileDone = completion?.isProfileComplete || hasNameAndEmail;
 
-        if (completion?.isProfileComplete && completion?.isDocumentsUploaded) {
+        if (isProfileDone && completion?.isDocumentsUploaded) {
           param.navigation.reset({
             index: 0,
             routes: [{ name: ScreenNameEnum.DeliveryTabNavigator }],
           });
-        } else if (!completion?.isProfileComplete) {
+        } else if (!isProfileDone) {
           param.navigation.reset({
             index: 0,
             routes: [{ name: ScreenNameEnum.ProfileSetup, params: { type: "otp" } }],
@@ -160,10 +163,17 @@ const Verifyotp = async (param: any, setLoading: any, dispatch: any, setGeneralA
       } else {
         setLoading(false)
 
-        param.navigation.reset({
-          index: 0,
-          routes: [{ name: ScreenNameEnum.ProfileSetup, params: { type: "otp" } }],
-        });
+        if (hasNameAndEmail || parsedResponse?.completionStatus?.isProfileComplete) {
+          param.navigation.reset({
+            index: 0,
+            routes: [{ name: ScreenNameEnum.TabNavigator }],
+          });
+        } else {
+          param.navigation.reset({
+            index: 0,
+            routes: [{ name: ScreenNameEnum.ProfileSetup, params: { type: "otp" } }],
+          });
+        }
       }
     } else {
       setLoading(false)

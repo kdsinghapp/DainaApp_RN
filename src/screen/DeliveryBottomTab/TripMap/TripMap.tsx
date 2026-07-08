@@ -44,7 +44,8 @@ const routesMatch = (a: Array<{ latitude: number; longitude: number }>, b: Array
 const TripMap = () => {
   const [loading, setLoading] = useState(false)
   const route: any = useRoute()
-  const { item, event } = route?.params || ""
+  const { item: routeItem, event } = route?.params || ""
+  const [item, setItem] = useState(routeItem || "")
   // console.log("pickupLon", event?.parcel?.pickupLat)
   // console.log("pickupLon", event?.parcel?.pickupLon)
   const parcelId = item?.parcelId
@@ -958,7 +959,10 @@ const TripMap = () => {
       console.log(result)
       if (result.status == 1) {
         successToast(String(strings?.formatString(strings.StatusUpdatedTo, STATUS_LABELS[newStatus])))
-        navigation.goBack();
+        setItem((prev: any) => ({ ...prev, deliveryStatus: newStatus }));
+        setParcel((prev: any) => ({ ...prev, deliveryStatus: newStatus }));
+        getDetail();
+        // navigation.goBack();
         // You might want to refresh the data here
       } else {
         errorToast(result.message ?? strings.FailedUpdateStatus)

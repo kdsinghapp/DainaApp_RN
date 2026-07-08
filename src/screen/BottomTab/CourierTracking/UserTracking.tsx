@@ -874,12 +874,14 @@ const CourierTrackingScreen = () => {
   }, [parcel?.deliveryStatus, item?.deliveryStatus]);
   useFocusEffect(
     useCallback(() => {
-      getDetail(); // 👈 screen focus hote hi call hoga
+      if (getDetailRef.current) {
+        getDetailRef.current(); // 👈 screen focus hote hi call hoga
+      }
 
       return () => {
-        // optional cleanup (agar chahiye)
+        // optional cleanup
       };
-    }, [parcel])
+    }, [])
   );
 
   const deliveryStatus = String(
@@ -1127,8 +1129,8 @@ const CourierTrackingScreen = () => {
               zIndex={12}
             >
               <View style={styles.courierMarker}>
-                <View  >
-                  <Image source={imageIndex.caricon2} style={styles.courierImage} />
+                <View>
+                  <Image source={imageIndex.caricon} style={styles.courierImage} />
                 </View>
               </View>
             </Marker.Animated>
@@ -1231,9 +1233,6 @@ const CourierTrackingScreen = () => {
               </View>
             </View>
           </View>
-
-
-
         </ScrollView>
       </View>
     </View>
