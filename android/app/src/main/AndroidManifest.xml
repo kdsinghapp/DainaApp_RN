@@ -11,8 +11,6 @@
       <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
        <!-- Storage / Media -->
       <uses-permission android:name="android.permission.VIBRATE" />
-       <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-      <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
       <!-- Notifications & Phone -->
       <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
    

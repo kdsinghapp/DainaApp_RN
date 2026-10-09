@@ -18,9 +18,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import ReAnimated, {
-  FadeInDown,
-  FadeIn,
-  Layout,
+  FadeInDown
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
